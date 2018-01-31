@@ -28,10 +28,24 @@
 				<label>Fix Track Block</label>
 				<input type="text"id="fix" placeholder="Block Number ie green 10">
 				<button onclick="getFix()">Fix</button>
+				<br>
+				<button onclick="cutPower()">CUT POWER</button>
+				<br>
+				<button onclick="circuitFail()">BREAK TRACK CIRCUIT</button>
+				<br>
+				<button onclick="resetTest()">RESET POWER</button>
 			</div>
-			<div class="load">
-				<h2>Load Track Data</h2>
-				<input type="text" placeholder="path to track layout file">
+			<div class="bottom">
+				<div class="load">
+					<h2>Load Track Data</h2>
+					<input type="text" placeholder="path to track layout file">
+				</div>
+				<div class="data">
+					<h2>Block Data</h2>
+					<input type="text" id="blockdata" placeholder="Block Number ie green 10">
+					<button onclick="genData()">Generate</button>
+					<p id="dataseg"></p>
+				</div>
 			</div>
 		</div>
 		

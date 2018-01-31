@@ -20,8 +20,11 @@ function incrementR() {
 	}
 }
 function resetTest() {
-	greenLoc = 0;
-	redLoc  = 1;
+	//greenLoc = 0;
+	//redLoc  = 1;
+	greenInc = window.setInterval(incrementG, 1300);
+	redInc = window.setInterval(incrementR, 1500);
+	console.log(redInc);
 }
 function getBreak() {
 	var temp1 = document.getElementById('break');
@@ -46,6 +49,15 @@ function getFix() {
 		var temp3 = temp2[1]*10 +1;
 		document.getElementById(temp3).setAttribute('class','empty');		
 	}	
+}
+function cutPower() {
+	window.clearInterval(greenInc);
+	window.clearInterval(redInc);
+	console.log(redInc);
+}
+function genData() {
+	var temp1 = document.getElementById("dataseg");
+	temp1.innerHTML = "Block length: 100m\nGrade: 2%\nstatus: empty";
 }
 
 
