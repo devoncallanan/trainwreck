@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="styles.css">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	</head>
+	<body>
+		<h1>TRAINWRECK Track Model</h1>
+		<div class="left">
+			<div class="info">
+				<table class="table-bordered" id="infotable">
+					<th>Green Line</th>
+					<th>Red Line</th>
+				<h2>Track Information</h2>
+
+				</table>
+			</div>
+		</div>
+		
+		<div class="right">
+			<div class="test" id="">
+				<h2>Track Testing</h2>
+				<label>Break Track Block</label>
+				<input type="text" id="break" placeholder="Block Number ie green 10">
+				<button onclick="getBreak()">Break</button>
+				<label>Fix Track Block</label>
+				<input type="text"id="fix" placeholder="Block Number ie green 10">
+				<button onclick="getFix()">Fix</button>
+			</div>
+			<div class="load">
+				<h2>Load Track Data</h2>
+				<input type="text" placeholder="path to track layout file">
+			</div>
+		</div>
+		
+		<script src="ui.js"></script>
+
+	</body>
+</html>
+
