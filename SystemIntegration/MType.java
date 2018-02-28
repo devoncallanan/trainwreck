@@ -2,6 +2,10 @@
 
 MType class for message types
 
+
+access them by saying MType.AUTH;
+
+and so on...
 */
 
 public class MType {
