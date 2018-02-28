@@ -15,14 +15,42 @@ make ghost train circ buffer with front of train occupying and back freeing
  * @author Devon
  */
 public class Trackmodel {
-
     
+    Track redline;
+    public Trackmodel() {
+        redline = new Track();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new TrackmodelGUI(redline).setVisible(true);
+            }
+        });
+    }
+    
+    public void update() {
+        /* 1. check message queue
+         * 2. update values
+         * 3. send messages
+         */
+        
+        /*
+        while (!messenger[TrackModel].empty)
+            message = check messenger[Trackmodel].pop();
+            check for types of message: update train speed; update switch positions
+        do calculations to find new train location
+        send message of occupancy and foreward speed and authority
+        
+        */
+        
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Track redline;
+        Trackmodel tm = new Trackmodel();
+        tm.update();
+        
+        /*
         Pattern p = Pattern.compile("[,\\s]");
         java.io.File file;
         java.util.Scanner scan = null;
@@ -95,6 +123,7 @@ public class Trackmodel {
             //redline.setOccupancy(j%15, false);
             //j++;
         }
+        */
 
     }
     

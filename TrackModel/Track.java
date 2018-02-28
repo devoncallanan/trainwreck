@@ -5,6 +5,9 @@
  */
 package trackmodelsubsystem;
 
+import java.util.regex.Pattern;
+
+
 /**
  *
  * @author Devon
@@ -16,13 +19,65 @@ public class Track extends javax.swing.AbstractListModel<String>{
     private int length;
     private int items;
     
-    
+    public Track() {
+        this.length = 0;
+        this.items = 0;
+        switches = new int[0][0];
+    }
     public Track(int length) {
         this.track = new Block[length][3];
         this.blocks = new Block[length];
         this.switches = new int[length][2];
         this.length = length;
         this.items = 0;
+    }
+    
+    public void loadTrack(java.io.File trackfile) {
+        Pattern p = Pattern.compile("[,\\s]");
+        java.util.Scanner scan = null;
+        try {
+            scan = new java.util.Scanner(trackfile).useDelimiter(",|\\r\\n");
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+        
+        
+        int length = scan.nextInt() + 1;
+        this.track = new Block[length][3];
+        this.blocks = new Block[length];
+        this.switches = new int[length][2];
+        this.length = length;
+        this.items = 0;
+        
+        while (scan.hasNext()) {
+            //A,1,50,0.5,40, ,1,15
+            String section = scan.next();
+            //System.out.println(section);
+            int number = scan.nextInt();
+            //System.out.println(number);
+            int bLength = scan.nextInt();
+            //System.out.println(length);
+            double grade = scan.nextDouble();
+            //System.out.println(grade);
+            int limit = scan.nextInt();
+            //System.out.println(limit);
+            String station = scan.next();
+            //System.out.println(station);
+            int to = scan.nextInt();
+            //System.out.println(to);
+            int from = scan.nextInt();
+            //System.out.println(from);
+            int branch = scan.nextInt();
+            int dir = scan.nextInt();
+            Block b = new Block(to, from, section, number, station, grade, bLength, limit, branch); 
+            this.addBlock(b);
+            b.dir = dir;
+            this.setSwitch(number, branch, dir);
+            fireContentsChanged(this, number, number);
+        }
+        this.printTrack();
+
     }
     
     public void addBlock(Block b) {
