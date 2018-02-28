@@ -1,0 +1,47 @@
+/*
+
+Message class
+
+project trainwreck
+
+This holds the message data.  There are two constructors, one for int data and one for float data.
+
+you will be able to get any of the data members, but please only try to get the ones that are initialized.
+
+*/
+
+
+class Message {
+	private int from;
+	private int dataI;
+	private float dataF;
+	private int type;
+	
+	public Message(int from, int dataI, int type) {
+		this.from = from;
+		this.dataI = dataI;
+		this.type = type;
+	}
+	
+	public Message(int from, float dataF, int type) {
+		this.from = from;
+		this.dataF = dataF;
+		this.type = type;
+	}
+	
+	public int from() {
+		return from;
+	}
+	
+	public int dataI() {
+		return dataI;
+	}
+	
+	public float dataF() {
+		return dataF();
+	}
+	
+	public int type() {
+		return type;
+	}
+}
