@@ -5,29 +5,27 @@ Messenger class for inter module comunication
 project trainwreck
 
 */
+import java.util.ArrayList;
+import java.util.Stack;
 
-class MessageQueue {
-	java.util.Stack<Message>[] messages;
+public class MessageQueue {
+	ArrayList<Stack<Message>> messages;
 	int length;
 	
-	public MessageQueue {
-		messages = new java.util.Stack<Message>()[5];
+	public MessageQueue() {
+		messages = new ArrayList<Stack<Message>>(5);
 	}
 	
 	public void send(Message m, int destination) {
-		messages[destination].push(m);
+		messages.get(destination).push(m);
 	}
 	
-	public java.util.Stack<Message> recieve(int adress) {
-		return messages[adress];
+	public Stack<Message> recieve(int adress) {
+		return messages.get(adress);
 	}
 	
 	public void addTrain() {
-		java.util.Stack<Message>[] temp = new java.util.Stack<Message>()[length + 2];
-		for (int i = 0; i < length; i++) {
-			temp[i] = messages[i];
-		}
-		length += 2;
-		messages = temp;
+		messages.add(new Stack<Message>());
+		messages.add(new Stack<Message>());
 	}
 }
