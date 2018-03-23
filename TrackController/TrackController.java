@@ -10,6 +10,10 @@ public class TrackController {
           mq = i;
           speed = 0;
      }
+     public void run(){
+          mReceive();
+          mSend();
+     }
      public void mReceive(){
           messages = mq.receive(MDest.TcCtl);
           while(!messages.isEmpty()){
