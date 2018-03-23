@@ -7,15 +7,16 @@ project trainwreck
 This holds the message data.  There are two constructors, one for int data and one for float data.
 
 you will be able to get any of the data members, but please only try to get the ones that are initialized.
-
+maybe make an abstract class so we can have extensions with different data
 */
 
 
 class Message {
 	private int from;
 	private int dataI;
-	private float dataF;
+	private double dataD;
 	private int type;
+	
 	
 	public Message(int from, int dataI, int type) {
 		this.from = from;
@@ -37,8 +38,8 @@ class Message {
 		return dataI;
 	}
 	
-	public float dataF() {
-		return dataF();
+	public float dataD() {
+		return dataD;
 	}
 	
 	public int type() {
