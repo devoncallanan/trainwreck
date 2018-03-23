@@ -20,14 +20,19 @@ public class MessageQueue {
 	
 	public MessageQueue() {
 		messages = new ArrayList<Stack<Message>>(5);
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
 	}
 	
 	public void send(Message m, int destination) {
 		messages.get(destination).push(m);
 	}
 	
-	public Stack<Message> recieve(int adress) {
-		return messages.get(adress);
+	public Stack<Message> receive(int address) {
+		return messages.get(address);
 	}
 	
 	public void addTrain() {
