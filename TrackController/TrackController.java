@@ -10,7 +10,7 @@ public class TrackController {
           mq = i;
           speed = 0;
      }
-     public void mRevieve(){
+     public void mReceive(){
           messages = mq.receive(MDest.TcCtl);
           while(!messages.isEmpty()){
                m = messages.pop();
