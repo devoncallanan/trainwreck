@@ -1,0 +1,15 @@
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = "shared.Trainwreck"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testCompile 'junit:junit:4.12'
+}
+
+task train << {
+	println "CHOO CHOO!"
+}
