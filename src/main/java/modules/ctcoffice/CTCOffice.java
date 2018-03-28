@@ -29,7 +29,8 @@ public class CTCOffice {
 	}
 
 	public void mSend(){
-       m = new Message(MDest.CTC, speed, Mtype.SPEED);
+       m = new Message(MDest.CTC, speed, MType.SPEED);
        mq.send(m, MDest.TcCtl);
+       System.out.println("CTC SEND");
 	}
 }

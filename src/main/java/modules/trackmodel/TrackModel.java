@@ -1,31 +1,35 @@
 package modules.trackmodel;
 import shared.*;
+import java.util.*;
 
 public class TrackModel {
 	
-	MessageQueue m
+	private MessageQueue m;
+	private Stack<Message> mailbox;
 
 	public TrackModel(MessageQueue m) {
 		this.m = m;
 	}
 	
-	public run() {
+	public void run() {
 		
 		//check messages
 		
-		java.util.Stack mailbox = m.recieve(MDest.TrMd);
+		mailbox = m.receive(MDest.TcMd);
 		
-		while (!mailbox.empty()) {
+
+		while (!mailbox.isEmpty()) {
 			Message mail = mailbox.pop();
-			
+			System.out.println("TkMod: "+mail.dataI());
 			switch (mail.type()) {
 				case MType.AUTH:
 					System.out.println(mail.dataI());
-					mailbox.send(mail, MDest.TrMd);
+					m.send(mail, MDest.TrMd);
 					break;
 				case MType.SPEED:
 					System.out.println(mail.dataI());
-					mailbox.send(mail, MDest.TrMd);
+					m.send(mail, MDest.TrMd);
+					System.out.println("TkMod SEND");
 					break;					
 			}
 				

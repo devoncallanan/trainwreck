@@ -1,6 +1,10 @@
 package shared;
 
-import modules.*;
+import modules.ctcoffice.*;
+import modules.trackcontroller.*;
+import modules.trackmodel.*;
+import modules.traincontroller.*;
+import modules.trainmodel.*;
 
 public class Trainwreck {
 	public static void main(String[] args) {
@@ -8,7 +12,7 @@ public class Trainwreck {
 		
 		MessageQueue messagequeue = new MessageQueue();
 		
-		CTC ctc = new CTC(messagequeue);
+		CTCOffice ctc = new CTCOffice(messagequeue);
 		TrackController trackctl = new TrackController(messagequeue);
 		TrackModel trackmodel = new TrackModel(messagequeue);
 		TrainModel trainmodel = new TrainModel(messagequeue);
@@ -16,8 +20,9 @@ public class Trainwreck {
 		
 		ctc.run();
 		trackctl.run();
-		trainmodel.run();
+		trackmodel.run();
 		trainmodel.run();
 		trainctl.run();
+
 	}
 }
