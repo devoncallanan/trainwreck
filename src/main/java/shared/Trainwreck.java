@@ -1,5 +1,7 @@
 package shared;
 
+import modules.*;
+
 public class Trainwreck {
 	public static void main(String[] args) {
 		System.out.println("Gradle Test");
