@@ -11,7 +11,7 @@ maybe make an abstract class so we can have extensions with different data
 */
 package shared;
 
-class Message {
+public class Message {
 	private int from;
 	private int dataI;
 	private double dataD;
