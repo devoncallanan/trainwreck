@@ -8,16 +8,20 @@ public class TrackController {
      ArrayList<Integer> authority = new ArrayList<Integer>();
      int auth crossInd;
      public MessageQueue mq = new MessageQueue();
+     public PLC plcCode = new PLC();
      private Stack<Message> messages;
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null;
-     boolean switchPos, mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false, crossLights = false, mainLight = true, sideLight = false, loop = false;
-     public TrackController(MessageQueue i, boolean[] n, boolean[] r, boolean[] s){
+     boolean switchPos, mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true;
+     boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
+     boolean crossLights = false, mainLight = true, sideLight = false, loop = false, lights = true;
+     public TrackController(MessageQueue i, boolean[] n, boolean[] r, boolean[] s, PLC p){
           mq = i;
           n = main;
           r = msplit;
           s = side;
+          p = plcCode;
           for(int i=0; i<n.length; i++){
                if(mainLine[i] == true){
                     mainCross = true;
@@ -48,6 +52,12 @@ public class TrackController {
           checkCross();
           checkLights();
           mSend();
+     }
+     public void plcImported(){
+          switchBias = plcCode.getSwitchBias();
+          loop = plcCode.getLoop();
+          priority = plcCode.getPriority();
+          lights = plcCode.getLights();
      }
      public void mReceive(){
           messages = mq.receive(MDest.TcCtl);

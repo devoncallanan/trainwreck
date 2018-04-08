@@ -8,6 +8,7 @@ public class TrackController {
      ArrayList<Integer> authority = new ArrayList<Integer>();
      int auth crossInd;
      public MessageQueue mq = new MessageQueue();
+     public PLC plcCode = new PLC();
      private Stack<Message> messages;
      private Message m;
      boolean[] mainLine, side, msplit, temp;
