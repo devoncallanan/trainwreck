@@ -19,7 +19,7 @@ public class Power {
 	private double Kp;
 	private double uk;
 	private double previousUk;
-	private double Time = 1.0;
+	private double Time = 0.1;
 
 	private final double MAX_POWER = 120;
 	private final double DEFAULT_KI = 0.5;
@@ -74,5 +74,4 @@ public class Power {
 	public void killPower() {
 		
 	}
-	
 }
