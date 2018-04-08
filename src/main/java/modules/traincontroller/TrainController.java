@@ -30,12 +30,14 @@ public class TrainController {
     public boolean starting;
 	private int trainID;
 	private int authority;
-	private int brakingDistance; //in meters
-	private int metersRemaining; //in meters
+	private double brakingDistance; //in meters
+	private double metersRemaining; //in meters
 	private int temp;
     private int currentBlock;
 	
 	private final double SERVICE_DECELERATION = 1.2; //meters/second^2
+	private final double KMH_TO_MS = (double)1000/(double)3600;
+	private final double MS_TO_KMH = (double)3600/(double)1000;
 	
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -83,7 +85,6 @@ public class TrainController {
 					break;
 				case 2:
 					velocity.setSuggestedSpeed(currentM.dataD());
-					System.out.println("ss" +currentM.dataD());
 					this.pcs.firePropertyChange("suggestedSpeed", -1 , currentM.dataD());
 					break;
 				case 7:
@@ -97,7 +98,7 @@ public class TrainController {
 					this.pcs.firePropertyChange("station", -1, currentM.dataS());
 					break;
 				case 12:
-					velocity.setSpeedLimit((double)currentM.dataI(), mode);
+					velocity.setSpeedLimit((double)currentM.dataD(), mode);
 					break;
 				default:
 					break;
@@ -107,11 +108,11 @@ public class TrainController {
 		
 		
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
-		metersRemaining = (int) (metersRemaining - (velocity.feedback() * 1000)/3600);
+		metersRemaining = (metersRemaining - (velocity.feedback()*(double)100/(double)3600));
 		this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining);
         System.out.println("meters: " + metersRemaining);
                 
-		brakingDistance = (int) ((Math.pow(velocity.feedback(), 2))/(2*SERVICE_DECELERATION));
+		brakingDistance = (Math.pow(velocity.feedback()*(double)100/(double)3600, 2))/((2*SERVICE_DECELERATION)/(double)100);
         this.pcs.firePropertyChange("brakingDist", -1 , brakingDistance);
         System.out.println("braking distance: " + brakingDistance);
                 
@@ -135,7 +136,7 @@ public class TrainController {
 				p2 = power2.generatePower(velocity.error(), velocity.previousError());
 				p3 = power3.generatePower(velocity.error(), velocity.previousError());
 
-				p = p1;
+				p = p1/1000;
 
 			}	
 		}
