@@ -17,4 +17,10 @@ public class MType {
 	public static final int TEMP = 4;
 	public static final int BRAKES = 5;
 	public static final int LIGHTS = 6;
+	public static final int FEEDBACK = 7;
+	public static final int POWER = 8;
+	public static final int BLOCK = 9;
+	public static final int NEWTRAIN = 10;
+	public static final int BEACON = 11;
+	
 }

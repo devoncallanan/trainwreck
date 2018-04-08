@@ -16,6 +16,8 @@ public class Message {
 	private int dataI;
 	private double dataD;
 	private int type;
+	private int trainID;
+	private boolean[] occupancy;
 	
 	
 	public Message(int from, int dataI, int type) {
@@ -40,6 +42,14 @@ public class Message {
 	
 	public double dataD() {
 		return dataD;
+	}
+	
+	public boolean[] occupancy() {
+		return occupancy;
+	}
+	
+	public tainId() {
+		return trainID;
 	}
 	
 	public int type() {
