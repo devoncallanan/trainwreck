@@ -22,5 +22,6 @@ public class MType {
 	public static final int BLOCK = 9;
 	public static final int NEWTRAIN = 10;
 	public static final int BEACON = 11;
+	public static final int SPEEDLIMIT = 12;
 	
 }
