@@ -6,6 +6,7 @@
 package modules.trackmodel;
 import shared.*;
 import java.util.regex.Pattern;
+import java.util.*;
 
 /*
 make ghost train circ buffer with front of train occupying and back freeing
@@ -15,7 +16,7 @@ make ghost train circ buffer with front of train occupying and back freeing
  *
  * @author Devon
  */
-public class Trackmodel {
+public class TrackModel {
     
 	private static double DELTA_T = .001;
     Track redline;
@@ -28,7 +29,7 @@ public class Trackmodel {
 	private Stack<Message> mailbox;
 	
 	
-    public Trackmodel(MessageQueue m) {
+    public TrackModel(MessageQueue m) {
 		this.m = m;
 		numTrains = 0;
         redline = new Track();
@@ -75,14 +76,13 @@ public class Trackmodel {
 					Train[] temp = new Train[numTrains + 1];
 					
 					for (int i = 0; i < numTrains; i++) {
-						temp[i][0] = trains[i][0];
-						temp[i][1] = trains[i][1];
+						temp[i] = trains[i];
 					}
 					trains = temp;
 					numTrains++;
 					break;		
 				case MType.FEEDBACK:
-					trains[(mail.from - MDest.TrMd)/2].speed = mail.dataD();
+					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
 			}
 				
 			
@@ -97,9 +97,9 @@ public class Trackmodel {
 			double traveled = train.move();
 			double overflow = redline.getBlock(train.location).length - traveled;
 			if (overflow > 0) {
-				int nextBlock = redline.next(train.location, train.frontNode);
+				Block nextBlock = redline.next(redline.getBlock(train.location), train.frontNode);
 				redline.setOccupancy(train.location, false);
-				train.location = nextBlock;
+				train.location = nextBlock.number;
 				redline.setOccupancy(train.location, true);
 				train.frontNode = redline.getBlock(train.location).other(train.frontNode);
 				train.distanceIn = overflow;
@@ -115,7 +115,7 @@ public class Trackmodel {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Trackmodel tm = new Trackmodel();
+        TrackModel tm = new TrackModel(new MessageQueue());
         tm.update();
         
         /*

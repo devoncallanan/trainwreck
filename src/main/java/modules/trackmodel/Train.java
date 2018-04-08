@@ -15,13 +15,14 @@ public class Train{
 	private static double DELTA_T = .001;		//quantum for calculations
 	
 	public Train(int id, int location) {
-		this.locaiton = location;
+		this.location = location;
 		this.id = id;
 		this.distanceIn = 0;
 	}
 	
 	public double move() {
 		distanceIn += distanceIn = (DELTA_T*speed);
+		return distanceIn;
 	}
 	
 }

@@ -44,40 +44,40 @@ public class Track extends javax.swing.AbstractListModel<String>{
         }
         
         
-        int length = scan.nextInt() + 1;
+        int length = 77 + 1;
         this.track = new Block[length][3];
         this.blocks = new Block[length];
         this.switches = new int[length][2];
         this.length = length;
         this.items = 0;
-        
+        scan.nextLine();
         while (scan.hasNext()) {
+			scan.next();
             //A,1,50,0.5,40, ,1,15
             String section = scan.next();
             //System.out.println(section);
             int number = scan.nextInt();
             //System.out.println(number);
-            int bLength = scan.nextInt();
+            double bLength = scan.nextDouble();
             //System.out.println(length);
             double grade = scan.nextDouble();
             //System.out.println(grade);
-            int limit = scan.nextInt();
+            double limit = scan.nextDouble();
             //System.out.println(limit);
-            String station = scan.next();
-            //System.out.println(station);
-            int to = scan.nextInt();
-            //System.out.println(to);
+			double elevation = scan.nextDouble();
+			double cumElevation = scan.nextDouble();
             int from = scan.nextInt();
             //System.out.println(from);
+            int to = scan.nextInt();
+            //System.out.println(to);
             int branch = scan.nextInt();
-            int dir = scan.nextInt();
-            Block b = new Block(to, from, section, number, station, grade, bLength, limit, branch); 
+			String infrastructure = scan.next();
+            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch); 
             this.addBlock(b);
-            b.dir = dir;
-            this.setSwitch(number, branch, dir);
+            //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);
         }
-        this.printTrack();
+        //this.printTrack();
 
     }
     

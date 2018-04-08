@@ -20,12 +20,12 @@ public class Block {
     public int number;
     public String station;
     public double grade;
-    public int length;
-    public int limit;
+    public double length;
+    public double limit;
     public boolean occupied;
     public int branch;
 
-    public Block(int to, int from, String section, int number, String station, double grade, int length, int limit, int branch) {
+    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch) {
         this.to = to;
         this.from = from;
         this.section = section;
