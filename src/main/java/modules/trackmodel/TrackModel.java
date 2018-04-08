@@ -17,9 +17,11 @@ make ghost train circ buffer with front of train occupying and back freeing
  */
 public class Trackmodel {
     
+	private static double DELTA_T = .001;
     Track redline;
+	Track greenline;
 	
-	double[][] trains;
+	Train[] trains;
 	int numTrains;
 	
 	private MessageQueue m;
@@ -70,7 +72,7 @@ public class Trackmodel {
 					System.out.println("TkMod SEND");
 					break;	
 				case MType.NEWTRAIN:
-					double[][] temp = new double[numTrains + 1][2];
+					Train[] temp = new Train[numTrains + 1];
 					
 					for (int i = 0; i < numTrains; i++) {
 						temp[i][0] = trains[i][0];
@@ -79,11 +81,29 @@ public class Trackmodel {
 					trains = temp;
 					numTrains++;
 					break;		
-				case MType.VELOCITY:
-					trains[(mail.from - MDest.TrMd)/2][0] = mail.dataI();
+				case MType.FEEDBACK:
+					trains[(mail.from - MDest.TrMd)/2].speed = mail.dataD();
 			}
 				
 			
+		}
+		
+		/*
+			Move the train -------------------------------------------
+		*/
+		
+		for (int i = 0; i < numTrains; i++) {
+			Train train = trains[i];
+			double traveled = train.move();
+			double overflow = redline.getBlock(train.location).length - traveled;
+			if (overflow > 0) {
+				int nextBlock = redline.next(train.location, train.frontNode);
+				redline.setOccupancy(train.location, false);
+				train.location = nextBlock;
+				redline.setOccupancy(train.location, true);
+				train.frontNode = redline.getBlock(train.location).other(train.frontNode);
+				train.distanceIn = overflow;
+			}
 		}
 		
 		
