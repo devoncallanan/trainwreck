@@ -1,4 +1,6 @@
+package modules.traincontroller;
 
+import shared.*;
 import java.util.Stack;
 
 public class TrainController {

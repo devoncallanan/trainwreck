@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//package trackmodelsubsystem;
+package modules.trainmodel;
 
+import shared.*;
 import java.util.regex.Pattern;
 
 
