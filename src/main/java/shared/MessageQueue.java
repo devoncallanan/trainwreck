@@ -40,5 +40,6 @@ public class MessageQueue {
 	public void addTrain() {
 		messages.add(new Stack<Message>());
 		messages.add(new Stack<Message>());
+		this.send(new Message(MDest.CTC, 0, MType.NEWTRAIN), MDest.TcMd);
 	}
 }

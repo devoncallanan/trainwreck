@@ -11,11 +11,14 @@ maybe make an abstract class so we can have extensions with different data
 */
 package shared;
 
-class Message {
+public class Message {
 	private int from;
 	private int dataI;
 	private double dataD;
+	private String dataS;
 	private int type;
+	private int trainID;
+	private boolean[] occupancy;
 	
 	
 	public Message(int from, int dataI, int type) {
@@ -27,6 +30,12 @@ class Message {
 	public Message(int from, double dataD, int type) {
 		this.from = from;
 		this.dataD = dataD;
+		this.type = type;
+	}
+	
+	public Message(int from, String dataS, int type) {
+		this.from = from;
+		this.dataS = dataS;
 		this.type = type;
 	}
 	
@@ -42,7 +51,20 @@ class Message {
 		return dataD;
 	}
 	
+	public String dataS() {
+		return dataS;
+	}
+	
+	public boolean[] occupancy() {
+		return occupancy;
+	}
+	
+	public int trainId() {
+		return trainID;
+	}
+	
 	public int type() {
 		return type;
 	}
+
 }

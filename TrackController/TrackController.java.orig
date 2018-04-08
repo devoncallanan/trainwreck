@@ -1,4 +1,4 @@
-package modules.trackcontroller;
+imporpackage modules.trackcontroller;
 
 import java.util.*;
 import shared.*;
@@ -59,20 +59,6 @@ public class TrackController {
                else if(m.type() == MType.SPEED){
                     speeds.add(m.dataI());
                     System.out.println("TkCon: "+m.dataI());
-               }
-               else if(m.type() == MType.TRACK){
-                    boolean[] track = m.dataBA();
-                    for(int i=0; i<track.length; i++){
-                         if(i<mainLine.length){
-                              track[i] = mainLine[i];
-                         }
-                         else if(i<(mainLine.length+msplit.length)){
-                              track[i] = msplit[i-mainLine.length];
-                         }
-                         else if(i<(mainLine.length+msplit.length+side.length)){
-                              track[i] = side[i-mainLine.length-side.length];
-                         }
-                    }
                }
           }
      }
