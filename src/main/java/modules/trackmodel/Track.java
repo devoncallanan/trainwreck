@@ -97,7 +97,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
         while (track[loc][i] != null && i < 3) {
             i++;
         }
-		if (i == 2) switches[loc][0] = -1;
+		if (i == 2) switches[loc][0] = 1;
         if (i < 3) {
             track[loc][i] = b;
         }
