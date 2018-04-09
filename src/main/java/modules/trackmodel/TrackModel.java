@@ -106,6 +106,36 @@ public class TrackModel {
 			}
 		}
 		
+		while (redline.getSize() == 0){
+			System.out.println("boo");
+		}
+        int i = 0;
+        int j = 0;
+        Block curr = redline.getBlock(1);
+        Block temp = curr;
+        int lastNode = 1;
+        System.out.println(lastNode + " " + curr);
+        redline.setOccupancy(curr.number, true);
+        while(true) {
+            System.out.print(lastNode + " " + curr);
+
+            temp = redline.next(curr, lastNode);
+            lastNode = curr.other(lastNode);
+            redline.setOccupancy(curr.number, false);
+            curr = temp;
+            redline.setOccupancy(curr.number, true);
+            //System.out.println(lastNode);
+            //redline.setOccupancy(lastNode, false);
+            try {
+            Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("didnt sleep");
+            }
+            //redline.setOccupancy(j%15, false);
+            //j++;
+        }
+		
 		
 		
         
@@ -164,34 +194,9 @@ public class TrackModel {
                 new TrackmodelGUI(redline).setVisible(true);
             }
         });
-        
-        int i = 0;
-        int j = 0;
-        Block curr = redline.getBlock(1);
-        Block temp = curr;
-        int lastNode = 1;
-        System.out.println(lastNode + " " + curr);
-        redline.setOccupancy(curr.number, true);
-        while(true) {
-            System.out.print(lastNode + " " + curr);
-
-            temp = redline.next(curr, lastNode);
-            lastNode = curr.other(lastNode);
-            redline.setOccupancy(curr.number, false);
-            curr = temp;
-            redline.setOccupancy(curr.number, true);
-            //System.out.println(lastNode);
-            //redline.setOccupancy(lastNode, false);
-            try {
-            Thread.sleep(1000);
-            }
-            catch (Exception e) {
-                System.out.println("didnt sleep");
-            }
-            //redline.setOccupancy(j%15, false);
-            //j++;
-        }
         */
+
+        
 
     }
     

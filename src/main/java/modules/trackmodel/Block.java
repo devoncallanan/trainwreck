@@ -51,7 +51,7 @@ public class Block {
     }
     
     public String toString() {
-        String s = new String(this.section + " " + this.number + " ");
+        String s = new String(this.section + " " + this.number + " " + this.branch + " ");
         if (occupied) {
             s = s+ "CHOO-CHOO";
         }
