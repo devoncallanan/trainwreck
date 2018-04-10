@@ -80,7 +80,7 @@ public class TrainModelMain {
                     this.passengers = m.dataI();
                }
 		else if (m.type() == MType.GRADE){
-			this.passengers = m.dataD();
+		    this.grade = m.dataD();
 		}
           }
      }
