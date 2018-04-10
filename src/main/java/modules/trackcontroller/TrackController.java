@@ -6,7 +6,7 @@ import shared.*;
 public class TrackController {
      ArrayList<Integer> speeds = new ArrayList<Integer>();
      ArrayList<Integer> authority = new ArrayList<Integer>();
-     int auth crossInd;
+     int crossInd;
      public MessageQueue mq = new MessageQueue();
      public PLC plcCode = new PLC();
      private Stack<Message> messages;
@@ -83,6 +83,9 @@ public class TrackController {
                               track[i] = side[i-mainLine.length-side.length];
                          }
                     }
+               }
+               else if(m.type() == MType.SWITCH){
+                    recSwitch = m.dataB();
                }
           }
      }
@@ -254,7 +257,7 @@ public class TrackController {
           }
           if(msplit[0] && msplitZero){
                if(changedMsplit)
-                    panicMsplit
+                    panicMsplit();
                msplitDir = true;
           }
           checkZero();
@@ -515,5 +518,49 @@ public class TrackController {
      public void zeroSpeed(int s){
           m = new Message(MDest.TcCtl, s, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
+     }
+     public void panicMain(){
+          for(int i=0; i<mainLine.length; i++){
+               if(mainLine[i]){
+                    m = new Message(MDest.TcCtl, i, MType.ZEROSPEED);
+                    mq.send(m, Mdest.TcMd);
+               }
+          }
+     }
+     public void panicMsplit(){
+          for(int i=0; i<msplit.length; i++){
+               if(msplit[i]){
+                    m = new Message(Mdest.TcCtl, i+mainLine.length, MType.ZEROSPEED);
+                    mq.send(m, Mdest.TcMd);
+               }
+          }
+     }
+     public void panicSide(){
+          for(int i=0; i<side.length; i++){
+               if(side[i]){
+                    m = new Message(Mdest.TcCtl, i+mainLine.length+msplit.length, MType.ZEROSPEED);
+                    mq.send(m, Mdest.TcMd);
+               }
+          }
+     }
+     public void panic(){
+          for(int i=0; i<mainLine.length; i++){
+               if(mainLine[i]){
+                    m = new Message(MDest.TcCtl, i, MType.ZEROSPEED);
+                    mq.send(m, Mdest.TcMd);
+               }
+          }
+          for(int i=0; i<msplit.length; i++){
+               if(msplit[i]){
+                    m = new Message(Mdest.TcCtl, i+mainLine.length, MType.ZEROSPEED);
+                    mq.send(m, Mdest.TcMd);
+               }
+          }
+          for(int i=0; i<side.length; i++){
+               if(side[i]){
+                    m = new Message(Mdest.TcCtl, i+mainLine.length+msplit.length, MType.ZEROSPEED);
+                    mq.send(m, Mdest.TcMd);
+               }
+          }
      }
 }

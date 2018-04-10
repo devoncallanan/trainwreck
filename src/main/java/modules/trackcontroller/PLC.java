@@ -1,19 +1,19 @@
 package modules.trackcontroller;
 
 import java.util.*;
-import shared.*;
+import java.io.*;
+
 
 public class PLC {
      boolean switchBias, loop, priority, lights;
      public PLC(){
 
      }
-     public void import(File f){
+     public void importPLC(File f){
           BufferedReader file = null;
         try {
             file = new BufferedReader (new FileReader(f));
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(TrackController.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             String line;
@@ -21,25 +21,23 @@ public class PLC {
             {
                 String[] parts = line.split(">");
                 if(parts[0].equals("switch")){
-                    switchBias = Integer.parseInt(parts[1]);
+                    switchBias = Boolean.parseBoolean(parts[1]);
                 }
                 else if(parts[0].equals("loop")){
-                    loop = Integer.parseInt(parts[1]);
+                    loop = Boolean.parseBoolean(parts[1]);
                 }
                 else if(parts[0].equals("priority")){
-                    priority = Integer.parseInt(parts[1]);
+                    priority = Boolean.parseBoolean(parts[1]);
                 }
                 else if(parts[0].equals("lights")){
-                    lights = Integer.parseInt(parts[1]);
+                    lights = Boolean.parseBoolean(parts[1]);
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(TrackController.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             file.close();
-        } catch (IOException ex) {
-            Logger.getLogger(TrackController.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (IOException ex) {
         }
      }
      public boolean getSwitchBias(){
