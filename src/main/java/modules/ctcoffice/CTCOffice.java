@@ -15,7 +15,7 @@ import shared.*;
  */
 public class CTCOffice {
 	//private CTCOffice ctc;
-	//private CTCOfficeUI gui;
+	private CTCOfficeUI gui;
 	private ArrayList<Queue<Schedule>> schedules;
 	//private Track redLine;
 	//private Track greenLine;
@@ -44,13 +44,13 @@ public class CTCOffice {
 
 	/* SETUP */
 	public CTCOffice(MessageQueue mq) {
-		//gui = new CTCOfficeUI();
+		gui = new CTCOfficeUI();
 
-		// java.awt.EventQueue.invokeLater(new Runnable() {
-		// 	public void run() {
-		// 		gui.setVisible(true);
-		// 	}
-		// });
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				gui.setVisible(true);
+			}
+		});
 
 		this.mq = mq;
 
@@ -166,6 +166,7 @@ public class CTCOffice {
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
 				mq.send(m, MDest.TcCtl+i);
 			}
+			// Add Train to Message Queue
 			mq.addTrain();
 			dispatchReady = false;
 		}

@@ -10,7 +10,7 @@ public class Trainwreck {
 	public static void main(String[] args) {
 		System.out.println("Gradle Test");
 		
-		int time = 100;
+		int time = 1000;
 		MessageQueue messagequeue = new MessageQueue();
 		
 		CTCOffice ctc = new CTCOffice(messagequeue);
