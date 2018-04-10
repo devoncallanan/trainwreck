@@ -10,6 +10,7 @@ public class Trainwreck {
 	public static void main(String[] args) {
 		System.out.println("Gradle Test");
 		
+		int time = 100;
 		MessageQueue messagequeue = new MessageQueue();
 		
 		CTCOffice ctc = new CTCOffice(messagequeue);
@@ -18,11 +19,18 @@ public class Trainwreck {
 		TrainModel trainmodel = new TrainModel(messagequeue);
 		TrainController trainctl = new TrainController(messagequeue);
 		
-		ctc.run();
-		trackctl.run();
-		trackmodel.run();
-		trainmodel.run();
-		trainctl.run();
+		while (true) {
+			ctc.run();
+			trackctl.run();
+			trackmodel.run();
+			trainmodel.run();
+			trainctl.run();
+			
+			//Will get the time to sleep from CTC once implemented
+			//time = ctc.getTime();
+			thread.sleep(time);
+		}
+		
 
 	}
 }
