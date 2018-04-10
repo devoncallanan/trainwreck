@@ -162,7 +162,7 @@ public class CTCOffice {
 			mq.send(m, MDest.TcCtl);
 			// Send Switch Positions
 			for (int i = 0; i < 6; i ++) {
-				m = new Message(MDest.CTC, redSwitches[i], 13); // MType.SWITCH
+				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); // MType.SWITCH
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
 				mq.send(m, MDest.TcCtl);
 			}
