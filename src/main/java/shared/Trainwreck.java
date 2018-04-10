@@ -9,7 +9,7 @@ import modules.trainmodel.*;
 public class Trainwreck {
 	public static void main(String[] args) {
 		System.out.println("Gradle Test");
-		
+		java.util.Scanner pauseScan = new java.util.Scanner(System.in);
 		int time = 100;
 		MessageQueue messagequeue = new MessageQueue();
 		
