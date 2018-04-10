@@ -50,13 +50,14 @@ public class TrainController {
 	//---------------------------------------------
 	
 	
-	public TrainController(MessageQueue messages) {
+	public TrainController(MessageQueue messages /*, int trainID*/) {
 		this.messages = messages;
 		power1 = new Power();
 		power2 = new Power();
 		power3 = new Power();
 		velocity = new Velocity();
         mode = true;
+		//this.trainID = trainID;
 		
 		//Initialize my GUI
 		try {
