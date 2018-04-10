@@ -16,19 +16,25 @@ public class TrainModelMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-      TrainModelMain main = new TrainModelMain();
-      main.run();
-    }
+    // public static void main(String[] args) {
+    //   TrainModelMain main = new TrainModelMain();
+    //   main.run();
+    // }
     
      public MessageQueue mq = new MessageQueue();
+     public TrainModelUI ui = new TrainModelUI(); 
+     public Train train = new Train();
      private Stack<Message> messages;
      private Message m;    
-     private double velocityFeedback; 
+     private double velocityFeedback;
+     private double auth; 
      private int doors,temp,brakes,lights,passengers;
-     private double auth,power,grade,speed,speedLimit;
+     private double power,grade,speed,speedLimit;
      
-    
+    public TrainModelMain(MessageQueue mq) {
+      this.mq = mq;
+      ui.setVisible(true);
+    }
     
      public void run(){
           mReceive();
@@ -38,10 +44,9 @@ public class TrainModelMain {
         brakes = 0;
         speedLimit = 70;
         passengers = 20;*/
-          Train train = new Train(1,this.power,this.speed,this.grade,this.brakes,this.speedLimit,this.passengers);    
-          velocityFeedback = train.getVelocity();
-          //TrainModelUI ui = new TrainModelUI(); 
-          //ui.setVisible(true);
+          velocityFeedback = train.calculateVelocity(power, speed, grade, brakes, speedLimit, passengers);
+          System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
+          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers);
           //System.out.println(velocityFeedback);
           mSend();
      }
@@ -50,9 +55,11 @@ public class TrainModelMain {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
+                    System.out.println("TrMod_Auth: "+auth);
                     this.auth = m.dataD();
                }
                 else if(m.type() == MType.SPEED){
+                    System.out.println("TrMod_Speed: "+speed);
                     this.speed = (m.dataD());
                }
                 else if(m.type() == MType.DOORS){
@@ -64,24 +71,24 @@ public class TrainModelMain {
                 else if(m.type() == MType.BRAKES){
                     this.brakes = m.dataI();
                }
-		else if(m.type() == MType.LIGHTS){
+		           else if(m.type() == MType.LIGHTS){
                     this.lights = m.dataI();
                }
-		else if(m.type() == MType.POWER){
+		           else if(m.type() == MType.POWER){
+                    System.out.println("TrMod_power: "+power);
                     this.power = m.dataD();
                }
                else if(m.type() == MType.FEEDBACK){
+                    System.out.println("TrMod_feedback: "+velocityFeedback);
                     this.velocityFeedback = m.dataD();
                }
                else if(m.type() == MType.SPEEDLIMIT){
+                    System.out.println("TrMod_limit: "+speedLimit);
                     this.speedLimit = m.dataD();
                }
                else if (m.type() == MType.PASSENGERS){
                     this.passengers = m.dataI();
                }
-		else if (m.type() == MType.GRADE){
-		    this.grade = m.dataD();
-		}
           }
      }
      public void mSend(){
