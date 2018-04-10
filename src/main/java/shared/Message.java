@@ -47,7 +47,7 @@ public class Message {
 		this.type = type;
 	}
 
-	public Message(int from, double dataB, int type) {
+	public Message(int from, Boolean dataB, int type) {
 		this.from = from;
 		this.dataB = dataB;
 		this.type = type;
