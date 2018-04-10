@@ -25,8 +25,8 @@ public class TrainModelMain {
      private Stack<Message> messages;
      private Message m;    
      private double velocityFeedback; 
-     private int auth,doors,temp,brakes,lights,passengers;
-     private double power,grade,speed,speedLimit;
+     private int doors,temp,brakes,lights,passengers;
+     private double auth,power,grade,speed,speedLimit;
      
     
     
