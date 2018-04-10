@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modules.trainmodel;
+package my.trainmodel;
 import shared.*;
 import java.util.*;
 /**
@@ -26,12 +26,10 @@ public class TrainModelMain {
      private Message m;    
      private double velocityFeedback; 
      private int auth,doors,temp,brakes,lights,passengers;
-     private double power,grade,speed,speedLimit,feedback;
+     private double power,grade,speed,speedLimit;
      
     
-    public TrainModelMain(MessageQueue i){
-          mq = i;
-     }
+    
      public void run(){
           mReceive();
 	/*power=120000;
@@ -42,10 +40,9 @@ public class TrainModelMain {
         passengers = 20;*/
           Train train = new Train(1,this.power,this.speed,this.grade,this.brakes,this.speedLimit,this.passengers);    
           velocityFeedback = train.getVelocity();
-          TrainModelUI ui = new TrainModelUI();
-          System.out.println(velocityFeedback);
-    
-          ui.setVisible(true);
+          //TrainModelUI ui = new TrainModelUI(); 
+          //ui.setVisible(true);
+          //System.out.println(velocityFeedback);
           mSend();
      }
      public void mReceive(){
@@ -74,7 +71,7 @@ public class TrainModelMain {
                     this.power = m.dataI();
                }
                else if(m.type() == MType.FEEDBACK){
-                    this.feedback = m.dataI();
+                    this.velocityFeedback = m.dataI();
                }
                else if(m.type() == MType.SPEEDLIMIT){
                     this.speedLimit = m.dataI();
@@ -99,7 +96,7 @@ public class TrainModelMain {
      }
     
     
-    }
+    
     
     
 
