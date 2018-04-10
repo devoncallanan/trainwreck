@@ -15,7 +15,7 @@ public class TrackController {
      Boolean recSwitch = null;
      boolean switchPos, mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
-     boolean crossLights = false, mainLight = true, sideLight = false, loop = false, lights = true, priority = true;
+     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false;;
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
           mq = y;
@@ -49,7 +49,13 @@ public class TrackController {
      public void run(){
           mReceive();
           getDir();
-          logic();
+          if(mainLine[mainLine.length-1])
+               onSwitch = true;
+          else
+               onSwitch = false;
+          if(!onSwitch)
+               logic();
+          checkContinue();
           checkCross();
           checkLights();
           mSend();
@@ -94,10 +100,12 @@ public class TrackController {
           for(int i=0; i<speeds.size(); i++){
                m = new Message((MDest.TcCtl+id), speeds.get(i), MType.SPEED);
                mq.send(m, MDest.TcMd);
+               speeds.remove(i);
           }
           for(int i=0; i<authority.size(); i++){
                m = new Message((MDest.TcCtl+id), authority.get(i), MType.AUTH);
                mq.send(m, MDest.TcMd);
+               authority.remove(i);
           }
      }
      public void logic(){
@@ -206,7 +214,6 @@ public class TrackController {
                     panic();
                }
           }
-          checkContinue();
      }
      public boolean getOcc(boolean[] t){
           boolean tempOcc = false;
@@ -288,17 +295,14 @@ public class TrackController {
      }
      public void checkLights(){
           if(!lights){
-               mainLight = false;
-               sideLight = false;
+               switchLight = false;
           }
           else{
-               if(switchPos){
-                    mainLight = true;
-                    sideLight = false;
+               if(onSwitch){
+                    switchLight = false;
                }
                else{
-                    mainLight = false;
-                    sideLight = true;
+                    switchLight = true;
                }
           }
      }
