@@ -27,6 +27,15 @@ public class MessageQueue {
 		messages.add( new Stack<Message>());
 		messages.add( new Stack<Message>());
 		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
+		messages.add( new Stack<Message>());
 	}
 
 	public void send(Message m, int destination) {

@@ -14,10 +14,11 @@ public class Train{
 	public int id;							//train ID
 	private static double DELTA_T = .001;		//quantum for calculations
 	
-	public Train(int id, int location) {
+	public Train(int id, int location, int node) {
 		this.location = location;
 		this.id = id;
 		this.distanceIn = 0;
+		this.frontNode = node;
 	}
 	
 	public double move() {

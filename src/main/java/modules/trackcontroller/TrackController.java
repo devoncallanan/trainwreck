@@ -19,10 +19,10 @@ public class TrackController {
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
           mq = y;
-          n = mainLine;
-          r = msplit;
-          s = side;
-          p = plcCode;
+          mainLine = n;
+          msplit = r;
+          side = s;
+          plcCode = p;
           for(int i=0; i<n.length; i++){
                if(mainLine[i] == true){
                     mainCross = true;
@@ -69,7 +69,7 @@ public class TrackController {
                }
                else if(m.type() == MType.SPEED){
                     speeds.add(m.dataD());
-                    System.out.println("TkCon: "+m.dataI());
+                    System.out.println("TkCon: "+m.dataD());
                }
                else if(m.type() == MType.TRACK){
                     boolean[] track = m.dataBA();
@@ -93,6 +93,7 @@ public class TrackController {
      public void mSend(){
           for(int i=0; i<speeds.size(); i++){
                m = new Message((MDest.TcCtl+id), speeds.get(i), MType.SPEED);
+               System.out.println("TcCtl"+id+": "+speeds.get(i));
                mq.send(m, MDest.TcMd);
           }
           for(int i=0; i<authority.size(); i++){
