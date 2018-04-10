@@ -56,4 +56,3 @@ public class Message {
 	public int type() {
 		return type;
 	}
-}
