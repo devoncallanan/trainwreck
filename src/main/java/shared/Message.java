@@ -15,8 +15,10 @@ public class Message {
 	private int from;
 	private int dataI;
 	private double dataD;
+	private String dataS;
 	private int type;
-	private Boolean dataB;
+	private int trainID;
+	private boolean[] occupancy;
 	
 	
 	public Message(int from, int dataI, int type) {
@@ -30,10 +32,10 @@ public class Message {
 		this.dataD = dataD;
 		this.type = type;
 	}
-
-	public Message(int from, Boolean dataB, int type) {
+	
+	public Message(int from, String dataS, int type) {
 		this.from = from;
-		this.dataB = dataB;
+		this.dataS = dataS;
 		this.type = type;
 	}
 	
@@ -48,12 +50,21 @@ public class Message {
 	public double dataD() {
 		return dataD;
 	}
-
-	public Boolean dataB() {
-		return dataB;
+	
+	public String dataS() {
+		return dataS;
+	}
+	
+	public boolean[] occupancy() {
+		return occupancy;
+	}
+	
+	public int trainId() {
+		return trainID;
 	}
 	
 	public int type() {
 		return type;
 	}
+
 }
