@@ -29,12 +29,12 @@ public class CTCOffice {
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
-	private double speed = 40.0;
+	private double speed = 20.0;
 	/* - - - - - - - - - - - - - - - - - - - - - */
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
 	private Message m;
-	private boolean dispatchReady = false;
+	private boolean dispatchReady = true;
 
 	/* Graph Testing */
 	private TrackGraph track;
@@ -80,7 +80,7 @@ public class CTCOffice {
 		// for (int i = 0; i < redSwitches.length; i ++) {
 		// 	System.out.println(i+": "+redSwitches[i].booleanValue());
 		// }
-		dispatchReady = true;
+		//dispatchReady = true;
 	}
 
 	public void setSwitches(ArrayList<Integer> path) {
@@ -164,8 +164,9 @@ public class CTCOffice {
 			for (int i = 0; i < 6; i ++) {
 				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); // MType.SWITCH
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
-				mq.send(m, MDest.TcCtl);
+				mq.send(m, MDest.TcCtl+i);
 			}
+			mq.addTrain();
 			dispatchReady = false;
 		}
 	}

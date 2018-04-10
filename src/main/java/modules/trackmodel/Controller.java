@@ -18,38 +18,44 @@ public class Controller {
 	//int[] side2;
 	
 	Controller(int numControllers) {
-		occupancy = new int[numControllers][25];
-		convert = new int[numControllers][25];
+		occupancy = new int[numControllers][50];
+		convert = new int[numControllers][50];
 		this.numControllers = numControllers;
 		switchConvert = new int[numControllers];
 	}
 	
 	public void init() {
 		java.io.File input;
-		java.util.Scanner scan, scanLine;
+		java.util.Scanner scan = null;
+		java.util.Scanner scanLine = null;
 		int blockid;
 		int contNumber = 0;
-		int i;
+		int i = 0;
 		String switchLocs;
 		try {
-			input = new java.io.File("controller_config.csv");
-			scan = new java.util.Scanner(input).useDelimiter(",|\\r\\n");
+			input = new java.io.File("./src/main/java/modules/trackmodel/controller_config.csv");
+			scan = new java.util.Scanner(input);
 		}
 		catch (Exception e) {
 			System.err.println("The config file 'controller_config.csv' could not be found");
 		}
 		
 		switchLocs = scan.nextLine();
-		scanLine = new java.util.Scanner(switchLocs);
+		System.out.println(switchLocs);
+		scanLine = new java.util.Scanner(switchLocs).useDelimiter(",|\\r\\n");
 		while (scanLine.hasNext()){
-			this.setSwitchConvert(scan.nextInt(), i);
-			i++;
+			this.setSwitchConvert(scanLine.nextInt(), i);
+			if(i < 5) {
+				i++;
+			} else {
+				break;
+			}
 		}
-		
 		while (scan.hasNext()) {
 			blockid = 0;
 			String line = scan.nextLine();
-			scanLine = new java.util.Scanner(line).useDelimiter(",");
+			scanLine = new java.util.Scanner(line).useDelimiter(",|\\r\\n");
+			System.out.println(line);
 			while (scanLine.hasNext()) {
 				convert[contNumber][blockid++] = scanLine.nextInt();
 			}

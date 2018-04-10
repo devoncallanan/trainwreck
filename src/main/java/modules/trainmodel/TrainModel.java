@@ -4,8 +4,8 @@ import shared.*;
 import java.util.*;
 
 public class TrainModel {
-     ArrayList<Integer> speeds = new ArrayList<Integer>();
-     int auth;
+     ArrayList<Double> speeds = new ArrayList<Double>();
+     double auth;
      public MessageQueue mq = new MessageQueue();
      private Stack<Message> messages;
      private Message m;
@@ -21,11 +21,11 @@ public class TrainModel {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    auth = m.dataI();
+                    auth = m.dataD();
                }
                else if(m.type() == MType.SPEED){
-                    speeds.add(m.dataI());
-                    System.out.println("TrMod: "+m.dataI());
+                    speeds.add(m.dataD());
+                    System.out.println("TrMod: "+m.dataD());
                }
           }
      }
