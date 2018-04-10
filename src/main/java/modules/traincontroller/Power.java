@@ -50,7 +50,7 @@ public class Power {
         } else {
             powerCmd = MAX_POWER;
         }
-//	System.out.println("power: " + powerCmd);
+//		  System.out.println("power: " + powerCmd);
 //        System.out.println("uk: " + uk);
 //        System.out.println("previousUk: " + previousUk);
 //        System.out.println("velocityError: " + velocityError);
