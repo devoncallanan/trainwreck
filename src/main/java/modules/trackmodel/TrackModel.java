@@ -22,6 +22,7 @@ public class TrackModel {
     Track redline;
 	Track greenline;
 	
+	Controller conts;
 	Train[] trains;
 	int numTrains;
 	
@@ -33,6 +34,8 @@ public class TrackModel {
 		this.m = m;
 		numTrains = 0;
         redline = new Track();
+		conts = new Controller(6);
+		conts.init();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TrackmodelGUI(redline).setVisible(true);
@@ -106,6 +109,10 @@ public class TrackModel {
 			}
 		}
 		
+		Message tempM;
+		tempM = new Message(MDest.TcMd, 30, MType.PASSENGERS);
+		m.send(tempM, MDest.TrMd);
+		/*
 		while (redline.getSize() == 0){
 			System.out.println("boo");
 		}
@@ -135,7 +142,7 @@ public class TrackModel {
             //redline.setOccupancy(j%15, false);
             //j++;
         }
-		
+		*/
 		
 		
         
