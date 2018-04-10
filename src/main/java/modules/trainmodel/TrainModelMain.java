@@ -16,19 +16,22 @@ public class TrainModelMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-      TrainModelMain main = new TrainModelMain();
-      main.run();
-    }
+    // public static void main(String[] args) {
+    //   TrainModelMain main = new TrainModelMain();
+    //   main.run();
+    // }
     
      public MessageQueue mq = new MessageQueue();
      private Stack<Message> messages;
      private Message m;    
-     private double velocityFeedback; 
-     private int auth,doors,temp,brakes,lights,passengers;
+     private double velocityFeedback;
+     private double auth; 
+     private int doors,temp,brakes,lights,passengers;
      private double power,grade,speed,speedLimit;
      
-    
+    public TrainModelMain(MessageQueue mq) {
+      this.mq = mq;
+    }
     
      public void run(){
           mReceive();
@@ -50,10 +53,12 @@ public class TrainModelMain {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    this.auth = m.dataI();
+                    System.out.println("TrMod_Auth: "+auth);
+                    this.auth = m.dataD();
                }
                 else if(m.type() == MType.SPEED){
-                    this.speed = (m.dataI());
+                    System.out.println("TrMod_Speed: "+speed);
+                    this.speed = (m.dataD());
                }
                 else if(m.type() == MType.DOORS){
                     this.doors = m.dataI();

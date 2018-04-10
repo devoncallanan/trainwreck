@@ -117,6 +117,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
 	 */
     
     public Block next(Block b, int node) {
+        System.out.println("call to next");
         Block nextBlock = b;
         int i = 0;
         boolean switchHere = (switches[b.other(node)][0] != 0);
