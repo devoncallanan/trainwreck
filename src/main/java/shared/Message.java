@@ -16,6 +16,7 @@ public class Message {
 	private int dataI;
 	private double dataD;
 	private int type;
+	private Boolean dataB;
 	
 	
 	public Message(int from, int dataI, int type) {
@@ -29,6 +30,12 @@ public class Message {
 		this.dataD = dataD;
 		this.type = type;
 	}
+
+	public Message(int from, Boolean dataB, int type) {
+		this.from = from;
+		this.dataB = dataB;
+		this.type = type;
+	}
 	
 	public int from() {
 		return from;
@@ -40,6 +47,10 @@ public class Message {
 	
 	public double dataD() {
 		return dataD;
+	}
+
+	public Boolean dataB() {
+		return dataB;
 	}
 	
 	public int type() {
