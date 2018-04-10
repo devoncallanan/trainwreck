@@ -23,5 +23,8 @@ public class MType {
 	public static final int NEWTRAIN = 10;
 	public static final int BEACON = 11;
 	public static final int SPEEDLIMIT = 12;
-	
+	public static final int TRACK = 13;
+	public static final int SWITCH = 14;
+	public static final int ZEROSPEED = 15;
+
 }

@@ -4,9 +4,9 @@ import java.util.*;
 import shared.*;
 
 public class TrackController {
-     ArrayList<Integer> speeds = new ArrayList<Integer>();
-     ArrayList<Integer> authority = new ArrayList<Integer>();
-     int crossInd;
+     ArrayList<Double> speeds = new ArrayList<Double>();
+     ArrayList<Double> authority = new ArrayList<Double>();
+     int crossInd, id;
      public MessageQueue mq = new MessageQueue();
      public PLC plcCode = new PLC();
      private Stack<Message> messages;
@@ -16,7 +16,8 @@ public class TrackController {
      boolean switchPos, mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
      boolean crossLights = false, mainLight = true, sideLight = false, loop = false, lights = true;
-     public TrackController(MessageQueue i, boolean[] n, boolean[] r, boolean[] s, PLC p){
+     public TrackController(MessageQueue i, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
+          id = z;
           mq = i;
           n = main;
           r = msplit;
@@ -60,14 +61,14 @@ public class TrackController {
           lights = plcCode.getLights();
      }
      public void mReceive(){
-          messages = mq.receive(MDest.TcCtl);
+          messages = mq.receive(MDest.TcCtl+id);
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    authority.add(m.dataI());
+                    authority.add(m.dataD());
                }
                else if(m.type() == MType.SPEED){
-                    speeds.add(m.dataI());
+                    speeds.add(m.dataD());
                     System.out.println("TkCon: "+m.dataI());
                }
                else if(m.type() == MType.TRACK){
@@ -91,11 +92,11 @@ public class TrackController {
      }
      public void mSend(){
           for(int i=0; i<speeds.size(); i++){
-               m = new Message(MDest.TcCtl, speeds.get(i), MType.SPEED);
+               m = new Message((MDest.TcCtl+id), speeds.get(i), MType.SPEED);
                mq.send(m, MDest.TcMd);
           }
           for(int i=0; i<authority.size(); i++){
-               m = new Message(MDest.TcCtl, authority.get(i), MType.AUTH);
+               m = new Message((MDest.TcCtl+id), authority.get(i), MType.AUTH);
                mq.send(m, MDest.TcMd);
           }
      }
@@ -492,7 +493,7 @@ public class TrackController {
                     break;
           }
           loc = mainLine.length+msplit.length+i;
-          m = new Message(MDest.TcCtl, loc, MType.ZEROSPEED);
+          m = new Message((MDest.TcCtl+id), loc, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
      }
      public void zeroSpeedMsplit(){
@@ -502,7 +503,7 @@ public class TrackController {
                     break;
           }
           loc = mainLine.length+i;
-          m = new Message(MDest.TcCtl, loc, MType.ZEROSPEED);
+          m = new Message((MDest.TcCtl+id), loc, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
      }
      public void zeroSpeedMain(){
@@ -512,17 +513,17 @@ public class TrackController {
                     break;
           }
           loc = i;
-          m = new Message(MDest.TcCtl, loc, MType.ZEROSPEED);
+          m = new Message((MDest.TcCtl+id), loc, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
      }
      public void zeroSpeed(int s){
-          m = new Message(MDest.TcCtl, s, MType.ZEROSPEED);
+          m = new Message((MDest.TcCtl+id), s, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
      }
      public void panicMain(){
           for(int i=0; i<mainLine.length; i++){
                if(mainLine[i]){
-                    m = new Message(MDest.TcCtl, i, MType.ZEROSPEED);
+                    m = new Message((MDest.TcCtl+id), i, MType.ZEROSPEED);
                     mq.send(m, Mdest.TcMd);
                }
           }
@@ -530,7 +531,7 @@ public class TrackController {
      public void panicMsplit(){
           for(int i=0; i<msplit.length; i++){
                if(msplit[i]){
-                    m = new Message(Mdest.TcCtl, i+mainLine.length, MType.ZEROSPEED);
+                    m = new Message((Mdest.TcCtl+id), i+mainLine.length, MType.ZEROSPEED);
                     mq.send(m, Mdest.TcMd);
                }
           }
@@ -538,7 +539,7 @@ public class TrackController {
      public void panicSide(){
           for(int i=0; i<side.length; i++){
                if(side[i]){
-                    m = new Message(Mdest.TcCtl, i+mainLine.length+msplit.length, MType.ZEROSPEED);
+                    m = new Message((Mdest.TcCtl+id), i+mainLine.length+msplit.length, MType.ZEROSPEED);
                     mq.send(m, Mdest.TcMd);
                }
           }
@@ -546,19 +547,19 @@ public class TrackController {
      public void panic(){
           for(int i=0; i<mainLine.length; i++){
                if(mainLine[i]){
-                    m = new Message(MDest.TcCtl, i, MType.ZEROSPEED);
+                    m = new Message((Mdest.TcCtl+id), i, MType.ZEROSPEED);
                     mq.send(m, Mdest.TcMd);
                }
           }
           for(int i=0; i<msplit.length; i++){
                if(msplit[i]){
-                    m = new Message(Mdest.TcCtl, i+mainLine.length, MType.ZEROSPEED);
+                    m = new Message((Mdest.TcCtl+id), i+mainLine.length, MType.ZEROSPEED);
                     mq.send(m, Mdest.TcMd);
                }
           }
           for(int i=0; i<side.length; i++){
                if(side[i]){
-                    m = new Message(Mdest.TcCtl, i+mainLine.length+msplit.length, MType.ZEROSPEED);
+                    m = new Message((Mdest.TcCtl+id), i+mainLine.length+msplit.length, MType.ZEROSPEED);
                     mq.send(m, Mdest.TcMd);
                }
           }

@@ -15,54 +15,76 @@ public class Message {
 	private int from;
 	private int dataI;
 	private double dataD;
+	private boolean[] dataBA;
+	private Boolean dataB;
 	private String dataS;
 	private int type;
 	private int trainID;
 	private boolean[] occupancy;
-	
-	
+
+
 	public Message(int from, int dataI, int type) {
 		this.from = from;
 		this.dataI = dataI;
 		this.type = type;
 	}
-	
+
 	public Message(int from, double dataD, int type) {
 		this.from = from;
 		this.dataD = dataD;
 		this.type = type;
 	}
-	
+
 	public Message(int from, String dataS, int type) {
 		this.from = from;
 		this.dataS = dataS;
 		this.type = type;
 	}
-	
+
+	public Message(int from, boolean[] dataBA, int type) {
+		this.from = from;
+		this.dataBA = dataBA;
+		this.type = type;
+	}
+
+	public Message(int from, double dataB, int type) {
+		this.from = from;
+		this.dataB = dataB;
+		this.type = type;
+	}
+
 	public int from() {
 		return from;
 	}
-	
+
 	public int dataI() {
 		return dataI;
 	}
-	
+
+	public boolean[] dataBA() {
+		return dataBA;
+	}
+
+	public Boolean dataB() {
+		return dataB;
+	}
+
 	public double dataD() {
 		return dataD;
 	}
-	
+
 	public String dataS() {
 		return dataS;
 	}
-	
+
 	public boolean[] occupancy() {
 		return occupancy;
 	}
-	
+
 	public int trainId() {
 		return trainID;
 	}
-	
+
 	public int type() {
 		return type;
 	}
