@@ -43,6 +43,7 @@ public class TrainModelMain {
         passengers = 20;*/
           Train train = new Train(1,this.power,this.speed,this.grade,this.brakes,this.speedLimit,this.passengers);    
           velocityFeedback = train.getVelocity();
+          System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
           //TrainModelUI ui = new TrainModelUI(); 
           //ui.setVisible(true);
           //System.out.println(velocityFeedback);
@@ -69,17 +70,20 @@ public class TrainModelMain {
                 else if(m.type() == MType.BRAKES){
                     this.brakes = m.dataI();
                }
-		else if(m.type() == MType.LIGHTS){
+		           else if(m.type() == MType.LIGHTS){
                     this.lights = m.dataI();
                }
-		else if(m.type() == MType.POWER){
-                    this.power = m.dataI();
+		           else if(m.type() == MType.POWER){
+                    System.out.println("TrMod_power: "+power);
+                    this.power = m.dataD();
                }
                else if(m.type() == MType.FEEDBACK){
-                    this.velocityFeedback = m.dataI();
+                    System.out.println("TrMod_feedback: "+velocityFeedback);
+                    this.velocityFeedback = m.dataD();
                }
                else if(m.type() == MType.SPEEDLIMIT){
-                    this.speedLimit = m.dataI();
+                    System.out.println("TrMod_limit: "+speedLimit);
+                    this.speedLimit = m.dataD();
                }
                else if (m.type() == MType.PASSENGERS){
                     this.passengers = m.dataI();

@@ -122,6 +122,8 @@ public class TrackModel {
 		Message tempM;
 		tempM = new Message(MDest.TcMd, 30, MType.PASSENGERS);
 		m.send(tempM, MDest.TrMd);
+        tempM = new Message(MDest.TcMd, 40.0, MType.SPEEDLIMIT);
+        m.send(tempM, MDest.TrMd);
         System.out.println("Return TkM");
         
 		/*
