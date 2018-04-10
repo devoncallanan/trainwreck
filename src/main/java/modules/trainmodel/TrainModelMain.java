@@ -22,6 +22,8 @@ public class TrainModelMain {
     // }
     
      public MessageQueue mq = new MessageQueue();
+     public TrainModelUI ui = new TrainModelUI(); 
+     public Train train = new Train();
      private Stack<Message> messages;
      private Message m;    
      private double velocityFeedback;
@@ -31,6 +33,8 @@ public class TrainModelMain {
      
     public TrainModelMain(MessageQueue mq) {
       this.mq = mq;
+      ui.setVisible(true);
+
     }
     
      public void run(){
@@ -41,11 +45,9 @@ public class TrainModelMain {
         brakes = 0;
         speedLimit = 70;
         passengers = 20;*/
-          Train train = new Train(1,this.power,this.speed,this.grade,this.brakes,this.speedLimit,this.passengers);    
-          velocityFeedback = train.getVelocity();
+          velocityFeedback = train.calculateVelocity(power, speed, grade, brakes, speedLimit, passengers);
           System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
-          //TrainModelUI ui = new TrainModelUI(); 
-          //ui.setVisible(true);
+          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers);
           //System.out.println(velocityFeedback);
           mSend();
      }
