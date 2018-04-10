@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//package my.trainmodel;
 package modules.trainmodel;
-import shared.*;
+
 /**
  *
  * @author bkelly088
@@ -26,7 +25,7 @@ public class Train {
 	private final int numWheels = 12; // 6 wheels per car and 2 cars per train
 	private final double grav = 9.8; 	// m/s^2
 	private final double frictionCoeff = 0.16;
-        private double deltaT = 1;
+        private double deltaT = .1;
 	
 	public Train(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers){
             calculateVelocity(power,currentSpeed,grade,brakes,speedLimit,passengers);
