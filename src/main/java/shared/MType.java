@@ -26,5 +26,6 @@ public class MType {
 	public static final int TRACK = 13;
 	public static final int SWITCH = 14;
 	public static final int ZEROSPEED = 15;
+	public static final int PASSENGERS = 16;
 
 }

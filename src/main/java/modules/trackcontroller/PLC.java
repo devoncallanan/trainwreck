@@ -14,6 +14,7 @@ public class PLC {
         try {
             file = new BufferedReader (new FileReader(f));
         } catch (FileNotFoundException ex) {
+             System.out.println("Error: File not found!");
         }
         try {
             String line;
@@ -34,10 +35,12 @@ public class PLC {
                 }
             }
         } catch (IOException ex) {
+             System.out.println("IO Exception!");
         }
         try {
             file.close();
        } catch (IOException ex) {
+            System.out.println("IO Exception!");
         }
      }
      public boolean getSwitchBias(){
