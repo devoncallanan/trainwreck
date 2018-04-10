@@ -29,7 +29,7 @@ public class TrainController {
 	public boolean stopping;
     public boolean starting;
 	private int trainID;
-	private int authority;
+	private double authority;
 	private double brakingDistance; //in meters
 	private double metersRemaining; //in meters
 	private int temp;
@@ -93,7 +93,9 @@ public class TrainController {
 
 			switch(currentM.type()){
 				case 0:
-					authority = currentM.dataI();
+					authority = currentM.dataD();
+					metersRemaining = authority;
+					this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining);
 					break;
 				case 2:
 					velocity.setSuggestedSpeed(currentM.dataD());
@@ -110,7 +112,7 @@ public class TrainController {
 					this.pcs.firePropertyChange("station", -1, currentM.dataS());
 					break;
 				case 12:
-					velocity.setSpeedLimit((double)currentM.dataD(), mode);
+					velocity.setSpeedLimit(currentM.dataD(), mode);
 					break;
 				default:
 					break;
@@ -121,12 +123,13 @@ public class TrainController {
 		
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
 		metersRemaining = (metersRemaining - (velocity.feedback()*(double)100/(double)3600));
+		authority = (authority - (velocity.feedback()*(double)100/(double)3600));
 		this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining);
-        System.out.println("meters: " + metersRemaining);
+        //System.out.println("meters: " + metersRemaining);
                 
 		brakingDistance = (Math.pow(velocity.feedback()*(double)100/(double)3600, 2))/((2*SERVICE_DECELERATION)/(double)100);
         this.pcs.firePropertyChange("brakingDist", -1 , brakingDistance);
-        System.out.println("braking distance: " + brakingDistance);
+        //System.out.println("braking distance: " + brakingDistance);
                 
 		if (metersRemaining - 20 <= brakingDistance) {
 			if(!service) setService(true);
