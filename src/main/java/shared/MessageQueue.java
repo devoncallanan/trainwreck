@@ -21,7 +21,7 @@ public class MessageQueue {
 	private ArrayList<Stack<Message>> messages;
 
 	public MessageQueue() {
-		messages = new ArrayList<Stack<Message>>(5);
+		messages = new ArrayList<Stack<Message>>(14);
 		messages.add( new Stack<Message>());
 		messages.add( new Stack<Message>());
 		messages.add( new Stack<Message>());
