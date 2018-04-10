@@ -34,6 +34,7 @@ public class TrainModelMain {
     public TrainModelMain(MessageQueue mq) {
       this.mq = mq;
       ui.setVisible(true);
+
     }
     
      public void run(){

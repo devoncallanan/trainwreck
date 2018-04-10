@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modules.trainmodel;
+package modules.trackmodel;
 
 import shared.*;
 /**
@@ -20,12 +20,12 @@ public class Block {
     public int number;
     public String station;
     public double grade;
-    public int length;
-    public int limit;
+    public double length;
+    public double limit;
     public boolean occupied;
     public int branch;
 
-    public Block(int to, int from, String section, int number, String station, double grade, int length, int limit, int branch) {
+    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch) {
         this.to = to;
         this.from = from;
         this.section = section;
@@ -51,7 +51,7 @@ public class Block {
     }
     
     public String toString() {
-        String s = new String(this.section + " " + this.number + " ");
+        String s = new String(this.section + " " + this.number + " " + this.branch + " ");
         if (occupied) {
             s = s+ "CHOO-CHOO";
         }
