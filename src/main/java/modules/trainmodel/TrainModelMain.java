@@ -50,10 +50,10 @@ public class TrainModelMain {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    this.auth = m.dataI();
+                    this.auth = m.dataD();
                }
                 else if(m.type() == MType.SPEED){
-                    this.speed = (m.dataI());
+                    this.speed = (m.dataD());
                }
                 else if(m.type() == MType.DOORS){
                     this.doors = m.dataI();
@@ -68,17 +68,20 @@ public class TrainModelMain {
                     this.lights = m.dataI();
                }
 		else if(m.type() == MType.POWER){
-                    this.power = m.dataI();
+                    this.power = m.dataD();
                }
                else if(m.type() == MType.FEEDBACK){
-                    this.velocityFeedback = m.dataI();
+                    this.velocityFeedback = m.dataD();
                }
                else if(m.type() == MType.SPEEDLIMIT){
-                    this.speedLimit = m.dataI();
+                    this.speedLimit = m.dataD();
                }
                else if (m.type() == MType.PASSENGERS){
                     this.passengers = m.dataI();
                }
+		else if (m.type() == MType.GRADE){
+			this.passengers = m.dataD();
+		}
           }
      }
      public void mSend(){
