@@ -12,7 +12,7 @@ package modules.trainmodel;
 public class Train {
     
         private double force;
-        private double velocityFeedback;
+        private double velocityFeedback = 0;
         private final double MS_TO_KMH = (double)3600/(double)1000;
         private double trainMass = 81800;
         private double totalMass;
@@ -27,11 +27,11 @@ public class Train {
 	private final double frictionCoeff = 0.16;
         private double deltaT = .1;
 	
-	public Train(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers){
-            calculateVelocity(power,currentSpeed,grade,brakes,speedLimit,passengers);
+	public Train(){
+        
 	}
 	
-	public void calculateVelocity(double power,double currentSpeed,double grade,int brakes,double speedLimit,double passengers){
+	public double calculateVelocity(double power,double currentSpeed,double grade,int brakes,double speedLimit,double passengers){
 		// Step 1: input power and convert the power to a force based on the starting velocity
     	totalMass = trainMass + 150*passengers; //add passenger weight to train
     	totalMass = totalMass * .454; //convert train mass to kg
@@ -100,15 +100,13 @@ public class Train {
         }
     	
     	// resetting the current speed based on our calculations
-    	currentSpeed = velocityFeedback;
+    	//currentSpeed = velocityFeedback;
           
     	//System.out.println(velocityFeedback);
-        
+        return velocityFeedback;
     }
-      public double getVelocity(){
-            return this.velocityFeedback;
-        }
 }
+     
 	
 	
 
