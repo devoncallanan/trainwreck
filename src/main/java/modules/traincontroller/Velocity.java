@@ -64,14 +64,14 @@ public class Velocity {
 	//If a new block is entered, the speed limit is set
 	public void setSpeedLimit(double speedLimit, boolean mode) {
 		this.speedLimit = speedLimit;
-		if (mode) {
+		/*if (mode) {
 			//Automatic
 			if (originalSuggestedSpeed <= speedLimit) {
 				suggestedSpeed = originalSuggestedSpeed;
 			} else if (suggestedSpeed > speedLimit) {
 				suggestedSpeed = speedLimit;
 			}
-		}
+		}*/
 	}
 	
 	

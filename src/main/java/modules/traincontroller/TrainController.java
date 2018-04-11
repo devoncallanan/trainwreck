@@ -190,7 +190,7 @@ public class TrainController {
 		//send(new Message(From who, Data being sent, Type of data), message destination);
         this.pcs.firePropertyChange("powerUpdate", -1 , p);
 		messages.send(new Message(MDest.TrCtl, p, MType.POWER), MDest.TrMd);
-   
+		
 
    
 	} // End run method
