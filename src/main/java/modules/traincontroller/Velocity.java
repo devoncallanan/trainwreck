@@ -19,6 +19,7 @@ public class Velocity {
 	private double setpointSpeed;
 	public double suggestedSpeed;
 	private double originalSuggestedSpeed;
+	private double zeroSpeed = 0;
 
 	private final double MAX_SPEED = 70;
 	
@@ -33,7 +34,7 @@ public class Velocity {
 		return velocityFeedback;
 	}
 	
-	public void setFeedback(double velocityFeedback, boolean mode) {
+	public void setFeedback(double velocityFeedback, boolean mode, boolean emergency) {
 		previousVelocityError = velocityError;
 		
 		if(!mode) {
@@ -43,6 +44,10 @@ public class Velocity {
 			//Automatic
 			velocityError = suggestedSpeed - velocityFeedback;			
 		}
+		
+		if(emergency) {
+            velocityError = zeroSpeed - velocityFeedback;
+        }
 		System.out.println("Velocity (error): " + velocityError);
 		this.velocityFeedback = velocityFeedback;
 	}

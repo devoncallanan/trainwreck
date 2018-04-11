@@ -75,6 +75,9 @@ public class TrainController {
 		java.awt.EventQueue.invokeLater(() -> {
             new TestingUI(this).setVisible(true);
         });
+		java.awt.EventQueue.invokeLater(() -> {
+            new TrainControllerUI(this).setVisible(true);
+        });
             
 	}
 	
@@ -105,7 +108,7 @@ public class TrainController {
 					this.pcs.firePropertyChange("suggestedSpeed", -1 , currentM.dataD());
 					break;
 				case 7:
-					velocity.setFeedback(currentM.dataD(), mode);
+					velocity.setFeedback(currentM.dataD(), mode, emergency);
 					this.pcs.firePropertyChange("currentSpeed", -1 , velocity.feedback());
 					break;
 				case 9:
@@ -145,16 +148,18 @@ public class TrainController {
 		//POWER COMMAND
 		if (!stopping) {
 			if (velocity.error() < 0) {
-				if (!service) setService(true);
+				//if (!service) setService(true);
 				p = 0;
 			} else {
-				if (service) setService(false);
+				if (mode) {
+                    if (service) setService(false);
+                }
 				//GENERATE POWER COMMAND
 				p1 = power1.generatePower(velocity.error(), velocity.previousError());
 				p2 = power2.generatePower(velocity.error(), velocity.previousError());
 				p3 = power3.generatePower(velocity.error(), velocity.previousError());
 
-				p = p1/1000;
+				p = p1;
 
 			}	
 		}
@@ -228,22 +233,28 @@ public class TrainController {
 	}
 	
 	public void operateDoors(int opDoors) {
-		switch(opDoors) {
-			case 0:	//close left doors
-				leftDoors = false; 	
-				break;
-			case 1:	//open left doors
-				leftDoors = true; 	
-				break;
-			case 2:	//close right doors
-				rightDoors = false; 
-				break;
-			case 3:	//open right doors
-				rightDoors = true; 	
-				break;
-			default:
-				break;
-		} //End switch
+		if(velocity.feedback() == 0) {
+			switch(opDoors) {
+				case 0:	//close left doors
+					leftDoors = false; 
+					messages.send(new Message(MDest.TrCtl, 0, MType.DOORS), MDest.TrMd);
+					break;
+				case 1:	//open left doors
+					leftDoors = true; 
+					messages.send(new Message(MDest.TrCtl, 1, MType.DOORS), MDest.TrMd);
+					break;
+				case 2:	//close right doors
+					rightDoors = false;
+					messages.send(new Message(MDest.TrCtl, 2, MType.DOORS), MDest.TrMd);
+					break;
+				case 3:	//open right doors
+					rightDoors = true;
+					messages.send(new Message(MDest.TrCtl, 3, MType.DOORS), MDest.TrMd);                                
+					break;
+				default:
+					break;
+			} //End switch
+        }
 	}
 	
 	public void setTemp(int temp) {
