@@ -73,11 +73,11 @@ public class Power {
 		this.Kp = Kp;
 	}
 	
-        public double getKp() {
+    public double getKp() {
 		return Kp;
 	}
         
-        public double getKi() {
+    public double getKi() {
 		return Ki;
 	}
         

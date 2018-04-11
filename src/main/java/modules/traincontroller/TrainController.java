@@ -35,6 +35,7 @@ public class TrainController {
 	private double metersRemaining; //in meters
 	private int temp;
     private int currentBlock;
+	private String station;
 	
 	private final double SERVICE_DECELERATION = 1.2; //meters/second^2
 	private final double KMH_TO_MS = (double)1000/(double)3600;
@@ -59,6 +60,7 @@ public class TrainController {
 		velocity = new Velocity();
         mode = true;
 		pause = true;
+		station = " ";
 		//this.trainID = trainID;
 		
 		//Initialize my GUI
@@ -71,6 +73,7 @@ public class TrainController {
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TestingUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TrainControllerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 		java.awt.EventQueue.invokeLater(() -> {
             new TestingUI(this).setVisible(true);
@@ -105,7 +108,6 @@ public class TrainController {
 					break;
 				case 2:
 					velocity.setSuggestedSpeed(currentM.dataD());
-					this.pcs.firePropertyChange("suggestedSpeed", -1 , currentM.dataD());
 					break;
 				case 7:
 					velocity.setFeedback(currentM.dataD(), mode, emergency);
@@ -115,7 +117,12 @@ public class TrainController {
 					currentBlock = currentM.dataI();
 					break;
 				case 11:
-					this.pcs.firePropertyChange("station", -1, currentM.dataS());
+					if (station.equals(currentM.dataS())) {
+						this.pcs.firePropertyChange("station", -1, " ");
+					} else {
+						station = currentM.dataS();
+						this.pcs.firePropertyChange("station", -1, currentM.dataS());
+					}
 					break;
 				case 12:
 					velocity.setSpeedLimit(currentM.dataD(), mode);
@@ -126,7 +133,7 @@ public class TrainController {
             System.out.println("vF = " + velocity.feedback());
 		}//End while loop for message checking
 		
-		
+		this.pcs.firePropertyChange("suggestedSpeed", -1 , velocity.suggestedSpeed);
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
 		metersRemaining = (metersRemaining - (velocity.feedback()*(double)100/(double)3600));
 		authority = (authority - (velocity.feedback()*(double)100/(double)3600));
@@ -140,8 +147,6 @@ public class TrainController {
 		if (metersRemaining - 20 <= brakingDistance) {
 			if(!service) setService(true);
 			stopping = true;
-		} else {
-			stopping = false;
 		}
 		
 		
@@ -168,6 +173,11 @@ public class TrainController {
 		if (service || emergency || pause){
 			//BRAKING, POWER = 0
 			p = 0;
+		}
+		
+		//Stopped, checking to open or close doors
+		if (!station.equals(" ") && velocity.feedback() == 0) {
+			operateDoors(1);
 		}
 		
 		//SEND POWER COMMAND
@@ -202,6 +212,8 @@ public class TrainController {
 			messages.send(new Message(MDest.TrCtl, 3, MType.BRAKES), MDest.TrMd);
             this.pcs.firePropertyChange("brake", -1 , "Emergency");
 		} else {
+			operateDoors(0);
+			operateDoors(2);
 			messages.send(new Message(MDest.TrCtl, 2, MType.BRAKES), MDest.TrMd);
             this.pcs.firePropertyChange("brake", -1 , " ");
 		}
@@ -213,6 +225,8 @@ public class TrainController {
 			messages.send(new Message(MDest.TrCtl, 1, MType.BRAKES), MDest.TrMd);
 			this.pcs.firePropertyChange("brake", -1 , "Service");
 		} else {
+			operateDoors(0);
+			operateDoors(2);
 			messages.send(new Message(MDest.TrCtl, 0, MType.BRAKES), MDest.TrMd);
 			this.pcs.firePropertyChange("brake", -1 , " ");
 		}

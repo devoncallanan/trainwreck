@@ -48,7 +48,7 @@ public class Velocity {
 		if(emergency) {
             velocityError = zeroSpeed - velocityFeedback;
         }
-		System.out.println("Velocity (error): " + velocityError);
+
 		this.velocityFeedback = velocityFeedback;
 	}
 	
