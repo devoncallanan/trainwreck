@@ -11,16 +11,6 @@ import java.util.*;
  * @author bkelly088
  */
 public class TrainModelMain {
-
-    
-    /**
-     * @param args the command line arguments
-     */
-    // public static void main(String[] args) {
-    //   TrainModelMain main = new TrainModelMain();
-    //   main.run();
-    // }
-    
      public MessageQueue mq = new MessageQueue();
      public TrainModelUI ui = new TrainModelUI(); 
      public Train train = new Train();
@@ -28,7 +18,7 @@ public class TrainModelMain {
      private Message m;    
      private double velocityFeedback;
      private double auth; 
-     private int doors,temp,brakes,lights,passengers;
+     private int doors,temp,brakes,lights,passengers,failures;
      private double power,grade,speed,speedLimit;
      
     public TrainModelMain(MessageQueue mq) {
@@ -39,15 +29,15 @@ public class TrainModelMain {
     
      public void run(){
           mReceive();
-	/*power=120000;
-        speed=25;
-        grade = 0;
-        brakes = 0;
-        speedLimit = 70;
-        passengers = 20;*/
-          velocityFeedback = train.calculateVelocity(power, speed, grade, brakes, speedLimit, passengers);
+
+          velocityFeedback = train.calculateVelocity(power, velocityFeedback, grade, brakes, speedLimit, passengers);
           System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
-          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers);
+          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors);
+          failures = ui.getFailures();
+          
+          if (failures == 0) {
+              //brakes = 3;
+          }
           //System.out.println(velocityFeedback);
           mSend();
      }
@@ -56,12 +46,14 @@ public class TrainModelMain {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    System.out.println("TrMod_Auth: "+auth);
                     this.auth = m.dataD();
+                    System.out.println("TrMod_Auth: "+auth);
+                    m = new Message(MDest.TrMd, auth, MType.AUTH);
+                    mq.send(m, MDest.TrCtl);
                }
                 else if(m.type() == MType.SPEED){
-                    System.out.println("TrMod_Speed: "+speed);
                     this.speed = (m.dataD());
+                    System.out.println("TrMod_Speed: "+speed);    
                }
                 else if(m.type() == MType.DOORS){
                     this.doors = m.dataI();
@@ -72,22 +64,23 @@ public class TrainModelMain {
                 else if(m.type() == MType.BRAKES){
                     this.brakes = m.dataI();
                }
-		           else if(m.type() == MType.LIGHTS){
+		else if(m.type() == MType.LIGHTS){
                     this.lights = m.dataI();
                }
-		           else if(m.type() == MType.POWER){
+		else if(m.type() == MType.POWER){
                     System.out.println("TrMod_power: "+power);
                     this.power = m.dataD();
                }
-               else if(m.type() == MType.FEEDBACK){
+                else if(m.type() == MType.FEEDBACK){
                     System.out.println("TrMod_feedback: "+velocityFeedback);
                     this.velocityFeedback = m.dataD();
                }
-               else if(m.type() == MType.SPEEDLIMIT){
-                    System.out.println("TrMod_limit: "+speedLimit);
+                else if(m.type() == MType.SPEEDLIMIT){
+                    
                     this.speedLimit = m.dataD();
+                    System.out.println("TrMod_limit: "+speedLimit);
                }
-               else if (m.type() == MType.PASSENGERS){
+                else if (m.type() == MType.PASSENGERS){
                     this.passengers = m.dataI();
                }
           }
@@ -99,13 +92,20 @@ public class TrainModelMain {
                
                m = new Message(MDest.TrMd, velocityFeedback, MType.FEEDBACK);
                mq.send(m, MDest.TcMd);
+               System.out.println("TrMd_vF:"+velocityFeedback);
+
+               if (speed > 0) {
+                 m = new Message(MDest.TrMd, speed, MType.SPEED);
+                 mq.send(m, MDest.TrCtl);
+                 speed = 0;
+               }
+	     
+	         //m = new Message(MDest.TrMd, failures, MType.FAILURES);
+                 //mq.send(m, MDest.TrCtl);
                
-               m = new Message(MDest.TrMd, auth, MType.AUTH);
-               mq.send(m, MDest.TrCtl);
                //System.out.println("TrMod SEND");
           }
      }
-    
     
     
     
