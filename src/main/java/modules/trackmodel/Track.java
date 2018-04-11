@@ -65,9 +65,13 @@ public class Track extends javax.swing.AbstractListModel<String>{
             int to = scan.nextInt();
             int branch = scan.nextInt();
 			int switchloc = scan.nextInt();
+			String beacon = null;
+			if (scan.nextInt() == 1) {
+				beacon = "Cool Station";
+			}
 			String infrastructure = scan.next();
 			
-            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch); 
+            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch, beacon); 
             this.addBlock(b);
             //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);
@@ -218,15 +222,18 @@ public class Track extends javax.swing.AbstractListModel<String>{
     
     public void printTrack() {
         for (int i = 0; i < length; i++) {
-            System.out.print(" switch " + switches[i][0] + " ");
+            System.out.print(i + " switch " + switches[i][0] + " ");
             for (int j = 0; j < 3; j++) {
                 if (track[i][j] != null) {
+					System.out.print(track[i][j].number + " ");
+					/*
                     if (track[i][j].to != i) {
                     System.out.print(track[i][j].to + " ");
                     }
                     else {
                     System.out.print(track[i][j].from + " ");                        
                     }
+					*/
                 }
             }
 			System.out.println();

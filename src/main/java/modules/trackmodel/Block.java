@@ -24,8 +24,9 @@ public class Block {
     public double limit;
     public boolean occupied;
     public int branch;
+	public String beacon;
 
-    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch) {
+    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch, String beacon) {
         this.to = to;
         this.from = from;
         this.section = section;
@@ -36,6 +37,7 @@ public class Block {
         this.limit = limit;
         occupied = false;
         this.branch = branch;
+		this.beacon = beacon;
     }
     
     public Block(int to, int from, boolean branch) {

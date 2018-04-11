@@ -12,7 +12,7 @@ public class Train{
 	public double speed;					//Current speed m/s
 	public double distanceIn;				//Distance into the block km
 	public int id;							//train ID
-	private static double DELTA_T = .1;	//quantum for calculations
+	private static double DELTA_T = .1;		//quantum for calculations
 	
 	public Train(int id, int location, int node) {
 		this.location = location;
