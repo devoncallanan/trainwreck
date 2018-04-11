@@ -18,6 +18,7 @@ import shared.*;
  */
 public class CTCOfficeUI extends javax.swing.JFrame {
 
+    private CTCOffice ctc;
     private static int timeMult = 1;
     private static int trainCount = 0;
     private final String[] redLineData;
@@ -28,10 +29,17 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     /**
      * Creates new form CTCOfficeUI
      */
-    public CTCOfficeUI() {
-        this.redLineData = new String[] { "A1", "A2", "A3", "B4", "B5", "B6", 
-            "C7|Shadyside", "C8", "C9|Switch", "D10", "D11", "D12", "E13",
-            "E14", "E15|Switch" };
+    public CTCOfficeUI(CTCOffice ctc) {
+        this.ctc = ctc;
+        
+        int redSize = ctc.redLineData.size();
+        this.redLineData = new String[redSize];
+        for (int i = 0; i < redSize; i++) {
+            this.redLineData[i] = ctc.redLineData.get(i);
+        }
+        // this.redLineData = new String[] { "A1", "A2", "A3", "B4", "B5", "B6", 
+        //     "C7|Shadyside", "C8", "C9|Switch", "D10", "D11", "D12", "E13",
+        //     "E14", "E15|Switch" };
         this.greenLineData = new String[] { "A1", "A2|Pioneer", "A3", "B4",
             "B5", "B6", "C7", "C8", "C9|Edgebrook", "C10", "C11", "C12|Switch"};
         this.scheduleColumnVector = new String[] { "Destination", "Dwell", "Arrival" };
@@ -946,6 +954,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         trainSchedules.add(trainCount, temp);
         
         String firstStop = DispatchScheduleTable.getValueAt(0, 0).toString();
+        int destination = Integer.parseInt(firstStop.substring(1));
         
         // Calculate Authority (miles) for first stop here     
         
@@ -957,6 +966,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 activeModel = (DefaultTableModel) ActiveRedTable.getModel();
                 activeModel.addRow(new Object[]{trainCount, "C9", 24.85, 10, 0});
                 scheduleModel.setNumRows(0);
+                ctc.dispatchTrain(74,destination);
                 break;
             case 2:
                 // Dispatch to Green Line

@@ -36,22 +36,19 @@ public class CTCOffice {
 	private Message m;
 	private boolean dispatchReady = true;
 
-	/* Graph Testing */
+	/* Graph Testing - - - - - - - - - - - - - - */
 	private TrackGraph track;
 	private ArrayList<String> stops;
 	//private boolean[] redSwitches = new boolean[6];
 	private double authority;
 
+	/* UI variables- - - - - - - - - - - - - - - */
+	public ArrayList<String> redLineData = new ArrayList<String>();
+
 	/* SETUP */
 	public CTCOffice(MessageQueue mq) {
-		gui = new CTCOfficeUI();
-
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				gui.setVisible(true);
-			}
-		});
-
+		
+		// Setup Message Queue
 		this.mq = mq;
 
 		// Read redline csv
@@ -63,9 +60,15 @@ public class CTCOffice {
 		for (int i = 0; i < redSwitches.length; i ++) {
 			redSwitches[i] = new Boolean(false);
 		}
-		// BreadthFirstPaths bfs = new BreadthFirstPaths(track, src);
-		// System.out.println("SHORTEST DISTANCE : "+bfs.distTo(dest));
-		// bfs.pathTo(dest);
+
+		// Create GUI
+		gui = new CTCOfficeUI(this);
+
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				gui.setVisible(true);
+			}
+		});
 	}
 
 	public void dispatchTrain(int src, int dest) {
@@ -80,7 +83,7 @@ public class CTCOffice {
 		// for (int i = 0; i < redSwitches.length; i ++) {
 		// 	System.out.println(i+": "+redSwitches[i].booleanValue());
 		// }
-		//dispatchReady = true;
+		dispatchReady = true;
 	}
 
 	public void setSwitches(ArrayList<Integer> path) {
@@ -135,7 +138,7 @@ public class CTCOffice {
 
 	public void run(){
 		mReceive();
-		dispatchTrain(74,32);
+		//dispatchTrain(74,32);
 		mSend();
 	}
 
@@ -172,6 +175,8 @@ public class CTCOffice {
 		}
 	}
 
+
+
 	// private double calcThroughput(Line line, int ticketCount) {
 
 	// }
@@ -188,7 +193,7 @@ public class CTCOffice {
 
 	// }
 
-	private static TrackGraph getTrackData(File f) {
+	private TrackGraph getTrackData(File f) {
 		try {
 			BufferedReader fr = new BufferedReader(new FileReader(f));
 			
@@ -214,9 +219,13 @@ public class CTCOffice {
 				int w = Integer.parseInt(str[9]) - 1;
 				int branch = Integer.parseInt(str[10]);
 
+				// Add block to graph
 				BlockTemp insert = new BlockTemp(v, w, distance, section, num, branch);
-
 				tg.addBlockTemp(insert);
+
+				// Add string to list
+				String secnum = section+num;
+				redLineData.add(secnum);
 			}
 
 			return tg;
