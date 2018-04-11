@@ -955,6 +955,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         
         String firstStop = DispatchScheduleTable.getValueAt(0, 0).toString();
         int destination = Integer.parseInt(firstStop.substring(1));
+        System.out.println("Dest:"+destination);
         
         // Calculate Authority (miles) for first stop here     
         

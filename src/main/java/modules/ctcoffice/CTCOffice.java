@@ -44,6 +44,7 @@ public class CTCOffice {
 
 	/* UI variables- - - - - - - - - - - - - - - */
 	public ArrayList<String> redLineData = new ArrayList<String>();
+	private boolean dispatched = false;
 
 	/* SETUP */
 	public CTCOffice(MessageQueue mq) {
@@ -83,7 +84,10 @@ public class CTCOffice {
 		// for (int i = 0; i < redSwitches.length; i ++) {
 		// 	System.out.println(i+": "+redSwitches[i].booleanValue());
 		// }
+		System.out.println("DISPATCHED!");
 		dispatchReady = true;
+		dispatched = true;
+		System.out.println(dispatched);
 	}
 
 	public void setSwitches(ArrayList<Integer> path) {
@@ -136,10 +140,11 @@ public class CTCOffice {
 		}
 	}
 
-	public void run(){
+	public boolean run(){
 		mReceive();
 		//dispatchTrain(74,32);
 		mSend();
+		return dispatched;
 	}
 
 	public void mReceive() {
