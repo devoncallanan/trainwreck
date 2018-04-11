@@ -28,6 +28,7 @@ public class TrainController {
 	private boolean lights;
 	public boolean stopping;
     public boolean starting;
+    public boolean pause;
 	private int trainID;
 	private double authority;
 	private double brakingDistance; //in meters
@@ -57,6 +58,7 @@ public class TrainController {
 		power3 = new Power();
 		velocity = new Velocity();
         mode = true;
+		pause = true;
 		//this.trainID = trainID;
 		
 		//Initialize my GUI
@@ -118,7 +120,7 @@ public class TrainController {
 				default:
 					break;
 			}
-                    System.out.println("vF = " + velocity.feedback());
+            System.out.println("vF = " + velocity.feedback());
 		}//End while loop for message checking
 		
 		
@@ -158,7 +160,7 @@ public class TrainController {
 		}
 		
 
-		if (service || emergency){
+		if (service || emergency || pause){
 			//BRAKING, POWER = 0
 			p = 0;
 		}
@@ -174,12 +176,15 @@ public class TrainController {
 	
 	public void setTrainConstants(double Kp, double Ki) {
 		//set KI and KP
+		pause = false;
 		power1.setKp(Kp);
 		power1.setKi(Ki);
 		power2.setKp(Kp);
 		power2.setKi(Ki);
 		power3.setKp(Kp);
 		power3.setKi(Ki);
+		this.pcs.firePropertyChange("ki", -1 , power1.getKi());
+        this.pcs.firePropertyChange("kp", -1 , power1.getKp());
 	}
 	
 	public void setMode(boolean mode) {
@@ -258,5 +263,8 @@ public class TrainController {
         this.starting = start;
 	}
 	
+	public boolean getMode() {
+        return mode;
+    }
 
 }
