@@ -22,6 +22,8 @@ public class TrainModelMain {
     // }
     
      public MessageQueue mq = new MessageQueue();
+     public TrainModelUI ui = new TrainModelUI(); 
+     public Train train = new Train();
      private Stack<Message> messages;
      private Message m;    
      private double velocityFeedback;
@@ -31,6 +33,8 @@ public class TrainModelMain {
      
     public TrainModelMain(MessageQueue mq) {
       this.mq = mq;
+      ui.setVisible(true);
+
     }
     
      public void run(){
@@ -41,11 +45,9 @@ public class TrainModelMain {
         brakes = 0;
         speedLimit = 70;
         passengers = 20;*/
-          Train train = new Train(1,this.power,this.speed,this.grade,this.brakes,this.speedLimit,this.passengers);    
-          velocityFeedback = train.getVelocity();
+          velocityFeedback = train.calculateVelocity(power, velocityFeedback, grade, brakes, speedLimit, passengers);
           System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
-          //TrainModelUI ui = new TrainModelUI(); 
-          //ui.setVisible(true);
+          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers);
           //System.out.println(velocityFeedback);
           mSend();
      }
@@ -54,12 +56,15 @@ public class TrainModelMain {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    System.out.println("TrMod_Auth: "+auth);
                     this.auth = m.dataD();
+                    System.out.println("TrMod_Auth: "+auth);
+                    m = new Message(MDest.TrMd, auth, MType.AUTH);
+                    mq.send(m, MDest.TrCtl);
                }
                 else if(m.type() == MType.SPEED){
-                    System.out.println("TrMod_Speed: "+speed);
                     this.speed = (m.dataD());
+                    System.out.println("TrMod_Speed: "+speed);
+                    
                }
                 else if(m.type() == MType.DOORS){
                     this.doors = m.dataI();
@@ -82,8 +87,9 @@ public class TrainModelMain {
                     this.velocityFeedback = m.dataD();
                }
                else if(m.type() == MType.SPEEDLIMIT){
-                    System.out.println("TrMod_limit: "+speedLimit);
+                    
                     this.speedLimit = m.dataD();
+                    System.out.println("TrMod_limit: "+speedLimit);
                }
                else if (m.type() == MType.PASSENGERS){
                     this.passengers = m.dataI();
@@ -97,9 +103,14 @@ public class TrainModelMain {
                
                m = new Message(MDest.TrMd, velocityFeedback, MType.FEEDBACK);
                mq.send(m, MDest.TcMd);
+               System.out.println("TrMd_vF:"+velocityFeedback);
+
+               if (speed > 0) {
+                 m = new Message(MDest.TrMd, speed, MType.SPEED);
+                 mq.send(m, MDest.TrCtl);
+                 speed = 0;
+               }
                
-               m = new Message(MDest.TrMd, auth, MType.AUTH);
-               mq.send(m, MDest.TrCtl);
                //System.out.println("TrMod SEND");
           }
      }

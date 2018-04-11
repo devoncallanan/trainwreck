@@ -6,16 +6,16 @@ import shared.*;
 public class TrackController {
      ArrayList<Double> speeds = new ArrayList<Double>();
      ArrayList<Double> authority = new ArrayList<Double>();
-     int crossInd, id;
+     int crossInd = -1, id;
      public MessageQueue mq = new MessageQueue();
      public PLC plcCode = new PLC();
      private Stack<Message> messages;
      private Message m;
      boolean[] mainLine, side, msplit, temp;
-     Boolean recSwitch = null;
-     boolean switchPos, mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true;
+     Boolean recSwitch = null, switchPos = true;
+     boolean mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mode = true;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
-     boolean crossLights = false, mainLight = true, sideLight = false, loop = false, lights = true, priority = true;
+     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false;
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
           mq = y;
@@ -49,10 +49,27 @@ public class TrackController {
      public void run(){
           mReceive();
           getDir();
-          logic();
-          checkCross();
-          checkLights();
+          if(mainLine[mainLine.length-1])
+               onSwitch = true;
+          else
+               onSwitch = false;
+          if(!mode){
+
+          }
+          else{
+               if(!onSwitch)
+                    logic();
+               checkLights();
+               checkCross();
+          }
+          checkContinue();
           mSend();
+     }
+     public void manualMode(){
+          mode = false;
+     }
+     public void automaticMode(){
+          mode = true;
      }
      public void plcImported(){
           switchBias = plcCode.getSwitchBias();
@@ -75,13 +92,13 @@ public class TrackController {
                     boolean[] track = m.dataBA();
                     for(int i=0; i<track.length; i++){
                          if(i<mainLine.length){
-                              track[i] = mainLine[i];
+                              mainLine[i] = track[i];
                          }
                          else if(i<(mainLine.length+msplit.length)){
-                              track[i] = msplit[i-mainLine.length];
+                              msplit[i-mainLine.length] = track[i];
                          }
                          else if(i<(mainLine.length+msplit.length+side.length)){
-                              track[i] = side[i-mainLine.length-side.length];
+                              side[i-mainLine.length-msplit.length] = track[i];
                          }
                     }
                }
@@ -95,11 +112,17 @@ public class TrackController {
                m = new Message((MDest.TcCtl+id), speeds.get(i), MType.SPEED);
                System.out.println("TcCtl"+id+": "+speeds.get(i));
                mq.send(m, MDest.TcMd);
+               speeds.remove(i);
           }
           for(int i=0; i<authority.size(); i++){
                m = new Message((MDest.TcCtl+id), authority.get(i), MType.AUTH);
                mq.send(m, MDest.TcMd);
+               authority.remove(i);
           }
+
+          m = new Message((MDest.TcCtl+id), switchPos, MType.SWITCH);
+          System.out.println("SWITCH_FROM:"+m.from());
+          mq.send(m, MDest.TcMd);
      }
      public void logic(){
           if(msplitOcc && !sideOcc && !mainOcc){
@@ -207,7 +230,6 @@ public class TrackController {
                     panic();
                }
           }
-          checkContinue();
      }
      public boolean getOcc(boolean[] t){
           boolean tempOcc = false;
@@ -289,17 +311,14 @@ public class TrackController {
      }
      public void checkLights(){
           if(!lights){
-               mainLight = false;
-               sideLight = false;
+               switchLight = false;
           }
           else{
-               if(switchPos){
-                    mainLight = true;
-                    sideLight = false;
+               if(onSwitch){
+                    switchLight = false;
                }
                else{
-                    mainLight = false;
-                    sideLight = true;
+                    switchLight = true;
                }
           }
      }
@@ -554,5 +573,26 @@ public class TrackController {
                     mq.send(m, MDest.TcMd);
                }
           }
+     }
+     public Boolean getSwitch(){
+          return switchPos;
+     }
+     public boolean getCross(){
+          return crossPos;
+     }
+     public boolean getSwitchLight(){
+          return switchLight;
+     }
+     public boolean getCrossLight(){
+          return crossLights;
+     }
+     public boolean[] getMainLine(){
+          return mainLine;
+     }
+     public boolean[] getMsplit(){
+          return msplit;
+     }
+     public boolean[] getSide(){
+          return side;
      }
 }
