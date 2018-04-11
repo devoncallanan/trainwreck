@@ -91,44 +91,44 @@ public class CTCOffice {
 			//System.out.println("N:"+next+"\n-----");
 			// Switch 1
 			if (((current == 1) && (next == 16)) || ((current == 16) && (next == 1))) {
-				redSwitches[0] = new Boolean(true);
-			} else if (((current == 15) && (next == 16)) || ((current == 16) && (next == 15))) {
 				redSwitches[0] = new Boolean(false);
+			} else if (((current == 15) && (next == 16)) || ((current == 16) && (next == 15))) {
+				redSwitches[0] = new Boolean(true);
 			}
 
 			// Switch 27
 			if (((current == 27) && (next == 76)) || ((current == 76) && (next == 27))) {
-				redSwitches[1] = new Boolean(true);
-			} else if (((current == 27) && (next == 28)) || ((current == 28) && (next == 27))) {
 				redSwitches[1] = new Boolean(false);
+			} else if (((current == 27) && (next == 28)) || ((current == 28) && (next == 27))) {
+				redSwitches[1] = new Boolean(true);
 			}
 
 			// Switch 32
 			if (((current == 32) && (next == 72)) || ((current == 72) && (next == 32))) {
-				redSwitches[2] = new Boolean(true);
-			} else if (((current == 32) && (next == 31)) || ((current == 31) && (next == 32))) {
 				redSwitches[2] = new Boolean(false);
+			} else if (((current == 32) && (next == 31)) || ((current == 31) && (next == 32))) {
+				redSwitches[2] = new Boolean(true);
 			}
 
 			// Switch 38
 			if (((current == 38) && (next == 71)) || ((current == 71) && (next == 38))) {
-				redSwitches[3] = new Boolean(true);
-			} else if (((current == 38) && (next == 39)) || ((current == 39) && (next == 38))) {
 				redSwitches[3] = new Boolean(false);
+			} else if (((current == 38) && (next == 39)) || ((current == 39) && (next == 38))) {
+				redSwitches[3] = new Boolean(true);
 			}
 
 			// Switch 43
 			if (((current == 43) && (next == 67)) || ((current == 67) && (next == 43))) {
-				redSwitches[4] = new Boolean(true);
-			} else if (((current == 43) && (next == 42)) || ((current == 42) && (next == 43))) {
 				redSwitches[4] = new Boolean(false);
+			} else if (((current == 43) && (next == 42)) || ((current == 42) && (next == 43))) {
+				redSwitches[4] = new Boolean(true);
 			}
 
 			// Switch 52
 			if (((current == 51) && (next == 66)) || ((current == 66) && (next == 51))) {
-				redSwitches[5] = new Boolean(true);
-			} else if (((current == 51) && (next == 52)) || ((current == 52) && (next == 51))) {
 				redSwitches[5] = new Boolean(false);
+			} else if (((current == 51) && (next == 52)) || ((current == 52) && (next == 51))) {
+				redSwitches[5] = new Boolean(true);
 			}
 		}
 	}

@@ -64,7 +64,6 @@ public class TrackModel {
 
 		while (!mailbox.isEmpty()) {
 			Message mail = mailbox.pop();
-			System.out.println("TkMod: "+mail.dataD());
 			switch (mail.type()) {
 				case MType.AUTH:
 					System.out.println(mail.dataD());
@@ -89,12 +88,16 @@ public class TrackModel {
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
 					System.out.println("Devon " + mail.dataD() + " " + (mail.from() - MDest.TrMd)/2 + " " + trains[0].speed);
+                    break;
 				case MType.SWITCH:
-					int contid = mail.from() - MDest.TcCt;
-					int realBlock = cont.getSwitchConvert(contid);
-					int branch = 1;
-					if (mail.dataB()) branch = -1;
-					redline.setSwitch(realBlock, branch, 0);
+                    if (redline.getSize() > 70) {
+    					int contid = mail.from() - MDest.TcCtl;
+    					int realBlock = conts.getSwitchConvert(contid);
+    					int branch = 1;
+    					if (mail.dataB()) branch = -1;
+    					redline.setSwitch(realBlock, branch, 0);
+                    }
+                    break;
 			}
 				
 			
@@ -134,8 +137,8 @@ public class TrackModel {
         System.out.println("Return TkM");
 		
 		for (int i = 0; i < 6; i++) {
-			tempM = new Message(MDest.TcMd, cont.getOccArray(i), MType.TRACK);
-			m.send(tempM, MDest.TcCt + i);
+			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
+			m.send(tempM, MDest.TcCtl + i);
 		}
         
 		/*
