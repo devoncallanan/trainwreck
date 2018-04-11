@@ -12,7 +12,7 @@ package modules.trainmodel;
 public class Train {
     
         private double force;
-        private double velocityFeedback = 0;
+        private double velocityFeedback = 1;
         private final double MS_TO_KMH = (double)3600/(double)1000;
         private double trainMass = 81800;
         private double totalMass;
@@ -25,7 +25,7 @@ public class Train {
 	private final int numWheels = 12; // 6 wheels per car and 2 cars per train
 	private final double grav = 9.8; 	// m/s^2
 	private final double frictionCoeff = 0.16;
-        private double deltaT = .1;
+        private double deltaT = .01;
 	
 	public Train(){
         
@@ -39,9 +39,9 @@ public class Train {
     	
         currentSpeed = currentSpeed*.278; //convert kmh to m/s
     	if (currentSpeed == 0) {
-    		force = power/1;
+    		force = (power*1000)/1;
     	} else {
-    		force = power/currentSpeed;
+    		force = (power*1000)/currentSpeed;
     	}
     	    //	System.out.println(force);
 

@@ -506,6 +506,7 @@ public class TestingUI extends javax.swing.JFrame {
         dist.setText(" ");
         //trainController.setAuthority((int)dist1);
         trainController.setMetersRemaining((int)dist1);
+        trainController.setAuthority((int)dist1);
     }//GEN-LAST:event_submitDistActionPerformed
 
     private void currentSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_currentSpeedPropertyChange

@@ -29,7 +29,6 @@ public class TrainModelMain {
     
      public void run(){
           mReceive();
-
           velocityFeedback = train.calculateVelocity(power, velocityFeedback, grade, brakes, speedLimit, passengers);
           System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
           ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors);
@@ -75,7 +74,7 @@ public class TrainModelMain {
                     System.out.println("TrMod_feedback: "+velocityFeedback);
                     this.velocityFeedback = m.dataD();
                }
-                else if(m.type() == MType.SPEEDLIMIT){
+               else if(m.type() == MType.SPEEDLIMIT){
                     
                     this.speedLimit = m.dataD();
                     System.out.println("TrMod_limit: "+speedLimit);
@@ -99,9 +98,7 @@ public class TrainModelMain {
                  mq.send(m, MDest.TrCtl);
                  speed = 0;
                }
-	     
-	         //m = new Message(MDest.TrMd, failures, MType.FAILURES);
-                 //mq.send(m, MDest.TrCtl);
+
                
                //System.out.println("TrMod SEND");
           }
