@@ -25,7 +25,7 @@ public class Train {
 	private final int numWheels = 12; // 6 wheels per car and 2 cars per train
 	private final double grav = 9.8; 	// m/s^2
 	private final double frictionCoeff = 0.16;
-        private double deltaT = .1;
+        private double deltaT = .01;
 	
 	public Train(){
         

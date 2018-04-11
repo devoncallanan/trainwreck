@@ -13,6 +13,7 @@ import shared.*;
 public class Velocity {
 	
 	private double velocityFeedback;
+	private double velocityFeedbackPrevious;
 	private double velocityError;
 	private double previousVelocityError;
 	private double speedLimit;
@@ -35,7 +36,6 @@ public class Velocity {
 	
 	public void setFeedback(double velocityFeedback, boolean mode) {
 		previousVelocityError = velocityError;
-		
 		if(!mode) {
 			//Manual
 			velocityError = setpointSpeed - velocityFeedback;
