@@ -122,12 +122,12 @@ public class TrainController {
 		
 		
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
-		metersRemaining = (metersRemaining - (velocity.feedback()*(double)100/(double)3600));
-		authority = (authority - (velocity.feedback()*(double)100/(double)3600));
+		metersRemaining = (metersRemaining - (velocity.feedback()*KMH_TO_MS*.01));
+		authority = (authority - (velocity.feedback()*KMH_TO_MS)*.01);
 		this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining);
         //System.out.println("meters: " + metersRemaining);
                 
-		brakingDistance = (Math.pow(velocity.feedback()*(double)100/(double)3600, 2))/((2*SERVICE_DECELERATION)/(double)1000);
+		brakingDistance = Math.pow(velocity.feedback()*KMH_TO_MS,2)/((2*SERVICE_DECELERATION));
         this.pcs.firePropertyChange("brakingDist", -1 , brakingDistance);
         //System.out.println("braking distance: " + brakingDistance);
                 
@@ -137,6 +137,7 @@ public class TrainController {
 		} /*else {
 			stopping = false;
 		}*/
+		
 		
 		
 		//POWER COMMAND
@@ -155,8 +156,8 @@ public class TrainController {
 
 			}	
 		}
-		
-
+		System.out.println("power: " + p);
+		System.out.println("service: " + service);
 		if (service || emergency){
 			//BRAKING, POWER = 0
 			p = 0;
@@ -218,7 +219,9 @@ public class TrainController {
 	
 	public void setAuthority(int authority) {
 		this.authority = authority;
+		this.metersRemaining = authority;
 		stopping = false;
+		setService(false);
 	}
 	
 	public void operateDoors(int opDoors) {
