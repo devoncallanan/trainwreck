@@ -92,13 +92,13 @@ public class TrackController {
                     boolean[] track = m.dataBA();
                     for(int i=0; i<track.length; i++){
                          if(i<mainLine.length){
-                              track[i] = mainLine[i];
+                              mainLine[i] = track[i];
                          }
                          else if(i<(mainLine.length+msplit.length)){
-                              track[i] = msplit[i-mainLine.length];
+                              msplit[i-mainLine.length] = track[i];
                          }
                          else if(i<(mainLine.length+msplit.length+side.length)){
-                              track[i] = side[i-mainLine.length-side.length];
+                              side[i-mainLine.length-msplit.length] = track[i];
                          }
                     }
                }
@@ -119,8 +119,10 @@ public class TrackController {
                mq.send(m, MDest.TcMd);
                authority.remove(i);
           }
-          m = new Message((MDest.TcCtl+id), switchPos, MType.Switch);
-          mq.send(m, Mdest.TcMd);
+
+          m = new Message((MDest.TcCtl+id), switchPos, MType.SWITCH);
+          System.out.println("SWITCH_FROM:"+m.from());
+          mq.send(m, MDest.TcMd);
      }
      public void logic(){
           if(msplitOcc && !sideOcc && !mainOcc){

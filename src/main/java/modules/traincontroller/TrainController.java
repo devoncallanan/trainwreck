@@ -127,22 +127,22 @@ public class TrainController {
 		this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining);
         //System.out.println("meters: " + metersRemaining);
                 
-		brakingDistance = (Math.pow(velocity.feedback()*(double)100/(double)3600, 2))/((2*SERVICE_DECELERATION)/(double)100);
+		brakingDistance = (Math.pow(velocity.feedback()*(double)100/(double)3600, 2))/((2*SERVICE_DECELERATION)/(double)1000);
         this.pcs.firePropertyChange("brakingDist", -1 , brakingDistance);
         //System.out.println("braking distance: " + brakingDistance);
                 
-		if (metersRemaining - 20 <= brakingDistance) {
+		if (metersRemaining <= brakingDistance) {
 			if(!service) setService(true);
 			stopping = true;
-		} else {
+		} /*else {
 			stopping = false;
-		}
+		}*/
 		
 		
 		//POWER COMMAND
 		if (!stopping) {
 			if (velocity.error() < 0) {
-				if (!service) setService(true);
+				//if (!service) setService(true);
 				p = 0;
 			} else {
 				if (service) setService(false);
@@ -151,7 +151,7 @@ public class TrainController {
 				p2 = power2.generatePower(velocity.error(), velocity.previousError());
 				p3 = power3.generatePower(velocity.error(), velocity.previousError());
 
-				p = p1/1000;
+				p = p1;
 
 			}	
 		}

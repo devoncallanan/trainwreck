@@ -12,7 +12,7 @@ package modules.trainmodel;
 public class Train {
     
         private double force;
-        private double velocityFeedback = 0;
+        private double velocityFeedback = 1;
         private final double MS_TO_KMH = (double)3600/(double)1000;
         private double trainMass = 81800;
         private double totalMass;
@@ -39,9 +39,9 @@ public class Train {
     	
         currentSpeed = currentSpeed*.278; //convert kmh to m/s
     	if (currentSpeed == 0) {
-    		force = power/1;
+    		force = (power*1000)/1;
     	} else {
-    		force = power/currentSpeed;
+    		force = (power*1000)/currentSpeed;
     	}
     	    //	System.out.println(force);
 
