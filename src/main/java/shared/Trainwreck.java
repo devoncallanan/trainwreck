@@ -9,8 +9,11 @@ import modules.trainmodel.*;
 public class Trainwreck {
 	public static void main(String[] args) {
 		System.out.println("Gradle Test");
+
 		java.util.Scanner pauseScan = new java.util.Scanner(System.in);
 		int time = 10;
+		boolean dispatched = false;
+
 		MessageQueue messagequeue = new MessageQueue();
 		
 		CTCOffice ctc = new CTCOffice(messagequeue);
@@ -27,7 +30,7 @@ public class Trainwreck {
 		
 		try {
 			while (true) {
-				ctc.run();
+				dispatched = ctc.run();
 				trackctl_0.run();
 				trackctl_1.run();
 				trackctl_2.run();
@@ -35,8 +38,11 @@ public class Trainwreck {
 				trackctl_4.run();
 				trackctl_5.run();
 				trackmodel.run();
-				trainmodel.run();
-				trainctl.run();
+				// Don't run trains until dispatched from CTC
+				if (dispatched) {
+					trainmodel.run();
+					trainctl.run();
+				}
 				
 				//Will get the time to sleep from CTC once implemented
 				//time = ctc.getTime();
