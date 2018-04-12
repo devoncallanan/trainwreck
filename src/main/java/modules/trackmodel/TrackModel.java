@@ -16,8 +16,12 @@ make ghost train circ buffer with front of train occupying and back freeing
  *
  * @author Devon
  */
+
+
 public class TrackModel {
     
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
 	private static double DELTA_T = .1;
     Track redline;
 	Track greenline;
@@ -34,11 +38,12 @@ public class TrackModel {
 		this.m = m;
 		numTrains = 0;
         redline = new Track();
+		greenline = new Track();
 		conts = new Controller(6);
 		conts.init();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TrackmodelGUI(redline).setVisible(true);
+                new TrackmodelGUI(redline, greenline, conts).setVisible(true);
             }
         });
     }
@@ -72,30 +77,30 @@ public class TrackModel {
 				case MType.SPEED:
 					System.out.println(mail.dataD());
 					m.send(mail, MDest.TrMd);
-					System.out.println("TkMod SEND");
 					break;	
 				case MType.NEWTRAIN:
-                    System.out.println("New Train");
 					Train[] temp = new Train[numTrains + 1];
 					
 					for (int i = 0; i < numTrains; i++) {
 						temp[i] = trains[i];
 					}
 					trains = temp;
-                    trains[numTrains] = new Train(numTrains,9, 9);
+                    trains[numTrains] = new Train(numTrains,9, 10);
 					numTrains++;
+					redline.setOccupancy(9, true);
+					conts.update(9, 1);
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
-					System.out.println("Devon " + mail.dataD() + " " + (mail.from() - MDest.TrMd)/2 + " " + trains[0].speed);
                     break;
 				case MType.SWITCH:
                     if (redline.getSize() > 70) {
     					int contid = mail.from() - MDest.TcCtl;
     					int realBlock = conts.getSwitchConvert(contid);
     					int branch = 1;
-    					if (mail.dataB()) branch = -1;
+    					if (!mail.dataB()) branch = -1;
     					redline.setSwitch(realBlock, branch, 0);
+						conts.setSwitch(contid, branch);
                     }
                     break;
 			}
@@ -110,7 +115,8 @@ public class TrackModel {
         }
 		*/
 
-
+		boolean changedBlock = false;
+		Block nextBlock = null;
         //System.out.println("Loaded Track");
 		if (redline.getSize() > 70) {
     		for (int i = 0; i < numTrains; i++) {
@@ -119,15 +125,21 @@ public class TrackModel {
     			double overflow = traveled - redline.getBlock(train.location).length ;
                 System.out.println("moving trains " + traveled + " ovf " + overflow);
     			if (overflow > 0) {
-    				Block nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
+    				nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
     				redline.setOccupancy(train.location, false);
+					conts.update(train.location, 0);
     				train.backNode = redline.getBlock(train.location).other(train.backNode);
     				train.location = nextBlock.number;
     				redline.setOccupancy(train.location, true);
+					conts.update(train.location, 1);
     				train.distanceIn = overflow;
+					changedBlock = true;
     			}
     		}
         }
+		
+		
+		/* ---------------- send messages -------------------------- */
 		
 		Message tempM;
 		tempM = new Message(MDest.TcMd, 30, MType.PASSENGERS);
@@ -140,6 +152,20 @@ public class TrackModel {
 			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
 			m.send(tempM, MDest.TcCtl + i);
 		}
+		
+		if (changedBlock) {
+			//grade
+			//tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			//m.send(tempM, MDest.TrMd);
+			//beacon
+			if (nextBlock.beacon != null) {
+				tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);
+				m.send(tempM, MDest.TrCtl);
+			}
+			
+		}
+		
+
         
 		/*
 		while (redline.getSize() == 0){
@@ -176,14 +202,50 @@ public class TrackModel {
 		
         
     }
+	
+	public void chug() {
+		while (redline.getSize() == 0){
+			System.out.println("boo");
+		}
+        int i = 0;
+        int j = 0;
+        Block curr = redline.getBlock(1);
+        Block temp = curr;
+        int lastNode = 2;
+        System.out.println(lastNode + " " + curr);
+        redline.setOccupancy(curr.number, true);
+        while(true) {
+            System.out.print(lastNode + " " + curr);
+
+            temp = redline.next(curr, lastNode);
+            lastNode = curr.other(lastNode);
+            redline.setOccupancy(curr.number, false);
+            curr = temp;
+            redline.setOccupancy(curr.number, true);
+            //System.out.println(lastNode);
+            //redline.setOccupancy(lastNode, false);
+            try {
+            Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("didnt sleep");
+            }
+            //redline.setOccupancy(j%15, false);
+            //j++;
+        }
+	}
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
         TrackModel tm = new TrackModel(new MessageQueue());
-        tm.run();
+        tm.chug();
         
+		
+		
+
+		
         /*
         Pattern p = Pattern.compile("[,\\s]");
         java.io.File file;

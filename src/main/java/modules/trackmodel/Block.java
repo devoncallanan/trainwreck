@@ -10,7 +10,13 @@ import shared.*;
  *
  * @author Devon
  */
+
+
+
 public class Block {
+	
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
     //blocks are edges in a directed graph
     public int from;
     public int to;
@@ -24,8 +30,9 @@ public class Block {
     public double limit;
     public boolean occupied;
     public int branch;
+	public String beacon;
 
-    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch) {
+    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch, int switchloc, String beacon) {
         this.to = to;
         this.from = from;
         this.section = section;
@@ -36,6 +43,7 @@ public class Block {
         this.limit = limit;
         occupied = false;
         this.branch = branch;
+		this.beacon = beacon;
     }
     
     public Block(int to, int from, boolean branch) {
@@ -59,7 +67,7 @@ public class Block {
     }
     
     public String extendedInfo() {
-        String s = new String("Section: " + section + "\t\t\tBlock Number: " + number + "\nStation: " + station + "\t\t\tGrade: " + grade + "\nLength: " + length + "\t\t\t Speed Limit: " + limit + "\nOccupied: " + occupied);
+        String s = new String("Section: " + section + "\t\t\tBlock Number: " + number + "\nStation: " + station + "\t\t\tGrade: " + grade + "\nLength: " + length*3.28084 + "\t\t\t Speed Limit: " + limit*0.621371 + "\nOccupied: " + occupied);
         return s;
     }
 }

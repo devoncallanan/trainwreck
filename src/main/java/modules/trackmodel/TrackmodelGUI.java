@@ -12,12 +12,16 @@ import shared.*;
  */
 public class TrackmodelGUI extends javax.swing.JFrame {
     Track redline;
+	Track greenline;
+	Controller controllers;
     int redSelected = -1;
     /**
      * Creates new form TrackmodelGUI
      */
-    public TrackmodelGUI(Track redline) {
+    public TrackmodelGUI(Track redline, Track greenline, Controller controllers) {
         this.redline = redline;
+		this.greenline = greenline;
+		this.controllers = controllers;
         redline.addListDataListener(new OccupationChangedListener());
         initComponents();
     }
@@ -67,11 +71,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Red Line", jScrollPane1);
 
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            int[][] switches = redline.switches;
-            public int getSize() { return switches.length; }
-            public String getElementAt(int i) { return Integer.toString(switches[i][0]); }
-        });
+        jList2.setModel(controllers);
         jScrollPane3.setViewportView(jList2);
 
         jTabbedPane2.addTab("Switches", jScrollPane3);

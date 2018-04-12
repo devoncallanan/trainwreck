@@ -10,18 +10,19 @@ package modules.trackmodel;
 
 import shared.*;
 
-public class Controller {
+public class Controller extends javax.swing.AbstractListModel<String>{
 	int[][] occupancy;
 	int[][] convert;
 	int numControllers;
 	int[] switchConvert;
-	//int[] side2;
-
+	int[] positions;
+	
 	Controller(int numControllers) {
-		occupancy = new int[numControllers][50];
-		convert = new int[numControllers][50];
+		this.occupancy = new int[numControllers][50];
+		this.convert = new int[numControllers][50];
 		this.numControllers = numControllers;
-		switchConvert = new int[numControllers];
+		this.switchConvert = new int[numControllers];
+		this.positions = new int[numControllers];
 	}
 
 	public void init() {
@@ -34,10 +35,11 @@ public class Controller {
 		String switchLocs;
 		try {
 			input = new java.io.File("./src/main/java/modules/trackmodel/controller_config.csv");
+			//input = new java.io.File("./modules/trackmodel/controller_config.csv");
 			scan = new java.util.Scanner(input);
 		}
 		catch (Exception e) {
-			System.err.println("The config file 'controller_config.csv' could not be found");
+			System.err.println("The config file 'controller_config.csv' could not be found " + System.getProperty("user.dir"));
 		}
 
 		switchLocs = scan.nextLine();
@@ -45,6 +47,7 @@ public class Controller {
 		scanLine = new java.util.Scanner(switchLocs).useDelimiter(",|\\r\\n");
 		while (scanLine.hasNext()){
 			this.setSwitchConvert(scanLine.nextInt(), i);
+			this.setSwitch(i, 1);
 			if(i < 5) {
 				i++;
 			} else {
@@ -90,5 +93,23 @@ public class Controller {
 
 	public int getSwitchConvert(int switchNum) {
 		return switchConvert[switchNum];
+	}
+	
+	public void setSwitch(int i, int branch) {
+		positions[i] = branch;
+		fireContentsChanged(this, i, i);
+	}
+	
+	public int getSize() {
+		return positions.length;
+	}
+	
+	public String getElementAt(int i) {
+		StringBuilder info = new StringBuilder();
+		boolean[] arr = getOccArray(i);
+		for (int j = 0; j < arr.length; j++) {
+			info.append(arr[j] + " ");
+		}
+		return info.toString();
 	}
 }
