@@ -18,7 +18,11 @@ public class TrainModelMain {
      private Message m;    
      private double velocityFeedback;
      private double auth; 
-     private int doors,temp,brakes,lights,passengers;
+     private int passengers;
+     private int doors = 0;	
+     private int temp = 65;	
+     private int brakes = 0;	
+     private int lights = 0;
      private int failures = 4;
      private double power,grade,speed,speedLimit;
      
