@@ -384,11 +384,13 @@ public class TrainModelUI extends javax.swing.JFrame {
         this.speedLimitLabel.setText(Double.toString(speedLimit));
         this.authLabel.setText(Double.toString(auth));
         this.tempLabel.setText(Double.toString(temp));
+        this.idLabel.setText(Double.toString(trainID));
         
         switch (doors) {
             
             case 0:
                 this.leftDLabel.setText("Closed");
+                this.rightDLabel.setText("Closed");
                 break;
             case 1:
                 this.leftDLabel.setText("Open");
@@ -406,10 +408,11 @@ public class TrainModelUI extends javax.swing.JFrame {
              
     }
         
-        switch (doors) {
+        switch (brakes) {
             
             case 0:
                 this.sbrakeLabel.setText("Off");
+                this.ebrakeLabel.setText("Off");
                 break;
             case 1:
                 this.sbrakeLabel.setText("On");
