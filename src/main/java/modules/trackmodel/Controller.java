@@ -24,7 +24,7 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 		this.switchConvert = new int[numControllers];
 		this.positions = new int[numControllers];
 	}
-	
+
 	public void init() {
 		java.io.File input;
 		java.util.Scanner scan = null;
@@ -41,7 +41,7 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 		catch (Exception e) {
 			System.err.println("The config file 'controller_config.csv' could not be found " + System.getProperty("user.dir"));
 		}
-		
+
 		switchLocs = scan.nextLine();
 		System.out.println(switchLocs);
 		scanLine = new java.util.Scanner(switchLocs).useDelimiter(",|\\r\\n");
@@ -64,10 +64,10 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 			}
 			contNumber++;
 		}
-		
-		
+
+
 	}
-	
+
 	public boolean[] getOccArray(int controllerid) {
 		boolean[] arr = new boolean[25];
 		for (int i = 0; i< 25; i++) {
@@ -75,7 +75,7 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 		}
 		return arr;
 	}
-	
+
 	public void update(int realBlock, int occ) {
 		for (int i = 0; i<numControllers; i++) {
 			for (int j = 0; j<25; j++) {
@@ -86,11 +86,11 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 			}
 		}
 	}
-	
+
 	public void setSwitchConvert(int realBlock, int switchNum) {
 		switchConvert[switchNum] = realBlock;
 	}
-	
+
 	public int getSwitchConvert(int switchNum) {
 		return switchConvert[switchNum];
 	}
@@ -108,5 +108,3 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 		return "" + positions[i];
 	}
 }
-
-

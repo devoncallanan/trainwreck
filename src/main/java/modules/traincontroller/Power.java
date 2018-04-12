@@ -64,14 +64,25 @@ public class Power {
 	}
 	
 	public void setKi(double Ki) {
+            if (Ki > -1)
 		this.Ki = Ki;
 	}
 	
 	public void setKp(double Kp) {
+            if (Kp > -1)
 		this.Kp = Kp;
 	}
 	
+    public double getKp() {
+		return Kp;
+	}
+        
+    public double getKi() {
+		return Ki;
+	}
+        
 	public void killPower() {
 		
 	}
+	
 }

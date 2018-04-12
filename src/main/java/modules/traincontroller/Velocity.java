@@ -20,6 +20,7 @@ public class Velocity {
 	private double setpointSpeed;
 	public double suggestedSpeed;
 	private double originalSuggestedSpeed;
+	private double zeroSpeed = 0;
 
 	private final double MAX_SPEED = 70;
 	
@@ -34,7 +35,7 @@ public class Velocity {
 		return velocityFeedback;
 	}
 	
-	public void setFeedback(double velocityFeedback, boolean mode) {
+	public void setFeedback(double velocityFeedback, boolean mode, boolean emergency) {
 		previousVelocityError = velocityError;
 		if(!mode) {
 			//Manual
@@ -43,7 +44,11 @@ public class Velocity {
 			//Automatic
 			velocityError = suggestedSpeed - velocityFeedback;			
 		}
-		System.out.println("Velocity (error): " + velocityError);
+		
+		if(emergency) {
+            velocityError = zeroSpeed - velocityFeedback;
+        }
+
 		this.velocityFeedback = velocityFeedback;
 	}
 	
@@ -59,14 +64,14 @@ public class Velocity {
 	//If a new block is entered, the speed limit is set
 	public void setSpeedLimit(double speedLimit, boolean mode) {
 		this.speedLimit = speedLimit;
-		if (mode) {
+		/*if (mode) {
 			//Automatic
 			if (originalSuggestedSpeed <= speedLimit) {
 				suggestedSpeed = originalSuggestedSpeed;
 			} else if (suggestedSpeed > speedLimit) {
 				suggestedSpeed = speedLimit;
 			}
-		}
+		}*/
 	}
 	
 	

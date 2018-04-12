@@ -10,6 +10,7 @@ public class TrackController {
      public MessageQueue mq = new MessageQueue();
      public PLC plcCode = new PLC();
      private Stack<Message> messages;
+     TrackControllerGUI gui;
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true;
@@ -23,7 +24,12 @@ public class TrackController {
           msplit = r;
           side = s;
           plcCode = p;
-          for(int i=0; i<n.length; i++){
+          TrackController temp = this;
+
+                gui = new TrackControllerGUI(temp, n, r, s, z, p);
+                gui.setVisible(true);
+
+               for(int i=0; i<n.length; i++){
                if(mainLine[i] == true){
                     mainCross = true;
                     crossInd = i;
@@ -63,6 +69,7 @@ public class TrackController {
                checkCross();
           }
           checkContinue();
+          setGUI();
           mSend();
      }
      public void manualMode(){
@@ -594,5 +601,33 @@ public class TrackController {
      }
      public boolean[] getSide(){
           return side;
+     }
+     public void setSwitch(boolean s){
+          if(!mode)
+               switchPos = s;
+     }
+     public void setCross(boolean c){
+          if(!mode)
+               crossPos = c;
+     }
+     public void setSwitchLight(boolean s){
+          if(!mode)
+               switchLight = s;
+     }
+     public void setCrossLight(boolean c){
+          if(!mode)
+               crossLights = c;
+     }
+     public void setMode(boolean m){
+          mode = m;
+     }
+     public void setGUI(){
+          gui.changeSwitch(switchPos);
+          gui.changeSwitchLight(switchLight);
+          gui.changeCrossing(crossPos);
+          gui.changeCrossLight(crossLights);
+          gui.updateMain(mainLine);
+          gui.updateMsplit(msplit);
+          gui.updateSide(side);
      }
 }

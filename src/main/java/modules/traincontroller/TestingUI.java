@@ -588,7 +588,7 @@ public class TestingUI extends javax.swing.JFrame {
     private void emergencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emergencyActionPerformed
         // TODO add your handling code here:
         trainController.setEmergency(true);
-        brake.setText("Service");
+        brake.setText("Emergency");
     }//GEN-LAST:event_emergencyActionPerformed
 
     private void brakePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_brakePropertyChange
