@@ -28,5 +28,6 @@ public class MType {
 	public static final int ZEROSPEED = 15;				//int
 	public static final int PASSENGERS = 16;			//int
 	public static final int FAILURE = 17;				//int	ebrake 0, brake failure 1, signal failure 2, engine failure 3
+	public static final int GRADE = 18;					//double	
 
 }
