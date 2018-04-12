@@ -105,6 +105,11 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 	}
 	
 	public String getElementAt(int i) {
-		return "" + positions[i];
+		StringBuilder info = new StringBuilder();
+		boolean[] arr = getOccArray(i);
+		for (int j = 0; j < arr.length; j++) {
+			info.append(arr[j] + " ");
+		}
+		return info.toString();
 	}
 }

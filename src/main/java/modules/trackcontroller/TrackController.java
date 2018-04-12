@@ -27,7 +27,7 @@ public class TrackController {
           plcCode = p;
           //TrackController temp = this;
 
-		  gui = new TrackControllerGUI(this, n, r, s, z, p);
+		  gui = new TrackControllerGUI(this, n, r, s, z + 1, p);
 		  gui.setVisible(true);
 
 		   for(int i=0; i<n.length; i++){
@@ -55,6 +55,9 @@ public class TrackController {
      }
      public void run(){
           mReceive();
+		  mainOcc = getOcc(mainLine);
+		  sideOcc = getOcc(side);
+		  msplitOcc = getOcc(msplit);
           getDir();
           if(mainLine[mainLine.length-1])
                onSwitch = true;
@@ -73,6 +76,10 @@ public class TrackController {
           setGUI();
           mSend();
 		  System.out.println("ALex sets the SWITCH!!!1!!1: " + switchPos + " : " + id);
+		  System.out.println("Msplit Dir: "+ msplitDir);
+		  System.out.println("Side Dir:"+ sideDir);
+		  System.out.println("Msplit OCC: "+msplitOcc);
+		  System.out.println("Side Occ: "+sideOcc);
      }
      public void manualMode(){
           mode = false;
@@ -130,7 +137,7 @@ public class TrackController {
           }
 
           m = new Message((MDest.TcCtl+id), switchPos, MType.SWITCH);
-          System.out.println("SWITCH_FROM:"+m.from());
+          System.out.println("SWITCH_FROM:"+m.dataB());
           mq.send(m, MDest.TcMd);
      }
      public void logic(){
@@ -631,9 +638,9 @@ public class TrackController {
           gui.changeCrossLight(crossLights);
 		  
           gui.updateMain(mainLine);
-		  /*
+		  
           gui.updateMsplit(msplit);
           gui.updateSide(side);
-		  */
+		  
      }
 }
