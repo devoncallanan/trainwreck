@@ -14,9 +14,7 @@ import java.util.regex.Pattern;
  * @author Devon
  */
  
-
-public static double KMH_TO_MS = 1000.0/3600.0; 
-public static double MS_TO_KMH = 3600.0/10000.0;  
+ 
 
 public class Track extends javax.swing.AbstractListModel<String>{
     private Block[][] track;
@@ -25,6 +23,9 @@ public class Track extends javax.swing.AbstractListModel<String>{
     private int length;
     private int items;
     
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
+
     public Track() {
         this.length = 0;
         this.items = 0;
@@ -76,7 +77,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
 			}
 			String infrastructure = scan.next();
 			
-            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch, switchLoc, beacon); 
+            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch, switchloc, beacon); 
             this.addBlock(b);
             //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);
@@ -146,7 +147,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
                         else if (b.branch == 0 && track[b.to][i].branch == switchDir) { //check to make sure it is correct direction for fork
                             nextBlock = track[b.to][i];
                         }
-						else //System.out.println("Switch: " + switchDir);
+						else System.out.println("Switch: " + switchDir);
 
                     }
                     else {
@@ -173,7 +174,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
                         else if (b.branch == 0 && track[b.from][i].branch == switchDir) { //check to make sure it is correct direction for fork
                             nextBlock = track[b.from][i];
                         }
-						else //System.out.println("Switch: " + switchDir);
+						else System.out.println("Switch: " + switchDir);
 
                     } 
                     else {

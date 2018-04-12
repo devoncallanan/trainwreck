@@ -36,7 +36,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         msplitList = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
-        mainLineList = new javax.swing.JList<>();
+        mainLineList = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -100,12 +100,13 @@ public class TrackControllerGUI extends javax.swing.JFrame {
             public String getElementAt(int i) { return ""+strings[i]; }
         });
         jScrollPane2.setViewportView(msplitList);
-
+		/*
         mainLineList.setModel(new javax.swing.AbstractListModel<String>() {
             boolean[] strings = mainLine;
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return ""+strings[i]; }
         });
+		*/
         jScrollPane3.setViewportView(mainLineList);
 
         jLabel1.setText("Main");
@@ -378,8 +379,11 @@ public class TrackControllerGUI extends javax.swing.JFrame {
 
     }
     public void updateMain(boolean[] a){
-         mainLine = a;
-         mainLineList.updateUI();
+         StringBuilder info = new StringBuilder();
+		 for (int j = 0; j < a.length; j++){
+			 info.append(a[i] + "\n");
+		 }
+		 mainLineList.setText(info.toString());
     }
     public void updateMsplit(boolean[] a){
          msplit = a;
@@ -412,7 +416,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JList<String> mainLineList;
+    private javax.swing.JTextArea mainLineList;
     private javax.swing.JRadioButton manualButton;
     private javax.swing.JList<String> msplitList;
     private javax.swing.JList<String> sideList;
