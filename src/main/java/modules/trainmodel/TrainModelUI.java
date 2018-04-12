@@ -105,7 +105,7 @@ public class TrainModelUI extends javax.swing.JFrame {
         TrainInfoDisplay1.setColumns(20);
         TrainInfoDisplay1.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         TrainInfoDisplay1.setRows(5);
-        TrainInfoDisplay1.setText("Train 1 Information\n------------------------\nAmount of cars: 3\nNumber of doors: 18\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: 40.9T - 56.7T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\n");
+        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: 40.9T - 56.7T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
         jScrollPane4.setViewportView(TrainInfoDisplay1);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -384,11 +384,13 @@ public class TrainModelUI extends javax.swing.JFrame {
         this.speedLimitLabel.setText(Double.toString(speedLimit));
         this.authLabel.setText(Double.toString(auth));
         this.tempLabel.setText(Double.toString(temp));
+        this.idLabel.setText(Double.toString(trainID));
         
         switch (doors) {
             
             case 0:
                 this.leftDLabel.setText("Closed");
+                this.rightDLabel.setText("Closed");
                 break;
             case 1:
                 this.leftDLabel.setText("Open");
@@ -406,10 +408,11 @@ public class TrainModelUI extends javax.swing.JFrame {
              
     }
         
-        switch (doors) {
+        switch (brakes) {
             
             case 0:
                 this.sbrakeLabel.setText("Off");
+                this.ebrakeLabel.setText("Off");
                 break;
             case 1:
                 this.sbrakeLabel.setText("On");
