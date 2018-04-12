@@ -45,9 +45,11 @@ public class Trainwreck {
 				}
 				
 				//Will get the time to sleep from CTC once implemented
-				//time = ctc.getTime();
+				time = ctc.getTime();
 				System.out.println("- - - - - Pause - - - - -");
 				Thread.sleep(time);
+				// Update clock in UI
+				ctc.repaint();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
