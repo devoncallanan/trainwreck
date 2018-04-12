@@ -10,6 +10,8 @@ import shared.*;
  */
 public class TrainControllerUI extends javax.swing.JFrame {
     TrainController trainController;
+	private final double MPH_TO_KMH = (double)1.609344;
+	private final double KMH_TO_MPH = (double)1/(double)1.609344;
     /**
      * Creates new form TrainControllerUI
      */
@@ -47,6 +49,18 @@ public class TrainControllerUI extends javax.swing.JFrame {
                         break;
                     case "kp":
                         kpDispPropertyChange(evt);
+                        break;
+					case "speedLimit":
+                        speedLimitPropertyChange(evt);
+                        break;
+					case "doors":
+						if ((int)evt.getNewValue() < 2)
+							leftDoorsPropertyChange(evt);
+						else	
+							rightDoorsPropertyChange(evt);
+                        break;
+					case "failure":	
+						failureLabelPropertyChange(evt);
                         break;
                     default:
                         break;
@@ -86,6 +100,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
         distRemaining = new javax.swing.JLabel();
         kiDisp = new javax.swing.JLabel();
         kpDisp = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        speedLimit = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         modeLabel = new javax.swing.JLabel();
@@ -106,11 +122,23 @@ public class TrainControllerUI extends javax.swing.JFrame {
         openLeft = new javax.swing.JButton();
         closeRight = new javax.swing.JButton();
         closeLeft = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        lightsLabel = new javax.swing.JLabel();
+        lights = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        tempLabel = new javax.swing.JLabel();
+        temp = new javax.swing.JTextField();
+        tempSubmit = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         advertisement = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         stationDisp = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        announce = new javax.swing.JToggleButton();
+        jLabel20 = new javax.swing.JLabel();
+        failureLabel = new javax.swing.JLabel();
+        resetFailure = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -119,15 +147,16 @@ public class TrainControllerUI extends javax.swing.JFrame {
         submitKIKP = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Train Controller");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Train Controller", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 36))); // NOI18N
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Speed", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 24))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Speed", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 28))); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel1.setText("Current Speed:");
 
-        currentSpeed.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        currentSpeed.setFont(new java.awt.Font("Tahoma", 0, 52)); // NOI18N
         currentSpeed.setText("0.00");
         currentSpeed.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -135,13 +164,13 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel2.setText("Setpoint Speed:");
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel10.setText("Suggested Speed:");
 
-        setpointSpeed.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        setpointSpeed.setFont(new java.awt.Font("Tahoma", 0, 52)); // NOI18N
         setpointSpeed.setText("0");
         setpointSpeed.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -149,7 +178,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        suggSpeed.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        suggSpeed.setFont(new java.awt.Font("Tahoma", 0, 52)); // NOI18N
         suggSpeed.setText("0");
         suggSpeed.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -157,7 +186,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel6.setText("Setpoint speed:");
 
         speed.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -171,13 +200,13 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel3.setText("Power command:");
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel4.setText("Authority:");
 
-        powerCmd.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        powerCmd.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         powerCmd.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         powerCmd.setText("0");
         powerCmd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -186,7 +215,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        distRemaining.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        distRemaining.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         distRemaining.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         distRemaining.setText("0");
         distRemaining.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -195,7 +224,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        kiDisp.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        kiDisp.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         kiDisp.setText("Ki:");
         kiDisp.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -203,11 +232,22 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        kpDisp.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        kpDisp.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         kpDisp.setText("Kp:");
         kpDisp.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 kpDispPropertyChange(evt);
+            }
+        });
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
+        jLabel18.setText("Speed Limit:");
+
+        speedLimit.setFont(new java.awt.Font("Tahoma", 0, 52)); // NOI18N
+        speedLimit.setText("0");
+        speedLimit.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                speedLimitPropertyChange(evt);
             }
         });
 
@@ -218,6 +258,9 @@ public class TrainControllerUI extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(speedLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -236,23 +279,29 @@ public class TrainControllerUI extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(suggSpeed, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel10)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(powerCmd, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(distRemaining, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(submitSpeed))
-                    .addComponent(kiDisp)
-                    .addComponent(kpDisp))
-                .addContainerGap(52, Short.MAX_VALUE))
+                    .addComponent(jLabel18)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel6)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(submitSpeed))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(powerCmd, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(distRemaining, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(kiDisp)
+                                .addComponent(kpDisp)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,35 +316,37 @@ public class TrainControllerUI extends javax.swing.JFrame {
                     .addComponent(currentSpeed, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(setpointSpeed, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(suggSpeed, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(speedLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(submitSpeed))
-                .addGap(18, 18, 18)
-                .addComponent(kpDisp)
-                .addGap(5, 5, 5)
-                .addComponent(kiDisp)
                 .addGap(26, 26, 26)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(kpDisp)
                     .addComponent(jLabel3)
                     .addComponent(powerCmd))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(kiDisp)
                     .addComponent(jLabel4)
                     .addComponent(distRemaining))
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Brakes & Mode", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 24))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Brakes & Mode", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 28))); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel8.setText("Mode:");
 
-        modeLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        modeLabel.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         modeLabel.setText("Automatic");
 
-        manual.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        manual.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         manual.setText("Manual");
         manual.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -303,7 +354,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        automatic.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        automatic.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         automatic.setText("Automatic");
         automatic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,10 +362,10 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel12.setText("Brakes:");
 
-        service.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        service.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         service.setText("Service");
         service.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -327,7 +378,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        emergency.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        emergency.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         emergency.setText("Emergency");
         emergency.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -335,7 +386,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        brake.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        brake.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         brake.setText(" ");
         brake.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -370,13 +421,13 @@ public class TrainControllerUI extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(disable)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(manual)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                    .addComponent(manual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(automatic, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(service, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(service, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(emergency))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -405,24 +456,24 @@ public class TrainControllerUI extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Train", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 24))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Train", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 28))); // NOI18N
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
         jLabel9.setText("Doors:");
 
-        jLabel14.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel14.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel14.setText("Left:");
 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel15.setText("Right:");
 
-        rightDoors.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        rightDoors.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         rightDoors.setText("Closed");
 
-        leftDoors.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        leftDoors.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         leftDoors.setText("Closed");
 
-        openRight.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        openRight.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         openRight.setText("Open");
         openRight.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -430,7 +481,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        openLeft.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        openLeft.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         openLeft.setText("Open");
         openLeft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -438,7 +489,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        closeRight.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        closeRight.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         closeRight.setText("Close");
         closeRight.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -446,11 +497,42 @@ public class TrainControllerUI extends javax.swing.JFrame {
             }
         });
 
-        closeLeft.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        closeLeft.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         closeLeft.setText("Close");
         closeLeft.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeLeftActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
+        jLabel16.setText("Lights:");
+
+        lightsLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lightsLabel.setText("On");
+
+        lights.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lights.setText("Switch");
+        lights.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lightsActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 0, 28)); // NOI18N
+        jLabel17.setText("Temp:");
+
+        tempLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        tempLabel.setText("70 F");
+
+        temp.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        temp.setText(" ");
+
+        tempSubmit.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        tempSubmit.setText("Submit");
+        tempSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tempSubmitActionPerformed(evt);
             }
         });
 
@@ -460,24 +542,45 @@ public class TrainControllerUI extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel9)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(rightDoors, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                    .addComponent(leftDoors, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(openLeft, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(openRight, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(closeRight)
-                    .addComponent(closeLeft))
-                .addContainerGap(65, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(temp, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tempSubmit)
+                        .addGap(0, 174, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(rightDoors, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                            .addComponent(leftDoors, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(openLeft, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(openRight, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(closeRight)
+                            .addComponent(closeLeft))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tempLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lightsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lights)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -490,31 +593,79 @@ public class TrainControllerUI extends javax.swing.JFrame {
                     .addComponent(rightDoors)
                     .addComponent(openRight)
                     .addComponent(closeRight))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(leftDoors)
                     .addComponent(openLeft)
                     .addComponent(closeLeft))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(lightsLabel)
+                    .addComponent(lights))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(tempLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tempSubmit)
+                    .addComponent(temp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Other", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 24))); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Other", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 28))); // NOI18N
 
-        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel11.setText("Advertisement:");
 
-        advertisement.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        advertisement.setText("Dick's Sporting Goods, 50% sale");
+        advertisement.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        advertisement.setText("University of Pittsburgh. Engineering better minds.");
+        advertisement.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                advertisementPropertyChange(evt);
+            }
+        });
 
-        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel13.setText("Station:");
 
-        stationDisp.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        stationDisp.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         stationDisp.setText(" ");
         stationDisp.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 stationDispPropertyChange(evt);
+            }
+        });
+
+        jLabel19.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel19.setText("Announce:");
+
+        announce.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        announce.setText("Disabled");
+        announce.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                announceActionPerformed(evt);
+            }
+        });
+
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel20.setText("Failure:");
+
+        failureLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        failureLabel.setText("None.");
+        failureLabel.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                failureLabelPropertyChange(evt);
+            }
+        });
+
+        resetFailure.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        resetFailure.setText("Reset");
+        resetFailure.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetFailureActionPerformed(evt);
             }
         });
 
@@ -525,27 +676,49 @@ public class TrainControllerUI extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(advertisement, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(stationDisp, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel11)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(announce))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(53, 53, 53)
+                                .addComponent(advertisement, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
+                        .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stationDisp, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(failureLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(58, 58, 58)
+                        .addComponent(resetFailure)))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(advertisement))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(stationDisp))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(announce)
+                    .addComponent(jLabel19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(advertisement, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(failureLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(resetFailure))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Train Initialization", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 24))); // NOI18N
@@ -585,26 +758,28 @@ public class TrainControllerUI extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ki, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel5))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(kp, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(kp, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                    .addComponent(ki))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(submitKIKP)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
+                    .addComponent(ki, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(ki, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(kp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(submitKIKP))
                 .addContainerGap())
@@ -615,31 +790,32 @@ public class TrainControllerUI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -679,8 +855,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private void powerCmdPropertyChange(java.beans.PropertyChangeEvent evt) {                                        
         // TODO add your handling code here:
         if (evt.getPropertyName().equals("powerUpdate")) {
-            DecimalFormat numberFormat = new DecimalFormat("#0.0000");
-            powerCmd.setText(String.valueOf(numberFormat.format(evt.getNewValue())));
+            DecimalFormat numberFormat = new DecimalFormat("#0.00");
+            powerCmd.setText(String.valueOf(numberFormat.format(evt.getNewValue())) + " kW");
         }
     }                                       
 
@@ -707,9 +883,15 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private void submitSpeedActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // TODO add your handling code here:
         double speed1 = ParseDouble(speed.getText());
-        setpointSpeed.setText(speed.getText());
+		DecimalFormat numberFormat = new DecimalFormat("#0");
+		if(speed1 > trainController.velocity.speedLimit*KMH_TO_MPH) {
+			setpointSpeed.setText(String.valueOf(numberFormat.format(trainController.velocity.speedLimit*KMH_TO_MPH)));
+		} else {
+			setpointSpeed.setText(String.valueOf(numberFormat.format(speed1)));
+		}
+        
         speed.setText(" ");
-        trainController.setVelocityInfo(speed1, 0);
+        trainController.setVelocityInfo(speed1 * MPH_TO_KMH, 0);
     }                                           
 
     private void suggSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
@@ -768,11 +950,11 @@ public class TrainControllerUI extends javax.swing.JFrame {
             trainController.setTrainConstants(kP, kI);
         else
             trainController.setTrainConstants(-1, -1);
-        jPanel6.setVisible(false);
-        jPanel2.setVisible(true);
-        jPanel3.setVisible(true);
-        jPanel4.setVisible(true);
-        jPanel5.setVisible(true);
+			jPanel6.setVisible(false);
+			jPanel2.setVisible(true);
+			jPanel3.setVisible(true);
+			jPanel4.setVisible(true);
+			jPanel5.setVisible(true);
     }                                          
 
     private void kpDispPropertyChange(java.beans.PropertyChangeEvent evt) {                                      
@@ -818,7 +1000,26 @@ public class TrainControllerUI extends javax.swing.JFrame {
             trainController.operateDoors(1);
             leftDoors.setText("Open");
         }
-    }                                        
+    } 
+
+	private void leftDoorsPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
+        // TODO add your handling code here:
+        if ((int)evt.getNewValue() == 0) {
+			leftDoors.setText("Closed");
+		} else {
+			leftDoors.setText("Open");
+		}
+    }
+	
+	private void rightDoorsPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
+        // TODO add your handling code here:
+		if ((int)evt.getNewValue() == 2) {
+			rightDoors.setText("Closed");
+		} else {
+			rightDoors.setText("Open");
+		}
+        
+    }
 
     private void closeLeftActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
@@ -827,6 +1028,73 @@ public class TrainControllerUI extends javax.swing.JFrame {
             leftDoors.setText("Closed");
         }
     }                                         
+
+    private void lightsActionPerformed(java.awt.event.ActionEvent evt) {                                       
+        // TODO add your handling code here:
+        if (!trainController.getMode()) {
+            if (lightsLabel.getText().equals("On")) {
+                lightsLabel.setText("Off");
+                trainController.setLights(false);
+            } else {
+                lightsLabel.setText("On");
+                trainController.setLights(true);
+            }
+        }
+        
+        
+    }                                      
+
+    private void tempSubmitActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        // TODO add your handling code here:
+        if (!trainController.getMode()) {
+            double Temp = ParseDouble(temp.getText());
+            if(trainController.setTemp((int)Temp))
+				tempLabel.setText(temp.getText() + " F");
+            
+        }
+		temp.setText(" ");
+    }                                          
+
+    private void speedLimitPropertyChange(java.beans.PropertyChangeEvent evt) {                                          
+        // TODO add your handling code here:
+		if (evt.getPropertyName().equals("speedLimit")) {
+			DecimalFormat numberFormat = new DecimalFormat("#0");
+            speedLimit.setText(String.valueOf(numberFormat.format(evt.getNewValue())));
+        }
+    }                                         
+
+    private void announceActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // TODO add your handling code here:
+        if (announce.getText().equals("Enabled")) {
+            announce.setText("Disabled");
+        } else {
+            announce.setText("Enabled");
+        }
+    }                                        
+
+    private void resetFailureActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        // TODO add your handling code here:
+		failureLabel.setText("None.");
+		trainController.setFailure(4);
+    }                                            
+
+    private void failureLabelPropertyChange(java.beans.PropertyChangeEvent evt) {                                            
+        // TODO add your handling code here:
+		if (evt.getPropertyName().equals("failure")) {
+			if ((int)evt.getNewValue() == 1) {
+			failureLabel.setText("Brake failure.");
+			} else if ((int)evt.getNewValue() == 2) {
+				failureLabel.setText("Signal failure.");
+			} else if ((int)evt.getNewValue() == 3) {
+				failureLabel.setText("Engine failure.");
+			}
+		}
+		
+    }                                           
+
+    private void advertisementPropertyChange(java.beans.PropertyChangeEvent evt) {                                             
+        // TODO add your handling code here:
+    }                                            
 
 
     private static double ParseDouble(String strNumber) {
@@ -842,6 +1110,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify                     
     private javax.swing.JLabel advertisement;
+    private javax.swing.JToggleButton announce;
     private javax.swing.JButton automatic;
     private javax.swing.JLabel brake;
     private javax.swing.JButton closeLeft;
@@ -850,6 +1119,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private javax.swing.JButton disable;
     private javax.swing.JLabel distRemaining;
     private javax.swing.JButton emergency;
+    private javax.swing.JLabel failureLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -857,7 +1127,12 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -876,18 +1151,25 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private javax.swing.JTextField kp;
     private javax.swing.JLabel kpDisp;
     private javax.swing.JLabel leftDoors;
+    private javax.swing.JButton lights;
+    private javax.swing.JLabel lightsLabel;
     private javax.swing.JButton manual;
     private javax.swing.JLabel modeLabel;
     private javax.swing.JButton openLeft;
     private javax.swing.JButton openRight;
     private javax.swing.JLabel powerCmd;
+    private javax.swing.JButton resetFailure;
     private javax.swing.JLabel rightDoors;
     private javax.swing.JButton service;
     private javax.swing.JLabel setpointSpeed;
     private javax.swing.JTextField speed;
+    private javax.swing.JLabel speedLimit;
     private javax.swing.JLabel stationDisp;
     private javax.swing.JButton submitKIKP;
     private javax.swing.JButton submitSpeed;
     private javax.swing.JLabel suggSpeed;
+    private javax.swing.JTextField temp;
+    private javax.swing.JLabel tempLabel;
+    private javax.swing.JButton tempSubmit;
     // End of variables declaration                   
 }

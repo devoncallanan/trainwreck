@@ -50,6 +50,7 @@ public class Power {
         } else {
             powerCmd = MAX_POWER;
         }
+		
 //		  System.out.println("power: " + powerCmd);
 //        System.out.println("uk: " + uk);
 //        System.out.println("previousUk: " + previousUk);
@@ -84,5 +85,10 @@ public class Power {
 	public void killPower() {
 		
 	}
-	
+	public void resetPower() {
+		uk = 0;
+		previousUk = 0;
+		powerCmd = 0;
+		previousPowerCmd = 0;
+	}
 }

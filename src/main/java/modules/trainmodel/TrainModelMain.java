@@ -104,9 +104,10 @@ public class TrainModelMain {
                }
 	       
 	       if (failures != 4) {
-	         m = new Message(MDest.TrMd, velocityFeedback, MType.FAILURE);
+	         m = new Message(MDest.TrMd, failures, MType.FAILURE);
                  mq.send(m, MDest.TrCtl);
-		 failures = 4;      
+				failures = 4; 
+				ui.setFailures(4);
 	       }
                
                //System.out.println("TrMod SEND");

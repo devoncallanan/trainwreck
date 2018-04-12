@@ -555,7 +555,7 @@ public class TestingUI extends javax.swing.JFrame {
     private void submitSugSpeedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitSugSpeedActionPerformed
         // TODO add your handling code here:
         double sugSpeed = ParseDouble(suggestedSpeed.getText());
-        trainController.setVelocityInfo(0, sugSpeed);
+        trainController.setVelocityInfo(0, sugSpeed * (double)1.609344);
         suggSpeed.setText(suggestedSpeed.getText());
         suggestedSpeed.setText(" ");
     }//GEN-LAST:event_submitSugSpeedActionPerformed
