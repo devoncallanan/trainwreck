@@ -147,6 +147,9 @@ public class TrainController {
 		if (metersRemaining <= brakingDistance) {
 			if(!service) setService(true);
 			stopping = true;
+			power1.resetPower();
+			power2.resetPower();
+			power3.resetPower();
 		} /*else {
 			stopping = false;
 		}*/
@@ -280,7 +283,8 @@ public class TrainController {
 	}
 	
 	public void setTemp(int temp) {
-        this.temp = temp;
+		if (temp >= 60 && temp <= 80)
+			this.temp = temp;
 	}
 	
 	public void setLights(boolean lights) {

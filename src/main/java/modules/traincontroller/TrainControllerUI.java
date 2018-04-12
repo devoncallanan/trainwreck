@@ -20,37 +20,39 @@ public class TrainControllerUI extends javax.swing.JFrame {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String event = evt.getPropertyName();
                 //System.out.println(event);
-                switch (event) {
-                    case "currentSpeed": 
-                        currentSpeedPropertyChange(evt);
-                        break;
-                    case "powerUpdate":
-                        powerCmdPropertyChange(evt);
-                        break;
-                    case "metersRemaining":
-                        distRemainingPropertyChange(evt);
-                        break;
-                    case "brakingDist":
-                        //brakingDistPropertyChange(evt);
-                        break;
-                    case "station":
-                        stationDispPropertyChange(evt);
-                        break;
-                    case "suggestedSpeed":
-                        suggSpeedPropertyChange(evt);
-                        break;
-                    case "brake":
-                        brakePropertyChange(evt);
-                        break;
-                    case "ki":
-                        kiDispPropertyChange(evt);
-                        break;
-                    case "kp":
-                        kpDispPropertyChange(evt);
-                        break;
-                    default:
-                        break;
-                }
+				if (!(evt.getNewValue().equals(null))) {
+					switch (event) {
+						case "currentSpeed": 
+							currentSpeedPropertyChange(evt);
+							break;
+						case "powerUpdate":
+							powerCmdPropertyChange(evt);
+							break;
+						case "metersRemaining":
+							distRemainingPropertyChange(evt);
+							break;
+						case "brakingDist":
+							//brakingDistPropertyChange(evt);
+							break;
+						case "station":
+							stationDispPropertyChange(evt);
+							break;
+						case "suggestedSpeed":
+							suggSpeedPropertyChange(evt);
+							break;
+						case "brake":
+							brakePropertyChange(evt);
+							break;
+						case "ki":
+							kiDispPropertyChange(evt);
+							break;
+						case "kp":
+							kpDispPropertyChange(evt);
+							break;
+						default:
+							break;
+					}
+				}
             }
         });
         initComponents();
