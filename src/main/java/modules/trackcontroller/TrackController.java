@@ -72,7 +72,7 @@ public class TrackController {
           checkContinue();
           setGUI();
           mSend();
-		  System.out.println("ALex sets the mode: " + mode);
+		  System.out.println("ALex sets the SWITCH!!!1!!1: " + switchPos + " : " + id);
      }
      public void manualMode(){
           mode = false;
