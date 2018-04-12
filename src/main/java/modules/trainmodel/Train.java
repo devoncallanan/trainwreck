@@ -14,6 +14,7 @@ public class Train {
         private double force;
         private double velocityFeedback = 1;
         private final double MS_TO_KMH = (double)3600/(double)1000;
+        private final double KMH_TO_MS = (double)1000/(double)3600;
         private double trainMass = 81800;
         private double totalMass;
 	private final double trainLength = 32.2; 	// meters
@@ -37,7 +38,7 @@ public class Train {
     	totalMass = totalMass * .454; //convert train mass to kg
     	//System.out.println(totalMass);
     	
-        currentSpeed = currentSpeed*.278; //convert kmh to m/s
+        currentSpeed = currentSpeed*KMH_TO_MS; //convert kmh to m/s
     	if (currentSpeed == 0) {
     		force = (power*1000)/1;
     	} else {
@@ -69,26 +70,28 @@ public class Train {
     	double trainAcceleration = totalForce/totalMass;
     	
     	// and have to check to make sure this acceleration does not exceed our max.
-    	if (trainAcceleration >= (maxAcc * deltaT)) {	// time elapsed
+    	if (trainAcceleration >= (maxAcc)) {	// time elapsed
     		// set the acceleration as the max acceleration because we cannot exceed that
-    		trainAcceleration = (maxAcc * deltaT);	// time elapsed
+    		trainAcceleration = (maxAcc);	// time elapsed
     	}
     	
 		
     	// decelerates the train based on the values given in the spec sheet for the emergency brake
     	if (brakes == 3) {
-    		trainAcceleration += (eBrakeDecell * deltaT);
+    		trainAcceleration += (eBrakeDecell);
     	}
     	
     	// decelerates the train based onthe values given in the spec sheet for the service brake
     	if (brakes == 1) {
-    		trainAcceleration += (serviceBrakeDecell * deltaT);
+			
+    		trainAcceleration += (serviceBrakeDecell);
     	}
     	
     	// Step 5: Calculate the final speed by adding the old speed with the acceleration x the time elapsed
           //  	System.out.println("Current Acc " + trainAcceleration);
-
+		System.out.println("trainAcc: " + trainAcceleration + "\tcurrent: " + currentSpeed);
     	velocityFeedback = currentSpeed + (trainAcceleration*deltaT);
+		System.out.println("currentSpeed2: " + velocityFeedback);
     	velocityFeedback = velocityFeedback * MS_TO_KMH; //converts to km/h
         
     	// no negative speed
