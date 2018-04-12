@@ -29,7 +29,7 @@ public class CTCOffice {
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
-	private double speed = 40.0;
+	private double speed = 40.0; // km/h => 24.8548 mph
 	/* - - - - - - - - - - - - - - - - - - - - - */
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
@@ -46,6 +46,9 @@ public class CTCOffice {
 	public ArrayList<BlockTemp> stops = new ArrayList<BlockTemp>();
 	public ArrayList<String> redLineData = new ArrayList<String>();
 	private boolean dispatched = false;
+
+	private final double KMH_TO_MPH = (double)1/(double)1.609344;
+	private final double M_TO_F = 3.280840;
 
 	/* SETUP */
 	public CTCOffice(MessageQueue mq) {
@@ -106,6 +109,9 @@ public class CTCOffice {
 		return authority;
 	}
 
+	public double getSpeed() {
+		return speed;
+	}
 	public BlockTemp getStop(int index) {
 		return stops.get(index);
 	}
