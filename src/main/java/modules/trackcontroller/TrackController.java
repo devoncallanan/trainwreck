@@ -16,7 +16,7 @@ public class TrackController {
      Boolean recSwitch = null, switchPos = true;
      boolean mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
-     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false;
+     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false, zeroSpeedSent = false;
 
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
@@ -135,7 +135,7 @@ public class TrackController {
           }
 
           m = new Message((MDest.TcCtl+id), switchPos, MType.SWITCH);
-          System.out.println("SWITCH_FROM:"+m.dataB());
+          //System.out.println("SWITCH_FROM:"+m.dataB());
           mq.send(m, MDest.TcMd);
      }
      public void logic(){
@@ -519,6 +519,7 @@ public class TrackController {
           loc = mainLine.length+msplit.length+i;
           m = new Message((MDest.TcCtl+id), loc, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
+          zeroSpeedSent = true;
      }
      public void zeroSpeedMsplit(){
           int i, loc;
@@ -529,6 +530,7 @@ public class TrackController {
           loc = mainLine.length+i;
           m = new Message((MDest.TcCtl+id), loc, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
+          zeroSpeedSent = true;
      }
      public void zeroSpeedMain(){
           int i, loc;
@@ -539,10 +541,12 @@ public class TrackController {
           loc = i;
           m = new Message((MDest.TcCtl+id), loc, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
+          zeroSpeedSent = true;
      }
      public void zeroSpeed(int s){
           m = new Message((MDest.TcCtl+id), s, MType.ZEROSPEED);
           mq.send(m, MDest.TcMd);
+          zeroSpeedSent = true;
      }
      public void panicMain(){
           for(int i=0; i<mainLine.length; i++){
@@ -634,7 +638,7 @@ public class TrackController {
           gui.changeSwitchLight(switchLight);
           gui.changeCrossing(crossPos);
           gui.changeCrossLight(crossLights);
-
+          gui.zeroSpeedSent(zeroSpeedSent);
           gui.updateMain(mainLine);
 
           gui.updateMsplit(msplit);
