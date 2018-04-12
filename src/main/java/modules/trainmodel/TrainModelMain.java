@@ -18,7 +18,8 @@ public class TrainModelMain {
      private Message m;    
      private double velocityFeedback;
      private double auth; 
-     private int doors,temp,brakes,lights,passengers,failures;
+     private int doors,temp,brakes,lights,passengers;
+     private int failures = 4;
      private double power,grade,speed,speedLimit;
      
     public TrainModelMain(MessageQueue mq) {
@@ -33,10 +34,6 @@ public class TrainModelMain {
           System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
           ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors);
           failures = ui.getFailures();
-          
-          if (failures == 0) {
-              //brakes = 3;
-          }
           //System.out.println(velocityFeedback);
           mSend();
      }
@@ -82,6 +79,9 @@ public class TrainModelMain {
                 else if (m.type() == MType.PASSENGERS){
                     this.passengers = m.dataI();
                }
+		else if (m.type() == MType.GRADE){
+                    this.passengers = m.dataI();
+               }
           }
      }
      public void mSend(){
@@ -98,7 +98,12 @@ public class TrainModelMain {
                  mq.send(m, MDest.TrCtl);
                  speed = 0;
                }
-
+	       
+	       if (failures != 4) {
+	         m = new Message(MDest.TrMd, velocityFeedback, MType.FAILURE);
+                 mq.send(m, MDest.TrCtl);
+		 failures = 4;      
+	       }
                
                //System.out.println("TrMod SEND");
           }
