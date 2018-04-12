@@ -82,9 +82,9 @@ public class TrainController {
             java.util.logging.Logger.getLogger(TrainControllerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 			
         }
-		java.awt.EventQueue.invokeLater(() -> {
-            new TestingUI(this).setVisible(true);
-        });
+//		java.awt.EventQueue.invokeLater(() -> {
+//           new TestingUI(this).setVisible(true);
+//        });
 		java.awt.EventQueue.invokeLater(() -> {
             new TrainControllerUI(this).setVisible(true);
         });
@@ -144,18 +144,23 @@ public class TrainController {
             System.out.println("vF = " + velocity.feedback());
 		}//End while loop for message checking
 		
+		
+		//Update UI with speed displays
 		this.pcs.firePropertyChange("speedLimit", -1 , velocity.speedLimit*KMH_TO_MPH);
 		this.pcs.firePropertyChange("suggestedSpeed", -1 , velocity.suggestedSpeed*KMH_TO_MPH);
+		
+		
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
 		metersRemaining = (metersRemaining - (velocity.feedback()*KMH_TO_MS*.01));
 		authority = (authority - (velocity.feedback()*KMH_TO_MS)*.01);
 		this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining*M_TO_F);
-        //System.out.println("meters: " + metersRemaining);
-                
+
+        //Braking Distance used in Testing UI        
 		brakingDistance = Math.pow(velocity.feedback()*KMH_TO_MS,2)/((2*SERVICE_DECELERATION));
         this.pcs.firePropertyChange("brakingDist", -1 , brakingDistance*M_TO_F);
-        //System.out.println("braking distance: " + brakingDistance);
-                
+        
+
+		//Check to see if the train needs to start stopping
 		if (metersRemaining - 1 <= brakingDistance) {
 			if(!service) setService(true);
 			stopping = true;
@@ -187,11 +192,8 @@ public class TrainController {
 			}	
 		}
 
-		System.out.println("power: " + p);
-		System.out.println("service: " + service);
-
+		//Any brakes applied, the power command is set to 0
 		if (service || emergency || pause || failure == 1){
-
 			//BRAKING, POWER = 0
 			p = 0;
 		}
@@ -200,6 +202,7 @@ public class TrainController {
 		if (!station.equals(" ") && velocity.feedback() == 0) {
 			operateDoors(1);
 		}
+		
 		
 		//SEND POWER COMMAND
 		//send(new Message(From who, Data being sent, Type of data), message destination);
@@ -223,10 +226,12 @@ public class TrainController {
         this.pcs.firePropertyChange("kp", -1 , power1.getKp());
 	}
 	
+	//Set the mode
 	public void setMode(boolean mode) {
         this.mode = mode;
 	}
 	
+	//Set the emergency brake
 	public void setEmergency(boolean emergency) {
 		this.emergency = emergency;
 		if (emergency) {
@@ -240,6 +245,7 @@ public class TrainController {
 		}
 	}
 	
+	//Set the service brake
 	public void setService(boolean service) {
 		this.service = service;
 		if (service) {
@@ -253,6 +259,7 @@ public class TrainController {
 		}
 	}
 	
+	//Send setpoint and suggested to the velocity class
 	public void setVelocityInfo(double setpointSpeed, double suggestedSpeed) {
 		if(setpointSpeed != 0) {
             velocity.setSetpointSpeed(setpointSpeed);
@@ -262,6 +269,7 @@ public class TrainController {
 		}
 	}
 	
+	//Set train authority
 	public void setAuthority(int authority) {
 		this.authority = authority;
 		this.metersRemaining = authority;
@@ -269,6 +277,7 @@ public class TrainController {
 		setService(false);
 	}
 	
+	//Operate doors
 	public void operateDoors(int opDoors) {
 		if(velocity.feedback() == 0) {
 			switch(opDoors) {
@@ -298,14 +307,18 @@ public class TrainController {
         }
 	}
 	
-	public void setTemp(int temp) {
+	//Set temp
+	public boolean setTemp(int temp) {
 		if (temp >= 60 && temp <= 80) {
 			this.temp = temp;
 			messages.send(new Message(MDest.TrCtl, temp, MType.TEMP), MDest.TrMd); 
+			return true;
 		}
+		return false;
 	
 	}
 	
+	//Change lights
 	public void setLights(boolean lights) {
         this.lights = lights;
 		if (lights)
@@ -314,7 +327,7 @@ public class TrainController {
 			messages.send(new Message(MDest.TrCtl, 0, MType.LIGHTS), MDest.TrMd);
 	}
 	
-	
+	//Same as authority (Used because of testing UI)
 	public void setMetersRemaining(int metersRemaining) {
         this.metersRemaining = metersRemaining;
 	}
@@ -327,6 +340,7 @@ public class TrainController {
         return mode;
     }
 	
+	//Handling failures given by the train model
 	public void setFailure(int failure) {
 		this.failure = failure;
 		this.pcs.firePropertyChange("failure", -1, failure);

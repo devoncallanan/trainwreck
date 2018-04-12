@@ -1014,9 +1014,9 @@ public class TrainControllerUI extends javax.swing.JFrame {
 	private void rightDoorsPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
         // TODO add your handling code here:
 		if ((int)evt.getNewValue() == 2) {
-			leftDoors.setText("Closed");
+			rightDoors.setText("Closed");
 		} else {
-			leftDoors.setText("Open");
+			rightDoors.setText("Open");
 		}
         
     }
@@ -1048,10 +1048,11 @@ public class TrainControllerUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (!trainController.getMode()) {
             double Temp = ParseDouble(temp.getText());
-            trainController.setTemp((int)Temp);
-            tempLabel.setText(temp.getText() + " F");
-            temp.setText(" ");
+            if(trainController.setTemp((int)Temp))
+				tempLabel.setText(temp.getText() + " F");
+            
         }
+		temp.setText(" ");
     }                                          
 
     private void speedLimitPropertyChange(java.beans.PropertyChangeEvent evt) {                                          
