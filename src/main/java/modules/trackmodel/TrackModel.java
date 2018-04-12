@@ -144,7 +144,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		Message tempM;
 		tempM = new Message(MDest.TcMd, 30, MType.PASSENGERS);
 		m.send(tempM, MDest.TrMd);
-
+		tempM = new Message(MDest.TcMd, 70.0, MType.SPEEDLIMIT);
+		m.send(tempM, MDest.TrMd);
 		
 		for (int i = 0; i < 6; i++) {
 			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
@@ -153,8 +154,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		
 		if (changedBlock) {
 			//grade
-			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
-			m.send(tempM, MDest.TrMd);
+			//tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			//m.send(tempM, MDest.TrMd);
 			//beacon
 			if (nextBlock.beacon != null) {
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);
