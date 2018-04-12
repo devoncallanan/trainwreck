@@ -25,13 +25,11 @@ public class TrackController {
           side = s;
           plcCode = p;
           TrackController temp = this;
-          java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                gui = new TrackControllerGUI(temp, n, r, s, p);
+
+                gui = new TrackControllerGUI(temp, n, r, s, z, p);
                 gui.setVisible(true);
-            }
-        });
-          for(int i=0; i<n.length; i++){
+
+               for(int i=0; i<n.length; i++){
                if(mainLine[i] == true){
                     mainCross = true;
                     crossInd = i;
