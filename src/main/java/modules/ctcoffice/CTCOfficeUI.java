@@ -30,6 +30,9 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private static int seconds = 0;
     private static int millis = 0;
 
+    private final double KMH_TO_MPH = (double)1/(double)1.609344;
+    private final double M_TO_F = 3.280840;
+
     /**
      * Creates new form CTCOfficeUI
      */
@@ -415,7 +418,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Start Block", "Speed", "Authority", "Passengers"
+                "Train ID", "Start Block", "Speed (mph)", "Authority", "Passengers"
             }
         ));
         ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -435,7 +438,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Start Block", "Speed", "Authority", "Passengers"
+                "Train ID", "Start Block", "Speed (mph)", "Authority", "Passengers"
             }
         ));
         ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -976,7 +979,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 // Dispatch to Red Line
                 ctc.dispatchTrain(74,destination);
                 activeModel = (DefaultTableModel) ActiveRedTable.getModel();
-                activeModel.addRow(new Object[]{trainCount, "C9", 40, ctc.getAuthority(), 30});
+                activeModel.addRow(new Object[]{trainCount, "C9", ctc.getSpeed()*KMH_TO_MPH, ctc.getAuthority()*M_TO_F, 30});
                 scheduleModel.setNumRows(0);
                 break;
             case 2:
