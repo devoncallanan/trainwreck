@@ -29,12 +29,12 @@ public class CTCOffice {
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
-	private double speed = 20.0;
+	private double speed = 40.0;
 	/* - - - - - - - - - - - - - - - - - - - - - */
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
 	private Message m;
-	private boolean dispatchReady = true;
+	private boolean dispatchReady = false;
 
 	/* Graph Testing - - - - - - - - - - - - - - */
 	private TrackGraph track;

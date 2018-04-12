@@ -17,11 +17,11 @@ make ghost train circ buffer with front of train occupying and back freeing
  * @author Devon
  */
 
-public static double KMH_TO_MS = 1000.0/3600.0; 
-public static double MS_TO_KMH = 3600.0/10000.0; 
 
 public class TrackModel {
     
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
 	private static double DELTA_T = .1;
     Track redline;
 	Track greenline;
@@ -87,6 +87,7 @@ public class TrackModel {
 					trains = temp;
                     trains[numTrains] = new Train(numTrains,9, 10);
 					numTrains++;
+					redline.setOccupancy(9, true);
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
@@ -149,10 +150,10 @@ public class TrackModel {
 			m.send(tempM, MDest.TcCtl + i);
 		}
 		
-		if (blockChanged) {
+		if (changedBlock) {
 			//grade
-			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
-			m.send(tempM, MDest.TrMd);
+			//tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			//m.send(tempM, MDest.TrMd);
 			//beacon
 			if (nextBlock.beacon != null) {
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);

@@ -17,6 +17,7 @@ public class TrackController {
      boolean mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mode = true;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
      boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false;
+	 
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
           mq = y;
@@ -24,17 +25,17 @@ public class TrackController {
           msplit = r;
           side = s;
           plcCode = p;
-          TrackController temp = this;
+          //TrackController temp = this;
 
-                gui = new TrackControllerGUI(temp, n, r, s, z, p);
-                gui.setVisible(true);
+		  gui = new TrackControllerGUI(this, n, r, s, z, p);
+		  gui.setVisible(true);
 
-               for(int i=0; i<n.length; i++){
-               if(mainLine[i] == true){
-                    mainCross = true;
-                    crossInd = i;
-                    mainLine[i] = false;
-               }
+		   for(int i=0; i<n.length; i++){
+		   if(mainLine[i] == true){
+				mainCross = true;
+				crossInd = i;
+				mainLine[i] = false;
+		   }
           }
           for(int i=0; i<r.length; i++){
                if(msplit[i] == true){
@@ -71,6 +72,7 @@ public class TrackController {
           checkContinue();
           setGUI();
           mSend();
+		  System.out.println("ALex sets the SWITCH!!!1!!1: " + switchPos + " : " + id);
      }
      public void manualMode(){
           mode = false;
@@ -622,12 +624,16 @@ public class TrackController {
           mode = m;
      }
      public void setGUI(){
+		  
           gui.changeSwitch(switchPos);
           gui.changeSwitchLight(switchLight);
           gui.changeCrossing(crossPos);
           gui.changeCrossLight(crossLights);
+		  
           gui.updateMain(mainLine);
+		  /*
           gui.updateMsplit(msplit);
           gui.updateSide(side);
+		  */
      }
 }
