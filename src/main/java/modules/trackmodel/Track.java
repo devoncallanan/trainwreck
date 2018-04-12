@@ -13,6 +13,11 @@ import java.util.regex.Pattern;
  *
  * @author Devon
  */
+ 
+
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0;  
+
 public class Track extends javax.swing.AbstractListModel<String>{
     private Block[][] track;
     private Block[] blocks;
@@ -65,14 +70,18 @@ public class Track extends javax.swing.AbstractListModel<String>{
             int to = scan.nextInt();
             int branch = scan.nextInt();
 			int switchloc = scan.nextInt();
+			String beacon = null;
+			if (scan.nextInt() == 1) {
+				beacon = "Cool Station";
+			}
 			String infrastructure = scan.next();
 			
-            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch); 
+            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch, switchLoc, beacon); 
             this.addBlock(b);
             //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);
         }
-        this.printTrack();
+        //this.printTrack();
 
     }
     
@@ -117,19 +126,19 @@ public class Track extends javax.swing.AbstractListModel<String>{
 	 */
     
     public Block next(Block b, int node) {
-        System.out.println("call to next");
+        //System.out.println("call to next");
         Block nextBlock = b;
         int i = 0;
         boolean switchHere = (switches[b.other(node)][0] != 0);
         int switchDir = switches[b.other(node)][0];
         if (b.to != node) {
             //look at b.to options
-            System.out.println("looking where b.to is not lastNode " + b.to + switchHere + " : " + track[b.to][i].occupied);
+            //System.out.println("looking where b.to is not lastNode " + b.to + switchHere + " : " + track[b.to][i].occupied);
             while (track[b.to][i] != null) {
                 if (!track[b.to][i].occupied) {
                     if (switchHere) {
                         if (b.branch != 0 && (b.branch + track[b.to][i].branch) != 0) { //test right angle turns
-                            System.out.print("right angle");
+                            //System.out.print("right angle");
                             if (b.branch == switchDir) { //test merging into switch
                                 nextBlock = track[b.to][i];
                             }
@@ -137,7 +146,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
                         else if (b.branch == 0 && track[b.to][i].branch == switchDir) { //check to make sure it is correct direction for fork
                             nextBlock = track[b.to][i];
                         }
-						else System.out.println("Switch: " + switchDir);
+						else //System.out.println("Switch: " + switchDir);
 
                     }
                     else {
@@ -151,12 +160,12 @@ public class Track extends javax.swing.AbstractListModel<String>{
         }
         else if (b.from != node) {
             //look at b.from options
-            System.out.println("looking where b.from is not lastNode " + b.from + switchHere + " @ " + b.other(node));
+            //System.out.println("looking where b.from is not lastNode " + b.from + switchHere + " @ " + b.other(node));
             while (track[b.from][i] != null) {
                 if (!track[b.from][i].occupied) {
                     if (switchHere) {
                         if (b.branch != 0 && (b.branch + track[b.from][i].branch) != 0) { //test right angle turns
-                            System.out.println("right angle");
+                            //System.out.println("right angle");
                             if (b.branch == switchDir) { //test merging into switch
                                 nextBlock = track[b.from][i];
                             }
@@ -164,7 +173,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
                         else if (b.branch == 0 && track[b.from][i].branch == switchDir) { //check to make sure it is correct direction for fork
                             nextBlock = track[b.from][i];
                         }
-						else System.out.println("Switch: " + switchDir);
+						else //System.out.println("Switch: " + switchDir);
 
                     } 
                     else {
@@ -218,15 +227,18 @@ public class Track extends javax.swing.AbstractListModel<String>{
     
     public void printTrack() {
         for (int i = 0; i < length; i++) {
-            System.out.print(" switch " + switches[i][0] + " ");
+            System.out.print(i + " switch " + switches[i][0] + " ");
             for (int j = 0; j < 3; j++) {
                 if (track[i][j] != null) {
+					System.out.print(track[i][j].number + " ");
+					/*
                     if (track[i][j].to != i) {
                     System.out.print(track[i][j].to + " ");
                     }
                     else {
                     System.out.print(track[i][j].from + " ");                        
                     }
+					*/
                 }
             }
 			System.out.println();

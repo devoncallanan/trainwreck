@@ -5,14 +5,16 @@ package modules.trackmodel;
 import shared.*;
 import java.util.regex.Pattern;
 
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
 
 public class Train{
 	public int location;					//Block number
 	public int backNode;					//Node number that the train is traveling from
 	public double speed;					//Current speed m/s
-	public double distanceIn;				//Distance into the block km
+	public double distanceIn;				//Distance into the block m
 	public int id;							//train ID
-	private static double DELTA_T = .1;	//quantum for calculations
+	private static double DELTA_T = .1;		//quantum for calculations
 	
 	public Train(int id, int location, int node) {
 		this.location = location;
@@ -22,7 +24,7 @@ public class Train{
 	}
 	
 	public double move() {
-		distanceIn += (DELTA_T*speed);
+		distanceIn += (DELTA_T*speed)*KMH_TO_MS;
 		return distanceIn;
 	}
 	
