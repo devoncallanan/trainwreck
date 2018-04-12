@@ -135,7 +135,7 @@ public class TrackController {
           }
 
           m = new Message((MDest.TcCtl+id), switchPos, MType.SWITCH);
-          System.out.println("SWITCH_FROM:"+m.dataB());
+          //System.out.println("SWITCH_FROM:"+m.dataB());
           mq.send(m, MDest.TcMd);
      }
      public void logic(){
