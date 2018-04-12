@@ -11,7 +11,7 @@ package modules.trainmodel;
  */
 public class TrainModelUI extends javax.swing.JFrame {
 
-    private int failures;
+    private int failures = 4;
     
     public TrainModelUI() {
         
@@ -446,5 +446,9 @@ public class TrainModelUI extends javax.swing.JFrame {
     
     public int getFailures(){
         return this.failures;
+    }
+	
+	public void setFailures(int failures){
+        this.failures = failures;
     }
 }

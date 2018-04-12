@@ -64,6 +64,10 @@ public class BlockTemp {
     public int either() {
         return v;
     }
+
+    public int w() {
+        return w;
+    }
     
     public int other(int vertex) {
         if (vertex == v) {
