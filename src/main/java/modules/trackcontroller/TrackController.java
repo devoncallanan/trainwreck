@@ -73,7 +73,8 @@ public class TrackController {
                     logic();
                checkLights();
           }
-          checkCross();
+          if(crossExists)
+               checkCross();
           checkContinue();
           setGUI();
           mSend();
