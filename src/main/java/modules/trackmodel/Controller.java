@@ -16,14 +16,14 @@ public class Controller {
 	int numControllers;
 	int[] switchConvert;
 	//int[] side2;
-	
+
 	Controller(int numControllers) {
 		occupancy = new int[numControllers][50];
 		convert = new int[numControllers][50];
 		this.numControllers = numControllers;
 		switchConvert = new int[numControllers];
 	}
-	
+
 	public void init() {
 		java.io.File input;
 		java.util.Scanner scan = null;
@@ -39,7 +39,7 @@ public class Controller {
 		catch (Exception e) {
 			System.err.println("The config file 'controller_config.csv' could not be found");
 		}
-		
+
 		switchLocs = scan.nextLine();
 		System.out.println(switchLocs);
 		scanLine = new java.util.Scanner(switchLocs).useDelimiter(",|\\r\\n");
@@ -61,10 +61,10 @@ public class Controller {
 			}
 			contNumber++;
 		}
-		
-		
+
+
 	}
-	
+
 	public boolean[] getOccArray(int controllerid) {
 		boolean[] arr = new boolean[25];
 		for (int i = 0; i< 25; i++) {
@@ -72,7 +72,7 @@ public class Controller {
 		}
 		return arr;
 	}
-	
+
 	public void update(int realBlock, int occ) {
 		for (int i = 0; i<numControllers; i++) {
 			for (int j = 0; j<25; j++) {
@@ -83,14 +83,12 @@ public class Controller {
 			}
 		}
 	}
-	
+
 	public void setSwitchConvert(int realBlock, int switchNum) {
 		switchConvert[switchNum] = realBlock;
 	}
-	
+
 	public int getSwitchConvert(int switchNum) {
 		return switchConvert[switchNum];
 	}
 }
-
-
