@@ -10,20 +10,21 @@ package modules.trackmodel;
 
 import shared.*;
 
-public class Controller {
+public class Controller extends javax.swing.AbstractListModel<String>{
 	int[][] occupancy;
 	int[][] convert;
 	int numControllers;
 	int[] switchConvert;
-	//int[] side2;
+	int[] positions;
 	
 	Controller(int numControllers) {
-		occupancy = new int[numControllers][50];
-		convert = new int[numControllers][50];
+		this.occupancy = new int[numControllers][50];
+		this.convert = new int[numControllers][50];
 		this.numControllers = numControllers;
-		switchConvert = new int[numControllers];
+		this.switchConvert = new int[numControllers];
+		this.positions = new int[numControllers];
 	}
-	
+
 	public void init() {
 		java.io.File input;
 		java.util.Scanner scan = null;
@@ -34,17 +35,19 @@ public class Controller {
 		String switchLocs;
 		try {
 			input = new java.io.File("./src/main/java/modules/trackmodel/controller_config.csv");
+			//input = new java.io.File("./modules/trackmodel/controller_config.csv");
 			scan = new java.util.Scanner(input);
 		}
 		catch (Exception e) {
-			System.err.println("The config file 'controller_config.csv' could not be found");
+			System.err.println("The config file 'controller_config.csv' could not be found " + System.getProperty("user.dir"));
 		}
-		
+
 		switchLocs = scan.nextLine();
 		System.out.println(switchLocs);
 		scanLine = new java.util.Scanner(switchLocs).useDelimiter(",|\\r\\n");
 		while (scanLine.hasNext()){
 			this.setSwitchConvert(scanLine.nextInt(), i);
+			this.setSwitch(i, 1);
 			if(i < 5) {
 				i++;
 			} else {
@@ -61,10 +64,10 @@ public class Controller {
 			}
 			contNumber++;
 		}
-		
-		
+
+
 	}
-	
+
 	public boolean[] getOccArray(int controllerid) {
 		boolean[] arr = new boolean[25];
 		for (int i = 0; i< 25; i++) {
@@ -72,7 +75,7 @@ public class Controller {
 		}
 		return arr;
 	}
-	
+
 	public void update(int realBlock, int occ) {
 		for (int i = 0; i<numControllers; i++) {
 			for (int j = 0; j<25; j++) {
@@ -83,14 +86,25 @@ public class Controller {
 			}
 		}
 	}
-	
+
 	public void setSwitchConvert(int realBlock, int switchNum) {
 		switchConvert[switchNum] = realBlock;
 	}
-	
+
 	public int getSwitchConvert(int switchNum) {
 		return switchConvert[switchNum];
 	}
+	
+	public void setSwitch(int i, int branch) {
+		positions[i] = branch;
+		fireContentsChanged(this, i, i);
+	}
+	
+	public int getSize() {
+		return positions.length;
+	}
+	
+	public String getElementAt(int i) {
+		return "" + positions[i];
+	}
 }
-
-
