@@ -29,13 +29,13 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         switchLightGroup = new javax.swing.ButtonGroup();
         crossGroup = new javax.swing.ButtonGroup();
         crossLightGroup = new javax.swing.ButtonGroup();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane6 = new javax.swing.JScrollPane();
         sideList = new javax.swing.JTextArea();
         automaticButton = new javax.swing.JRadioButton();
         manualButton = new javax.swing.JRadioButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
         msplitList = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane5 = new javax.swing.JScrollPane();
         mainLineList = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -77,7 +77,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
             public String getElementAt(int i) { return ""+strings[i]; }
         });
 		*/
-        jScrollPane1.setViewportView(sideList);
+        jScrollPane6.setViewportView(sideList);
 
         automaticButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         automaticButton.setText("Automatic");
@@ -94,6 +94,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
                 manualButtonActionPerformed(evt);
             }
         });
+		jScrollPane4.setViewportView(msplitList);
 		/*
         msplitList.setModel(new javax.swing.AbstractListModel<String>() {
             boolean[] strings =msplit;
@@ -108,7 +109,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
             public String getElementAt(int i) { return ""+strings[i]; }
         });
 		*/
-        jScrollPane3.setViewportView(mainLineList);
+        jScrollPane5.setViewportView(mainLineList);
 
         jLabel1.setText("Main");
 
@@ -379,9 +380,9 @@ public class TrackControllerGUI extends javax.swing.JFrame {
 
     public void changeSwitchLight(boolean s){
          if(s)
-          switchLightStatus.setText("Switch Light Status: On");
+          switchLightStatus.setText("Switch Light Status: Green");
          else
-          switchLightStatus.setText("Switch Light Status: Off");
+          switchLightStatus.setText("Switch Light Status: Red");
     }
 
     public void changeCrossing(boolean s){
@@ -439,9 +440,9 @@ public class TrackControllerGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea mainLineList;
     private javax.swing.JRadioButton manualButton;
     private javax.swing.JTextArea msplitList;
