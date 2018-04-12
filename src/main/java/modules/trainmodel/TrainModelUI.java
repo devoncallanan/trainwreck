@@ -11,12 +11,10 @@ package modules.trainmodel;
  */
 public class TrainModelUI extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TrainModelUI
-     */
+    private int failures;
+    
     public TrainModelUI() {
-        //this.gradeLabel.setText(Double.toString(grade));
-        //this.powerLabel.setText(Double.toString(power));
+        
         initComponents();
     }
 
@@ -68,15 +66,35 @@ public class TrainModelUI extends javax.swing.JFrame {
 
         signalFailButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         signalFailButton.setText("Signal Failure");
+        signalFailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signalFailButtonActionPerformed(evt);
+            }
+        });
 
         brakeFailButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         brakeFailButton.setText("Brake Failure");
+        brakeFailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brakeFailButtonActionPerformed(evt);
+            }
+        });
 
         eBrakeButton2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         eBrakeButton2.setText("Emergency Brake");
+        eBrakeButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eBrakeButton2ActionPerformed(evt);
+            }
+        });
 
         engineFailButton.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         engineFailButton.setText("Engine Failure");
+        engineFailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                engineFailButtonActionPerformed(evt);
+            }
+        });
 
         idLabel.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         idLabel.setText("____________");
@@ -300,6 +318,22 @@ public class TrainModelUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void eBrakeButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eBrakeButton2ActionPerformed
+        this.failures = 0;
+    }//GEN-LAST:event_eBrakeButton2ActionPerformed
+
+    private void brakeFailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brakeFailButtonActionPerformed
+        this.failures = 1;
+    }//GEN-LAST:event_brakeFailButtonActionPerformed
+
+    private void signalFailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signalFailButtonActionPerformed
+        this.failures = 2;
+    }//GEN-LAST:event_signalFailButtonActionPerformed
+
+    private void engineFailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_engineFailButtonActionPerformed
+        this.failures = 3;
+    }//GEN-LAST:event_engineFailButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -342,8 +376,72 @@ public class TrainModelUI extends javax.swing.JFrame {
     private javax.swing.JLabel velocityLabel;
     // End of variables declaration//GEN-END:variables
 
-    void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers) {
+    void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers,int lights,double auth,int temp,int doors) {
         this.velocityLabel.setText(Double.toString(currentSpeed));
         this.powerLabel.setText(Double.toString(power));
+        this.passengersLabel.setText(Double.toString(passengers));
+        this.gradeLabel.setText(Double.toString(grade));
+        this.speedLimitLabel.setText(Double.toString(speedLimit));
+        this.authLabel.setText(Double.toString(auth));
+        this.tempLabel.setText(Double.toString(temp));
+        
+        switch (doors) {
+            
+            case 0:
+                this.leftDLabel.setText("Closed");
+                break;
+            case 1:
+                this.leftDLabel.setText("Open");
+                break;
+            case 2:
+                this.rightDLabel.setText("Closed");
+                break;
+            case 3:
+                this.rightDLabel.setText("Open");
+                break;
+            default:
+                this.leftDLabel.setText("Closed");
+                this.rightDLabel.setText("Closed");
+                break;
+             
+    }
+        
+        switch (doors) {
+            
+            case 0:
+                this.sbrakeLabel.setText("Off");
+                break;
+            case 1:
+                this.sbrakeLabel.setText("On");
+                break;
+            case 2:
+                this.ebrakeLabel.setText("Off");
+                break;
+            case 3:
+                this.ebrakeLabel.setText("On");
+                break;
+            default:
+                this.sbrakeLabel.setText("Off");
+                this.ebrakeLabel.setText("Off");
+                break;
+             
+    }
+        
+        switch (lights) {
+            
+            case 0:
+                this.lightsLabel.setText("Off");
+                break;
+            case 1:
+                this.lightsLabel.setText("On");
+                break;
+            default:
+                this.lightsLabel.setText("Off");
+                break;
+        }
+    }
+    
+    public int getFailures(){
+        return this.failures;
     }
 }
