@@ -54,6 +54,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         crossingLightOnButton = new javax.swing.JRadioButton();
         crossingLightOffButton = new javax.swing.JRadioButton();
         importPLCButton = new javax.swing.JButton();
+        zeroSpeedLable = new javax.swing.JLabel();
 
         autManGroup.add(automaticButton);
         autManGroup.add(manualButton);
@@ -201,13 +202,16 @@ public class TrackControllerGUI extends javax.swing.JFrame {
 
         sideList.setColumns(20);
         sideList.setRows(1);
-        sideList.setFont(new java.awt.Font("Ubuntu", 0, 24)); 
+        sideList.setFont(new java.awt.Font("Ubuntu", 0, 24));
         jScrollPane5.setViewportView(sideList);
 
         msplitList.setColumns(20);
         msplitList.setRows(1);
         msplitList.setFont(new java.awt.Font("Ubuntu", 0, 24));
         jScrollPane6.setViewportView(msplitList);
+
+        zeroSpeedLable.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
+        zeroSpeedLable.setText("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -218,61 +222,60 @@ public class TrackControllerGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(id)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(crossingLightOnButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(crossingLightOffButton))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(crossingUpButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(crossingDownButton))
+                            .addComponent(crossingLightStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(importPLCButton, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(crossingLightOnButton)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(crossingLightOffButton))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(crossingUpButton)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(crossingDownButton))
-                                            .addComponent(crossingLightStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(switchMainButton)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(switchSideButton))
-                                            .addComponent(switchLightStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(switchLightOnButton)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(switchLightOffButton))
-                                            .addComponent(crossingStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(automaticButton, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(manualButton)
-                                            .addComponent(switchStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(jLabel1)
-                                                .addGap(58, 58, 58)
-                                                .addComponent(jLabel2)
-                                                .addGap(29, 29, 29))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(6, 6, 6)))))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(12, 12, 12)
-                                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(switchMainButton)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(switchSideButton))
+                                    .addComponent(switchLightStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(24, 24, 24)
-                                        .addComponent(jLabel3)))))
-                        .addGap(50, 50, 50))))
+                                        .addComponent(switchLightOnButton)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(switchLightOffButton))
+                                    .addComponent(crossingStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(automaticButton, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(manualButton)
+                                    .addComponent(switchStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(58, 58, 58)
+                                        .addComponent(jLabel2)
+                                        .addGap(29, 29, 29))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(6, 6, 6)))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel3))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(importPLCButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(zeroSpeedLable, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(78, 78, 78)))))
+                .addGap(50, 50, 50))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,7 +320,9 @@ public class TrackControllerGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(crossingLightOnButton)
                     .addComponent(crossingLightOffButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(zeroSpeedLable, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(id)
                 .addContainerGap())
         );
@@ -362,6 +367,12 @@ public class TrackControllerGUI extends javax.swing.JFrame {
 
     private void crossingLightOffButtonActionPerformed(java.awt.event.ActionEvent evt) {
         tc.setCrossLight(false);
+    }
+    public void zeroSpeedSent(boolean z){
+         if(z)
+          zeroSpeedLable.setText("Zero Speed Sent!");
+         else
+          zeroSpeedLable.setText("");
     }
 
     private void importPLCButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -454,5 +465,6 @@ public class TrackControllerGUI extends javax.swing.JFrame {
     private javax.swing.JRadioButton switchSideButton;
     private javax.swing.JLabel switchStatus;
     private javax.swing.JLabel id;
+    private javax.swing.JLabel zeroSpeedLable;
     // End of variables declaration
 }
