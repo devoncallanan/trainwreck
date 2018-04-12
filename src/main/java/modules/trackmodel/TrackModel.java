@@ -144,9 +144,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		Message tempM;
 		tempM = new Message(MDest.TcMd, 30, MType.PASSENGERS);
 		m.send(tempM, MDest.TrMd);
-        tempM = new Message(MDest.TcMd, 40.0, MType.SPEEDLIMIT);
-        m.send(tempM, MDest.TrMd);
-        System.out.println("Return TkM");
+		tempM = new Message(MDest.TcMd, 70.0, MType.SPEEDLIMIT);
+		m.send(tempM, MDest.TrMd);
 		
 		for (int i = 0; i < 6; i++) {
 			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
@@ -162,6 +161,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);
 				m.send(tempM, MDest.TrCtl);
 			}
+			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
+			m.send(tempM, MDest.TrCtl);
 			
 		}
 		
