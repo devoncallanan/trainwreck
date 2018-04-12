@@ -10,6 +10,10 @@ import shared.*;
  *
  * @author Devon
  */
+
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
+
 public class Block {
     //blocks are edges in a directed graph
     public int from;
@@ -61,7 +65,7 @@ public class Block {
     }
     
     public String extendedInfo() {
-        String s = new String("Section: " + section + "\t\t\tBlock Number: " + number + "\nStation: " + station + "\t\t\tGrade: " + grade + "\nLength: " + length + "\t\t\t Speed Limit: " + limit + "\nOccupied: " + occupied);
+        String s = new String("Section: " + section + "\t\t\tBlock Number: " + number + "\nStation: " + station + "\t\t\tGrade: " + grade + "\nLength: " + length*3.28084 + "\t\t\t Speed Limit: " + limit0*.621371 + "\nOccupied: " + occupied);
         return s;
     }
 }

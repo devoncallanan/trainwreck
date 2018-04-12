@@ -16,6 +16,10 @@ make ghost train circ buffer with front of train occupying and back freeing
  *
  * @author Devon
  */
+
+public static double KMH_TO_MS = 1000.0/3600.0; 
+public static double MS_TO_KMH = 3600.0/10000.0; 
+
 public class TrackModel {
     
 	private static double DELTA_T = .1;
@@ -73,10 +77,8 @@ public class TrackModel {
 				case MType.SPEED:
 					System.out.println(mail.dataD());
 					m.send(mail, MDest.TrMd);
-					System.out.println("TkMod SEND");
 					break;	
 				case MType.NEWTRAIN:
-                    System.out.println("New Train");
 					Train[] temp = new Train[numTrains + 1];
 					
 					for (int i = 0; i < numTrains; i++) {
@@ -88,7 +90,6 @@ public class TrackModel {
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
-					System.out.println("Devon " + mail.dataD() + " " + (mail.from() - MDest.TrMd)/2 + " " + trains[0].speed);
                     break;
 				case MType.SWITCH:
                     if (redline.getSize() > 70) {
@@ -98,7 +99,6 @@ public class TrackModel {
     					if (mail.dataB()) branch = -1;
     					redline.setSwitch(realBlock, branch, 0);
 						conts.setSwitch(contid, branch);
-						System.out.println("Devon branch dir: " + branch);
                     }
                     break;
 			}
@@ -113,7 +113,7 @@ public class TrackModel {
         }
 		*/
 
-		boolean beacon = false;
+		boolean changedBlock = false;
 		Block nextBlock = null;
         //System.out.println("Loaded Track");
 		if (redline.getSize() > 70) {
@@ -129,10 +129,13 @@ public class TrackModel {
     				train.location = nextBlock.number;
     				redline.setOccupancy(train.location, true);
     				train.distanceIn = overflow;
-					if (nextBlock.beacon != null) beacon = true;
+					changedBlock = true;
     			}
     		}
         }
+		
+		
+		/* ---------------- send messages -------------------------- */
 		
 		Message tempM;
 		tempM = new Message(MDest.TcMd, 30, MType.PASSENGERS);
@@ -146,10 +149,19 @@ public class TrackModel {
 			m.send(tempM, MDest.TcCtl + i);
 		}
 		
-		if (beacon) {
-			tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);
-			m.send(tempM, MDest.TrCtl);
+		if (blockChanged) {
+			//grade
+			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			m.send(tempM, MDest.TrMd);
+			//beacon
+			if (nextBlock.beacon != null) {
+				tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);
+				m.send(tempM, MDest.TrCtl);
+			}
+			
 		}
+		
+
         
 		/*
 		while (redline.getSize() == 0){
