@@ -14,10 +14,10 @@ public class TrackController {
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true;
-     boolean mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mode = true;
+     boolean mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
      boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false;
-	 
+
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
           mq = y;
@@ -25,7 +25,6 @@ public class TrackController {
           msplit = r;
           side = s;
           plcCode = p;
-          //TrackController temp = this;
 
 		  gui = new TrackControllerGUI(this, n, r, s, z + 1, p);
 		  gui.setVisible(true);
@@ -35,6 +34,7 @@ public class TrackController {
 				mainCross = true;
 				crossInd = i;
 				mainLine[i] = false;
+                    crossExists = true;
 		   }
           }
           for(int i=0; i<r.length; i++){
@@ -42,6 +42,7 @@ public class TrackController {
                     msplitCross = true;
                     crossInd = i;
                     msplit[i] = false;
+                    crossExists = true;
                }
           }
           for(int i=0; i<s.length; i++){
@@ -49,6 +50,7 @@ public class TrackController {
                     sideCross = true;
                     crossInd = i;
                     side[i] = false;
+                    crossExists = true;
                }
           }
           checkZero();
@@ -70,16 +72,12 @@ public class TrackController {
                if(!onSwitch)
                     logic();
                checkLights();
-               checkCross();
           }
+          if(crossExists)
+               checkCross();
           checkContinue();
           setGUI();
           mSend();
-		  System.out.println("ALex sets the SWITCH!!!1!!1: " + switchPos + " : " + id);
-		  System.out.println("Msplit Dir: "+ msplitDir);
-		  System.out.println("Side Dir:"+ sideDir);
-		  System.out.println("Msplit OCC: "+msplitOcc);
-		  System.out.println("Side Occ: "+sideOcc);
      }
      public void manualMode(){
           mode = false;
@@ -308,15 +306,15 @@ public class TrackController {
           }
      }
      public void checkCross(){
-          if(mainCross && mainLine[crossInd]){
+          if(mainCross && ((mainDir && (mainLine[crossInd] || mainLine[crossInd-1])) || (!mainDir &&(mainLine[crossInd] || mainLine[crossInd+1])))){
                crossPos = true;
                crossLights = true;
           }
-          else if(sideCross && side[crossInd]){
+          else if(sideCross && ((sideDir && (side[crossInd] || side[crossInd-1])) || (!sideDir &&(mainLine[crossInd] || side[crossInd+1])))){
                crossPos = true;
                crossLights = true;
           }
-          else if(msplitCross && msplit[crossInd]){
+          else if(msplitCross && ((msplitDir && (msplit[crossInd] || msplit[crossInd-1])) || (!msplitDir &&(msplit[crossInd] || msplit[crossInd+1])))){
                crossPos = true;
                crossLights = true;
           }
@@ -631,16 +629,16 @@ public class TrackController {
           mode = m;
      }
      public void setGUI(){
-		  
+
           gui.changeSwitch(switchPos);
           gui.changeSwitchLight(switchLight);
           gui.changeCrossing(crossPos);
           gui.changeCrossLight(crossLights);
-		  
+
           gui.updateMain(mainLine);
-		  
+
           gui.updateMsplit(msplit);
           gui.updateSide(side);
-		  
+
      }
 }
