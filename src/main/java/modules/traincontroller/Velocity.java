@@ -16,7 +16,7 @@ public class Velocity {
 	private double velocityFeedbackPrevious;
 	private double velocityError;
 	private double previousVelocityError;
-	private double speedLimit;
+	public double speedLimit;
 	private double setpointSpeed;
 	public double suggestedSpeed;
 	private double originalSuggestedSpeed;
@@ -64,14 +64,14 @@ public class Velocity {
 	//If a new block is entered, the speed limit is set
 	public void setSpeedLimit(double speedLimit, boolean mode) {
 		this.speedLimit = speedLimit;
-		/*if (mode) {
+		if (mode) {
 			//Automatic
 			if (originalSuggestedSpeed <= speedLimit) {
 				suggestedSpeed = originalSuggestedSpeed;
 			} else if (suggestedSpeed > speedLimit) {
 				suggestedSpeed = speedLimit;
 			}
-		}*/
+		}
 	}
 	
 	
