@@ -141,7 +141,7 @@ public class TrainController {
 				default:
 					break;
 			}
-            System.out.println("vF = " + velocity.feedback());
+            //System.out.println("vF = " + velocity.feedback());
 		}//End while loop for message checking
 		
 		
