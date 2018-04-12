@@ -88,6 +88,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
                     trains[numTrains] = new Train(numTrains,9, 10);
 					numTrains++;
 					redline.setOccupancy(9, true);
+					conts.update(9, 1);
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
@@ -97,7 +98,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     					int contid = mail.from() - MDest.TcCtl;
     					int realBlock = conts.getSwitchConvert(contid);
     					int branch = 1;
-    					if (mail.dataB()) branch = -1;
+    					if (!mail.dataB()) branch = -1;
     					redline.setSwitch(realBlock, branch, 0);
 						conts.setSwitch(contid, branch);
                     }
@@ -126,9 +127,11 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     			if (overflow > 0) {
     				nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
     				redline.setOccupancy(train.location, false);
+					conts.update(train.location, 0);
     				train.backNode = redline.getBlock(train.location).other(train.backNode);
     				train.location = nextBlock.number;
     				redline.setOccupancy(train.location, true);
+					conts.update(train.location, 1);
     				train.distanceIn = overflow;
 					changedBlock = true;
     			}

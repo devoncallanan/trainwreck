@@ -30,11 +30,11 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         crossGroup = new javax.swing.ButtonGroup();
         crossLightGroup = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
-        sideList = new javax.swing.JList<>();
+        sideList = new javax.swing.JTextArea();
         automaticButton = new javax.swing.JRadioButton();
         manualButton = new javax.swing.JRadioButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        msplitList = new javax.swing.JList<>();
+        msplitList = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         mainLineList = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
@@ -70,12 +70,13 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         id.setText("ID: "+i);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
+		/*
         sideList.setModel(new javax.swing.AbstractListModel<String>() {
            boolean[] strings = side;
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return ""+strings[i]; }
         });
+		*/
         jScrollPane1.setViewportView(sideList);
 
         automaticButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
@@ -93,14 +94,14 @@ public class TrackControllerGUI extends javax.swing.JFrame {
                 manualButtonActionPerformed(evt);
             }
         });
-
+		/*
         msplitList.setModel(new javax.swing.AbstractListModel<String>() {
             boolean[] strings =msplit;
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return ""+strings[i]; }
         });
         jScrollPane2.setViewportView(msplitList);
-		/*
+		
         mainLineList.setModel(new javax.swing.AbstractListModel<String>() {
             boolean[] strings = mainLine;
             public int getSize() { return strings.length; }
@@ -381,17 +382,23 @@ public class TrackControllerGUI extends javax.swing.JFrame {
     public void updateMain(boolean[] a){
          StringBuilder info = new StringBuilder();
 		 for (int j = 0; j < a.length; j++){
-			 info.append(a[i] + "\n");
+			 info.append(a[j] + "\n");
 		 }
 		 mainLineList.setText(info.toString());
     }
     public void updateMsplit(boolean[] a){
-         msplit = a;
-         msplitList.updateUI();
+         StringBuilder info = new StringBuilder();
+		 for (int j = 0; j < a.length; j++){
+			 info.append(a[j] + "\n");
+		 }
+		 msplitList.setText(info.toString());
     }
     public void updateSide(boolean[] a){
-         side = a;
-         sideList.updateUI();
+         StringBuilder info = new StringBuilder();
+		 for (int j = 0; j < a.length; j++){
+			 info.append(a[j] + "\n");
+		 }
+		 sideList.setText(info.toString());
     }
 
 
@@ -418,8 +425,8 @@ public class TrackControllerGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea mainLineList;
     private javax.swing.JRadioButton manualButton;
-    private javax.swing.JList<String> msplitList;
-    private javax.swing.JList<String> sideList;
+    private javax.swing.JTextArea msplitList;
+    private javax.swing.JTextArea sideList;
     private javax.swing.JRadioButton switchLightOffButton;
     private javax.swing.JRadioButton switchLightOnButton;
     private javax.swing.JLabel switchLightStatus;
