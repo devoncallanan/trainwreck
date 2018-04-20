@@ -34,7 +34,7 @@ public class CTCOffice {
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
 	private Message m;
-	private boolean dispatchReady = true;
+	private boolean dispatchReady = false;
 
 	/* Graph Testing - - - - - - - - - - - - - - */
 	private TrackGraph track;
@@ -122,7 +122,12 @@ public class CTCOffice {
 		return speed;
 	}
 	public BlockTemp getStop(int index) {
-		return stops.get(index);
+		for (int i = 0; i < stops.size(); i++) {
+			if (stops.get(i).number() == index) {
+				return stops.get(i);
+			}
+		}
+		return null;
 	}
 
 	public void dispatchTrain(int src, int dest) {
@@ -131,16 +136,16 @@ public class CTCOffice {
 		DijkstraSPD spd = new DijkstraSPD(track, src);
 		authority = spd.distTo(dest);
 		System.out.println("SHORTEST DISTANCE : "+authority);
-		spd.pathTo(dest);
+		//spd.pathTo(dest);
 		ArrayList<Integer> path = spd.getPath(dest);
 		setSwitches(path);
 		for (int i = 0; i < redSwitches.length; i ++) {
-			System.out.println(i+": "+redSwitches[i].booleanValue());
+			//System.out.println(i+": "+redSwitches[i].booleanValue());
 		}
-		System.out.println("DISPATCHED!");
-		//dispatchReady = true;
+		//System.out.println("DISPATCHED!");
+		dispatchReady = true;
 		dispatched = true;
-		System.out.println(dispatched);
+		//System.out.println(dispatched);
 	}
 
 	public void setSwitches(ArrayList<Integer> path) {
@@ -195,10 +200,6 @@ public class CTCOffice {
 
 	public boolean run(){
 		mReceive();
-		// int src = 74;
-		// int dest = 48;
-		// System.out.println("SRC: "+src+", DEST: "+dest);
-		//dispatchTrain(src,dest);
 		mSend();
 		return dispatched;
 	}
@@ -276,13 +277,24 @@ public class CTCOffice {
 				int v = Integer.parseInt(str[8]) - 1;
 				int w = Integer.parseInt(str[9]) - 1;
 				int branch = Integer.parseInt(str[10]);
+				String info = "";
+				if (str.length > 11) {
+					info = str[11];
+				}
+				
 
 				// Add block to graph
 				BlockTemp insert = new BlockTemp(v, w, distance, section, num, branch);
 				tg.addBlockTemp(insert);
 
+				String secnum;
 				// Add string to list
-				String secnum = section+num;
+				if (info.length() > 0) {
+					secnum = section+num+"|"+info;
+				} else {
+					secnum = section+num;	
+				}
+
 				redLineData.add(secnum);
 			}
 			stops = tg.blocks();
