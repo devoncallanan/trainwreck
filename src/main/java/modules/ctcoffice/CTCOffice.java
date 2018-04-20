@@ -34,7 +34,7 @@ public class CTCOffice {
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
 	private Message m;
-	private boolean dispatchReady = false;
+	private boolean dispatchReady = true;
 
 	/* Graph Testing - - - - - - - - - - - - - - */
 	private TrackGraph track;
@@ -46,6 +46,7 @@ public class CTCOffice {
 	public ArrayList<BlockTemp> stops = new ArrayList<BlockTemp>();
 	public ArrayList<String> redLineData = new ArrayList<String>();
 	private boolean dispatched = false;
+	private boolean threadSuspended = false;
 
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
@@ -105,6 +106,14 @@ public class CTCOffice {
 		return time;
 	}
 
+	public boolean getThreadStatus() {
+		return threadSuspended;
+	}
+
+	public void setThreadStatus(boolean threadSuspended) {
+		this.threadSuspended = threadSuspended;
+	}
+
 	public double getAuthority() {
 		return authority;
 	}
@@ -121,15 +130,15 @@ public class CTCOffice {
 		dest--;
 		DijkstraSPD spd = new DijkstraSPD(track, src);
 		authority = spd.distTo(dest);
-		//System.out.println("SHORTEST DISTANCE : "+authority);
-		//spd.pathTo(dest);
+		System.out.println("SHORTEST DISTANCE : "+authority);
+		spd.pathTo(dest);
 		ArrayList<Integer> path = spd.getPath(dest);
 		setSwitches(path);
-		// for (int i = 0; i < redSwitches.length; i ++) {
-		// 	System.out.println(i+": "+redSwitches[i].booleanValue());
-		// }
+		for (int i = 0; i < redSwitches.length; i ++) {
+			System.out.println(i+": "+redSwitches[i].booleanValue());
+		}
 		System.out.println("DISPATCHED!");
-		dispatchReady = true;
+		//dispatchReady = true;
 		dispatched = true;
 		System.out.println(dispatched);
 	}
@@ -186,7 +195,10 @@ public class CTCOffice {
 
 	public boolean run(){
 		mReceive();
-		//dispatchTrain(74,32);
+		// int src = 74;
+		// int dest = 48;
+		// System.out.println("SRC: "+src+", DEST: "+dest);
+		//dispatchTrain(src,dest);
 		mSend();
 		return dispatched;
 	}
@@ -230,9 +242,6 @@ public class CTCOffice {
 
 	// }
 
-	// public Time modifyTime(int timeCommand) {
-
-	// }
 
 	// public Queue<Schedule> importSchedule(String filename) {
 
@@ -262,7 +271,7 @@ public class CTCOffice {
 				String trackLine = str[0];
 				String section = str[1];
 				int num = Integer.parseInt(str[2]);
-				int distance = (int)Double.parseDouble(str[3]);
+				double distance = Double.parseDouble(str[3]);
 				//str 4 - 7
 				int v = Integer.parseInt(str[8]) - 1;
 				int w = Integer.parseInt(str[9]) - 1;

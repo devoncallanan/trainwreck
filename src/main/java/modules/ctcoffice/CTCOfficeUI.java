@@ -33,11 +33,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private final double KMH_TO_MPH = (double)1/(double)1.609344;
     private final double M_TO_F = 3.280840;
 
+    private Thread thread;
+
     /**
      * Creates new form CTCOfficeUI
      */
     public CTCOfficeUI(CTCOffice ctc) {
         this.ctc = ctc;
+        this.thread = thread;
         
         int redSize = ctc.redLineData.size();
         this.redLineData = new String[redSize];
@@ -777,6 +780,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
     private void TimePauseButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
         // TODO add your handling code here:
+        // try {
+            
+        //     thread.wait();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     System.out.println("Resume...");
+        // }
+
+        //ctc.setThreadStatus(true);
+        
     }                                               
 
     // >> Button
@@ -828,7 +841,9 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     }                                        
 
     private void TimePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {                                               
-        
+        //thread.notify();
+        // ctc.setThreadStatus(false);
+        // thread.notify();
     }                                              
 
     private void TrackMaintenanceToggleActionPerformed(java.awt.event.ActionEvent evt) {                                                       
