@@ -847,7 +847,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private void currentSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {                                            
         // TODO add your handling code here:
         if (evt.getPropertyName().equals("currentSpeed")) {
-            DecimalFormat numberFormat = new DecimalFormat("#0.00");
+            DecimalFormat numberFormat = new DecimalFormat("#0.0");
             currentSpeed.setText(String.valueOf(numberFormat.format(evt.getNewValue())));
         }
     }                                           
@@ -855,7 +855,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
     private void powerCmdPropertyChange(java.beans.PropertyChangeEvent evt) {                                        
         // TODO add your handling code here:
         if (evt.getPropertyName().equals("powerUpdate")) {
-            DecimalFormat numberFormat = new DecimalFormat("#0.00");
+            DecimalFormat numberFormat = new DecimalFormat("#0.0");
             powerCmd.setText(String.valueOf(numberFormat.format(evt.getNewValue())) + " kW");
         }
     }                                       

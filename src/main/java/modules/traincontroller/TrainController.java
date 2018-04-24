@@ -175,10 +175,10 @@ public class TrainController {
 		
 		//POWER COMMAND
 		if (!stopping) {
-			if (velocity.error() < 0) {
+			//if (velocity.error() < 0) {
 				//if (!service) setService(true);
-				p = 0;
-			} else {
+				//p = 0;
+			//} else {
 				if (mode) {
                     if (service) setService(false);
                 }
@@ -189,7 +189,7 @@ public class TrainController {
 
 				p = vital.vote(p1, p2, p3);
 
-			}	
+			//}	
 		}
 
 		//Any brakes applied, the power command is set to 0
