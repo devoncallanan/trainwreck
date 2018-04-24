@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package modules.trainmodel;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -377,6 +378,7 @@ public class TrainModelUI extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers,int lights,double auth,int temp,int doors) {
+        this.velocityLabel.setText(new DecimalFormat("#.##").format(currentSpeed));
         this.velocityLabel.setText(Double.toString(currentSpeed));
         this.powerLabel.setText(Double.toString(power));
         this.passengersLabel.setText(Double.toString(passengers));
