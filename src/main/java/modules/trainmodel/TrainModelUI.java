@@ -15,7 +15,7 @@ public class TrainModelUI extends javax.swing.JFrame {
     private int failures;
     
     public TrainModelUI() {
-        
+        double trainMass = 40.9;
         initComponents();
     }
 
@@ -106,7 +106,7 @@ public class TrainModelUI extends javax.swing.JFrame {
         TrainInfoDisplay1.setColumns(20);
         TrainInfoDisplay1.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         TrainInfoDisplay1.setRows(5);
-        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: 40.9T - 56.7T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
+        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: " + trainMass + "T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
         jScrollPane4.setViewportView(TrainInfoDisplay1);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -378,6 +378,8 @@ public class TrainModelUI extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers,int lights,double auth,int temp,int doors) {
+        trainMass = 40.9 + (.06803885*passengers); //add passenger weight to train in tons
+        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: " + trainMass + "T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
         this.velocityLabel.setText(new DecimalFormat("#.##").format(currentSpeed));
         this.velocityLabel.setText(Double.toString(currentSpeed));
         this.powerLabel.setText(Double.toString(power));
