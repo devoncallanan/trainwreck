@@ -75,9 +75,7 @@ public class Power {
 		return Ki;
 	}
         
-	public void killPower() {
-		
-	}
+
 	public void resetPower() {
 		uk = 0;
 		previousUk = 0;

@@ -13,9 +13,7 @@ import shared.*;
  */
 public class Voter {
 	
-	boolean one = false;
-	boolean two = false;
-	boolean three = false;
+	double avgPower;
 	
 	public Voter (){
 		
@@ -23,22 +21,22 @@ public class Voter {
 	
 	public double vote(double power1, double power2, double power3) {
 		
+		avgPower = (power1 + power2 + power3)/ (double)3;
 		
-		if ((power1 <= (power2 + 1)) && (power1 >= (power2 - 1))) {
-			one = true;
-		}
-		if ((power1 <= (power3 + 1)) && (power1 >= (power3 - 1))) {
-			two = true;
-		}
-		if ((power3 <= (power2 + 1)) && (power3 >= (power2 - 1))) {
-			three = true;
+		//Take the average of the power commands and if they are within +- 10 kW of each other
+		//then the avgPower is acceptable to send as a power commands
+		if (avgPower <= power1 + 10 && avgPower >= power1 - 10) {
+			if (avgPower <= power2 + 10 && avgPower >= power2 - 10) {
+				if (avgPower <= power3 + 10 && avgPower >= power3 - 10) {
+					return avgPower;
+				}
+			}
 		}
 		
-		if (one && two && three) {
-			return (power1+power2+power3)/(double)3;
-		} else {
-			return power1;
-		}
+		//If the average power command is too drastic between the 3 calculated powers
+		//then there is an issue calculating power and 0 is returned
+		return 0;
+		
 		
 	}
 	
