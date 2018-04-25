@@ -22,8 +22,8 @@ public class Power {
 	private double Time = 0.01;
 
 	private final double MAX_POWER = 120;
-	private final double DEFAULT_KI = 0.5;
-	private final double DEFAULT_KP = 1;
+	private final double DEFAULT_KI = 5;
+	private final double DEFAULT_KP = 75;
 	private final double KMH_TO_MS = (double)1000/(double)3600;
 	
 	public Power() {
@@ -50,13 +50,6 @@ public class Power {
         } else {
             powerCmd = MAX_POWER;
         }
-		
-//		  System.out.println("power: " + powerCmd);
-//        System.out.println("uk: " + uk);
-//        System.out.println("previousUk: " + previousUk);
-//        System.out.println("velocityError: " + velocityError);
-//        System.out.println("previousPowerCmd: " + previousPowerCmd);
-//        System.out.println("power: " + powerCmd);
 
 		
 		previousPowerCmd = powerCmd;
@@ -66,12 +59,12 @@ public class Power {
 	
 	public void setKi(double Ki) {
             if (Ki > -1)
-		this.Ki = Ki;
+				this.Ki = Ki;
 	}
 	
 	public void setKp(double Kp) {
             if (Kp > -1)
-		this.Kp = Kp;
+				this.Kp = Kp;
 	}
 	
     public double getKp() {
@@ -82,9 +75,7 @@ public class Power {
 		return Ki;
 	}
         
-	public void killPower() {
-		
-	}
+
 	public void resetPower() {
 		uk = 0;
 		previousUk = 0;
