@@ -34,7 +34,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 	public int stationSide;
 	public String extra;
 
-    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch, int switchloc,String station, String beacon, int stationSide, String extra) {
+    public Block(int to, int from, String section, int number, double grade, double length, double limit, int branch, int switchloc,String station, String beacon, int stationSide, String extra) {
         this.to = to;
         this.from = from;
         this.section = section;
@@ -75,7 +75,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
         if (occupied) {
             sb.append("CHOO-CHOO");
         }
-        return sb.toString;
+        return sb.toString();
     }
     
     public String extendedInfo() {
