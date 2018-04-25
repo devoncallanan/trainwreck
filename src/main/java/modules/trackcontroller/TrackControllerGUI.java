@@ -51,10 +51,12 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         switchSideButton = new javax.swing.JRadioButton();
         switchLightOnButton = new javax.swing.JRadioButton();
         switchLightOffButton = new javax.swing.JRadioButton();
-        crossingUpButton = new javax.swing.JRadioButton();
-        crossingDownButton = new javax.swing.JRadioButton();
-        crossingLightOnButton = new javax.swing.JRadioButton();
-        crossingLightOffButton = new javax.swing.JRadioButton();
+        if(cross){
+             crossingUpButton = new javax.swing.JRadioButton();
+             crossingDownButton = new javax.swing.JRadioButton();
+             crossingLightOnButton = new javax.swing.JRadioButton();
+             crossingLightOffButton = new javax.swing.JRadioButton();
+        }
         importPLCButton = new javax.swing.JButton();
         zeroSpeedLable = new javax.swing.JLabel();
 
@@ -64,10 +66,13 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         switchGroup.add(switchSideButton);
         switchLightGroup.add(switchLightOnButton);
         switchLightGroup.add(switchLightOffButton);
-        crossGroup.add(crossingUpButton);
-        crossGroup.add(crossingDownButton);
-        crossLightGroup.add(crossingLightOnButton);
-        crossLightGroup.add(crossingLightOffButton);
+        if(cross){
+             System.out.println("in here");
+             crossGroup.add(crossingUpButton);
+             crossGroup.add(crossingDownButton);
+             crossLightGroup.add(crossingLightOnButton);
+             crossLightGroup.add(crossingLightOffButton);
+        }
 
         id.setFont(new java.awt.Font("Ubuntu", 0, 24));
         id.setText("ID: "+i);
@@ -169,28 +174,27 @@ public class TrackControllerGUI extends javax.swing.JFrame {
                      crossingUpButtonActionPerformed(evt);
                  }
              });
+             crossingDownButton.setText("Down");
+             crossingDownButton.addActionListener(new java.awt.event.ActionListener() {
+                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                     crossingDownButtonActionPerformed(evt);
+                 }
+             });
+
+             crossingLightOnButton.setText("On");
+             crossingLightOnButton.addActionListener(new java.awt.event.ActionListener() {
+                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                     crossingLightOnButtonActionPerformed(evt);
+                 }
+             });
+
+             crossingLightOffButton.setText("Off");
+             crossingLightOffButton.addActionListener(new java.awt.event.ActionListener() {
+                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                     crossingLightOffButtonActionPerformed(evt);
+                 }
+             });
         }
-
-        crossingDownButton.setText("Down");
-        crossingDownButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                crossingDownButtonActionPerformed(evt);
-            }
-        });
-
-        crossingLightOnButton.setText("On");
-        crossingLightOnButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                crossingLightOnButtonActionPerformed(evt);
-            }
-        });
-
-        crossingLightOffButton.setText("Off");
-        crossingLightOffButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                crossingLightOffButtonActionPerformed(evt);
-            }
-        });
 
         importPLCButton.setText("Import PLC");
         importPLCButton.addActionListener(new java.awt.event.ActionListener() {
