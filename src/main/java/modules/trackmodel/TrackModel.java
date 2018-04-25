@@ -86,9 +86,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 					}
 					trains = temp;
                     trains[numTrains] = new Train(numTrains,9, 10);
-					numTrains++;
 					redline.setOccupancy(9, true);
 					conts.update(9, 1);
+					trains[numTrains].blocks.add(redline.getBlock(9));
+					numTrains++;
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
@@ -126,15 +127,20 @@ public static double MS_TO_KMH = 3600.0/10000.0;
                 System.out.println("moving trains " + traveled + " ovf " + overflow);
     			if (overflow > 0) {
     				nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
-    				redline.setOccupancy(train.location, false);
-					conts.update(train.location, 0);
     				train.backNode = redline.getBlock(train.location).other(train.backNode);
     				train.location = nextBlock.number;
     				redline.setOccupancy(train.location, true);
 					conts.update(train.location, 1);
+					train.blocks.add(nextBlock);
     				train.distanceIn = overflow;
 					changedBlock = true;
     			}
+				if (train.tailOverflow > 0) {
+					Block exited = train.blocks.remove(0);
+    				redline.setOccupancy(exited.number, false);
+					conts.update(exited.number, 0);	
+					train.distanceInTail = 0;
+				}
     		}
         }
 		
@@ -146,23 +152,28 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		m.send(tempM, MDest.TrMd);
 		tempM = new Message(MDest.TcMd, 70.0, MType.SPEEDLIMIT);
 		m.send(tempM, MDest.TrMd);
-		
 		for (int i = 0; i < 6; i++) {
 			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
 			m.send(tempM, MDest.TcCtl + i);
+			if (numTrains > 0) {
+				tempM = new Message(MDest.TcMd, redline.getOccupancies(), MType.REALTRACK);
+				m.send(tempM, MDest.TcCtl + i);
+			}
 		}
 		
 		if (changedBlock) {
 			//grade
-			//tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
-			//m.send(tempM, MDest.TrMd);
+			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			m.send(tempM, MDest.TrMd);
 			//beacon
 			if (nextBlock.beacon != null) {
-				tempM = new Message(MDest.TcMd, nextBlock.beacon, MType.BEACON);
+				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
 				m.send(tempM, MDest.TrCtl);
 			}
+			//speedlimit
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
 			m.send(tempM, MDest.TrCtl);
+			
 			
 		}
 		

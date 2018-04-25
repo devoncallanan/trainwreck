@@ -8,7 +8,6 @@ import modules.trainmodel.*;
 
 public class Trainwreck {
 	public static void main(String[] args) {
-		System.out.println("Gradle Test");
 
 		java.util.Scanner pauseScan = new java.util.Scanner(System.in);
 		int time = 10;
@@ -46,7 +45,7 @@ public class Trainwreck {
 				
 				//Will get the time to sleep from CTC once implemented
 				time = ctc.getTime();
-				System.out.println("- - - - - Pause - - - - -");
+				//System.out.println("- - - - - Pause - - - - -");
 				Thread.sleep(time);
 				// Update clock in UI
 				ctc.repaint();
