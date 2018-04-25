@@ -415,9 +415,7 @@ public class TrackController {
                     }
                     else{
                          if(msplit[i] && msplit[i-2] && !msplit[i-1]){
-                              zeroSpeed(mainLine.length + i){
-
-                              }
+                              zeroSpeed(mainLine.length + i);
                          }
                     }
                }
@@ -444,9 +442,7 @@ public class TrackController {
                     }
                     else{
                          if(side[i] && side[i-2] && !side[i-1]){
-                              zeroSpeed(mainLine.length + msplit.length + i){
-
-                              }
+                              zeroSpeed(mainLine.length + msplit.length + i);
                          }
                     }
                }
