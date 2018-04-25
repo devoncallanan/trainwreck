@@ -14,6 +14,7 @@ public class TrainModelUI extends javax.swing.JFrame {
 
     private int failures;
     private double trainMass = 40.9;
+
     
     public TrainModelUI() {
         initComponents();
@@ -459,5 +460,9 @@ public class TrainModelUI extends javax.swing.JFrame {
     
     public int getFailures(){
         return this.failures;
+    }
+	
+	public void setFailures(int failures){
+        this.failures = failures;
     }
 }

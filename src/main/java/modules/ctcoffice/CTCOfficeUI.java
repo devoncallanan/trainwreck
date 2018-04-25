@@ -26,11 +26,21 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private final String[] scheduleColumnVector;
     private ArrayList<Object[][]> trainSchedules;
     public final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private static int minutes = 0;
+    private static int seconds = 0;
+    private static int millis = 0;
+
+    private final double KMH_TO_MPH = (double)1/(double)1.609344;
+    private final double M_TO_F = 3.280840;
+
+    private Thread thread;
+
     /**
      * Creates new form CTCOfficeUI
      */
     public CTCOfficeUI(CTCOffice ctc) {
         this.ctc = ctc;
+        this.thread = thread;
         
         int redSize = ctc.redLineData.size();
         this.redLineData = new String[redSize];
@@ -70,7 +80,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         ThroughputLabel = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         ThroughputRedLabel = new javax.swing.JLabel();
@@ -86,29 +95,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         TrackSwitchToggle = new javax.swing.JToggleButton();
         TrackMaintenanceToggle = new javax.swing.JToggleButton();
         TrackBlockComboBox = new javax.swing.JComboBox<>();
-        jSeparator1 = new javax.swing.JSeparator();
-        TrainPanel = new javax.swing.JPanel();
-        DispatchTrainPanel = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        DispatchAutomaticButton = new javax.swing.JButton();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        DispatchLineComboBox = new javax.swing.JComboBox<>();
-        jLabel17 = new javax.swing.JLabel();
-        DispatchDepartureTextField = new javax.swing.JTextField();
-        DispatchManualButton = new javax.swing.JButton();
-        jLabel18 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        DispatchDestComboBox = new javax.swing.JComboBox<>();
-        DispatchDwellTextField = new javax.swing.JTextField();
-        DispatchArrivalTextField = new javax.swing.JTextField();
-        DispatchAddScheduleButton = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        DispatchScheduleTable = new javax.swing.JTable();
         ActiveTrainPanel = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -120,7 +106,27 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         ActiveScheduleTable = new javax.swing.JTable();
         ActiveSelectedTrainLabel = new javax.swing.JLabel();
-        jSeparator3 = new javax.swing.JSeparator();
+        TrainPanel = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        DispatchAutomaticButton = new javax.swing.JButton();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        DispatchLineComboBox = new javax.swing.JComboBox<>();
+        jLabel17 = new javax.swing.JLabel();
+        DispatchDepartureTextField = new javax.swing.JTextField();
+        DispatchManualButton = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        DispatchDestComboBox = new javax.swing.JComboBox<>();
+        DispatchDwellTextField = new javax.swing.JTextField();
+        DispatchArrivalTextField = new javax.swing.JTextField();
+        DispatchAddScheduleButton = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        DispatchScheduleTable = new javax.swing.JTable();
+        jLabel18 = new javax.swing.JLabel();
 
         File workingDirectory = new File(System.getProperty("user.dir"));
         ImportScheduleFileChooser.setCurrentDirectory(workingDirectory);
@@ -130,8 +136,8 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(1200, 600));
         setResizable(false);
 
-        TimeThroughputPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Time & Throughput"));
-        TimeThroughputPanel.setPreferredSize(new java.awt.Dimension(286, 286));
+        TimeThroughputPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Time & Throughput", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 30))); // NOI18N
+        TimeThroughputPanel.setPreferredSize(new java.awt.Dimension(286, 319));
 
         TimeLabel.setFont(new java.awt.Font("Courier New", 1, 28)); // NOI18N
         TimeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -159,6 +165,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        TimeDownButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         TimeDownButton.setText("<<");
         buttonGroup1.add(TimeDownButton);
         TimeDownButton.addActionListener(new java.awt.event.ActionListener() {
@@ -167,6 +174,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
+        TimeUpButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         TimeUpButton.setText(">>");
         buttonGroup1.add(TimeUpButton);
         TimeUpButton.setName(""); // NOI18N
@@ -176,7 +184,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
-        TimePlayButton.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        TimePlayButton.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
         TimePlayButton.setText("Play");
         TimePlayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,7 +192,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
-        TimePauseButton.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        TimePauseButton.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
         TimePauseButton.setText("Pause");
         TimePauseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -192,7 +200,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Throughput:");
 
@@ -201,24 +209,20 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         ThroughputLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ThroughputLabel.setText("0");
 
-        jLabel5.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("(passengers/hour)");
-
-        jLabel6.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Red:");
 
-        jLabel7.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Green:");
 
-        ThroughputRedLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        ThroughputRedLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         ThroughputRedLabel.setForeground(new java.awt.Color(204, 0, 0));
         ThroughputRedLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ThroughputRedLabel.setText("0");
 
-        ThroughputGreenLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        ThroughputGreenLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         ThroughputGreenLabel.setForeground(new java.awt.Color(0, 204, 0));
         ThroughputGreenLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ThroughputGreenLabel.setText("0");
@@ -244,7 +248,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                         .addComponent(TimePauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ThroughputLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(TimeThroughputPanelLayout.createSequentialGroup()
                         .addGroup(TimeThroughputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ThroughputRedLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -273,8 +276,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addGap(2, 2, 2)
-                .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ThroughputLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -285,16 +286,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addGroup(TimeThroughputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ThroughputRedLabel)
                     .addComponent(ThroughputGreenLabel))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
-        TrackStatusPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Track Status"));
+        TrackStatusPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Track Status", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 30))); // NOI18N
 
-        jLabel10.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Line");
 
-        TrackLineComboBox.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        TrackLineComboBox.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackLineComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Red", "Green" }));
         TrackLineComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -302,15 +303,15 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel11.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Block");
 
-        jLabel12.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("Status");
 
-        jLabel13.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("Occupancy");
 
@@ -324,11 +325,11 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         TrackOccupancyLED.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TrackOccupancyLED.setText("*");
 
-        TrackSwitchToggle.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        TrackSwitchToggle.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackSwitchToggle.setText("Toggle Switch");
         TrackSwitchToggle.setEnabled(false);
 
-        TrackMaintenanceToggle.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        TrackMaintenanceToggle.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackMaintenanceToggle.setText("Close for Maintenance");
         TrackMaintenanceToggle.setEnabled(false);
         TrackMaintenanceToggle.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -342,7 +343,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
-        TrackBlockComboBox.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        TrackBlockComboBox.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackBlockComboBox.setEnabled(false);
         TrackBlockComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -408,242 +409,21 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addContainerGap(52, Short.MAX_VALUE))
         );
 
-        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        ActiveTrainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Active Trains", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 30))); // NOI18N
 
-        TrainPanel.setPreferredSize(new java.awt.Dimension(433, 0));
-
-        DispatchTrainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Dispatch Train"));
-
-        jLabel14.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Automatic");
-
-        DispatchAutomaticButton.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        DispatchAutomaticButton.setText("Import Schedule");
-        DispatchAutomaticButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchAutomaticButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel15.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("Manual");
-
-        jLabel16.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel16.setText("Line");
-
-        DispatchLineComboBox.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        DispatchLineComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Red", "Green" }));
-        DispatchLineComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchLineComboBoxActionPerformed(evt);
-            }
-        });
-
-        jLabel17.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setText("Departure Time");
-
-        DispatchDepartureTextField.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        DispatchDepartureTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        DispatchDepartureTextField.setText("00:00:00");
-        DispatchDepartureTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchDepartureTextFieldActionPerformed(evt);
-            }
-        });
-
-        DispatchManualButton.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        DispatchManualButton.setText("Dispatch Train");
-        DispatchManualButton.setEnabled(false);
-        DispatchManualButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchManualButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel18.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("Schedule");
-
-        jLabel19.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("Destination");
-
-        jLabel20.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel20.setText("Dwell");
-
-        jLabel21.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel21.setText("Arrival");
-
-        DispatchDestComboBox.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-        DispatchDestComboBox.setAutoscrolls(true);
-        DispatchDestComboBox.setEnabled(false);
-        DispatchDestComboBox.setMaximumSize(new java.awt.Dimension(39, 20));
-        DispatchDestComboBox.setName("Dest"); // NOI18N
-
-        DispatchDwellTextField.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-        DispatchDwellTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        DispatchDwellTextField.setText("00:01:00");
-        DispatchDwellTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchDwellTextFieldActionPerformed(evt);
-            }
-        });
-
-        DispatchArrivalTextField.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-        DispatchArrivalTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        DispatchArrivalTextField.setText("00:00:00");
-        DispatchArrivalTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchArrivalTextFieldActionPerformed(evt);
-            }
-        });
-
-        DispatchAddScheduleButton.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        DispatchAddScheduleButton.setText("Add to Schedule");
-        DispatchAddScheduleButton.setEnabled(false);
-        DispatchAddScheduleButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DispatchAddScheduleButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                    .addComponent(DispatchDestComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                    .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel21)))
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(DispatchAddScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {DispatchArrivalTextField, DispatchDwellTextField, jLabel20, jLabel21});
-
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20)
-                    .addComponent(jLabel21))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(DispatchDestComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DispatchAddScheduleButton))
-        );
-
-        DispatchScheduleTable.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
-        DispatchScheduleTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Destination", "Dwell", "Arrival"
-            }
-        ));
-        DispatchScheduleTable.getTableHeader().setFont(new java.awt.Font("Courier New", 0, 11));
-        jScrollPane2.setViewportView(DispatchScheduleTable);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout DispatchTrainPanelLayout = new javax.swing.GroupLayout(DispatchTrainPanel);
-        DispatchTrainPanel.setLayout(DispatchTrainPanelLayout);
-        DispatchTrainPanelLayout.setHorizontalGroup(
-            DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DispatchTrainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(DispatchAutomaticButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(DispatchManualButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, DispatchTrainPanelLayout.createSequentialGroup()
-                        .addGroup(DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(DispatchLineComboBox, 0, 118, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                            .addComponent(DispatchDepartureTextField))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        DispatchTrainPanelLayout.setVerticalGroup(
-            DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(DispatchTrainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DispatchAutomaticButton)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel17))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(DispatchTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DispatchLineComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DispatchDepartureTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DispatchManualButton)
-                .addContainerGap())
-        );
-
-        ActiveTrainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Active Trains"));
-
-        jTabbedPane1.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        jTabbedPane1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
 
         ActiveRedTable.setBackground(new java.awt.Color(255, 204, 204));
-        ActiveRedTable.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        ActiveRedTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         ActiveRedTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Train ID", "Location", "Speed (mph)", "Authority (mi)", "Passengers"
+                "Train ID", "Start Block", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
-        ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 0, 11));
+        ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
         ActiveRedTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ActiveRedTableMouseClicked(evt);
@@ -654,16 +434,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("Red", jScrollPane1);
 
         ActiveGreenTable.setBackground(new java.awt.Color(204, 255, 204));
-        ActiveGreenTable.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        ActiveGreenTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         ActiveGreenTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Train ID", "Location", "Speed (mph)", "Authority (mi)", "Passengers"
+                "Train ID", "Location", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
-        ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 0, 11));
+        ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
         ActiveGreenTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ActiveGreenTableMouseClicked(evt);
@@ -673,15 +453,15 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Green", jScrollPane3);
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Selected Schedule");
 
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("Train ID:");
 
-        ActiveScheduleTable.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        ActiveScheduleTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         ActiveScheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -690,7 +470,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 "Destination", "Dwell", "Arrival"
             }
         ));
-        ActiveScheduleTable.getTableHeader().setFont(new java.awt.Font("Courier New", 0, 11));
+        ActiveScheduleTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
         jScrollPane4.setViewportView(ActiveScheduleTable);
 
         ActiveSelectedTrainLabel.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
@@ -700,7 +480,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         ActiveTrainPanel.setLayout(ActiveTrainPanelLayout);
         ActiveTrainPanelLayout.setHorizontalGroup(
             ActiveTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane4)
             .addGroup(ActiveTrainPanelLayout.createSequentialGroup()
@@ -725,24 +505,231 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
 
-        jSeparator3.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        TrainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Dispatch Train", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 30))); // NOI18N
+        TrainPanel.setPreferredSize(new java.awt.Dimension(433, 0));
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel14.setText("Automatic");
+
+        DispatchAutomaticButton.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchAutomaticButton.setText("Import Schedule");
+        DispatchAutomaticButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchAutomaticButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel15.setText("Manual");
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel16.setText("Line");
+
+        DispatchLineComboBox.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchLineComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Red", "Green" }));
+        DispatchLineComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchLineComboBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel17.setText("Departure Time");
+
+        DispatchDepartureTextField.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchDepartureTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        DispatchDepartureTextField.setText("00:00:00");
+        DispatchDepartureTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchDepartureTextFieldActionPerformed(evt);
+            }
+        });
+
+        DispatchManualButton.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        DispatchManualButton.setText("Dispatch Train");
+        DispatchManualButton.setEnabled(false);
+        DispatchManualButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchManualButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel19.setText("Destination");
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel20.setText("Dwell");
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel21.setText("Arrival");
+
+        DispatchDestComboBox.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchDestComboBox.setAutoscrolls(true);
+        DispatchDestComboBox.setEnabled(false);
+        DispatchDestComboBox.setMaximumSize(new java.awt.Dimension(39, 20));
+        DispatchDestComboBox.setName("Dest"); // NOI18N
+
+        DispatchDwellTextField.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchDwellTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        DispatchDwellTextField.setText("00:01:00");
+        DispatchDwellTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchDwellTextFieldActionPerformed(evt);
+            }
+        });
+
+        DispatchArrivalTextField.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchArrivalTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        DispatchArrivalTextField.setText("00:00:00");
+        DispatchArrivalTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchArrivalTextFieldActionPerformed(evt);
+            }
+        });
+
+        DispatchAddScheduleButton.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchAddScheduleButton.setText("Add to Schedule");
+        DispatchAddScheduleButton.setEnabled(false);
+        DispatchAddScheduleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DispatchAddScheduleButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DispatchDestComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DispatchAddScheduleButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {DispatchArrivalTextField, DispatchDwellTextField});
+
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(DispatchDestComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel21))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(DispatchAddScheduleButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        DispatchScheduleTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        DispatchScheduleTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Destination", "Dwell", "Arrival"
+            }
+        ));
+        DispatchScheduleTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
+        jScrollPane2.setViewportView(DispatchScheduleTable);
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel18.setText("Schedule");
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2)
+            .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout TrainPanelLayout = new javax.swing.GroupLayout(TrainPanel);
         TrainPanel.setLayout(TrainPanelLayout);
         TrainPanelLayout.setHorizontalGroup(
             TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TrainPanelLayout.createSequentialGroup()
-                .addComponent(DispatchTrainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ActiveTrainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrainPanelLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(DispatchLineComboBox, 0, 140, Short.MAX_VALUE))
+                        .addGap(151, 151, 151)
+                        .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(DispatchDepartureTextField)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+                        .addGap(10, 10, 10))
+                    .addGroup(TrainPanelLayout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(DispatchAutomaticButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(DispatchManualButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(TrainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(13, 13, 13))
         );
         TrainPanelLayout.setVerticalGroup(
             TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(DispatchTrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(ActiveTrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator3)
+            .addGroup(TrainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(DispatchAutomaticButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DispatchLineComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DispatchDepartureTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(DispatchManualButton)
+                .addGap(32, 32, 32))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -753,11 +740,11 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(TrackStatusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
+                    .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(TrainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(ActiveTrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -765,52 +752,66 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(TrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+                    .addComponent(ActiveTrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TrainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 680, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addComponent(TrackStatusPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(TrackStatusPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>                        
 
+
+
+    public void increaseTime() {
+        millis += timeMult;
+        if (millis >= 99) {
+            millis = 0;
+            seconds += 1;
+        }
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes += 1;
+        }
+        String minutesString = String.format("%02d", minutes);
+        String secondsString = String.format("%02d", seconds);
+        String millisString = String.format("%02d", millis);
+        TimeLabel.setText(minutesString+":"+secondsString+":"+millisString);
+    }
+
     private void TimePauseButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
         // TODO add your handling code here:
+        // try {
+            
+        //     thread.wait();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     System.out.println("Resume...");
+        // }
+
+        //ctc.setThreadStatus(true);
+        
     }                                               
 
     // >> Button
-    private void TimeUpButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        if (timeMult == 9) {
-            timeMult++;
-            jLabel2.setText(timeMult + "X");
-            TimeDownButton.setEnabled(true);
-            TimeUpButton.setEnabled(false);
-        }else if (timeMult < 10) {
-            timeMult++;
-            jLabel2.setText(timeMult + "X");
-            TimeDownButton.setEnabled(true);
-        } else {
-            TimeUpButton.setEnabled(false);
-        }   
+    private void TimeUpButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        timeMult = 10;
+        jLabel2.setText(timeMult + "X");
+        ctc.setTime(1);
+        TimeDownButton.setEnabled(true);
+        TimeUpButton.setEnabled(false);
     }                                            
 
     // << Button
-    private void TimeDownButtonActionPerformed(java.awt.event.ActionEvent evt) {                                               
-        if (timeMult == 2) {
-            timeMult--;
-            jLabel2.setText(timeMult + "X");
-            TimeUpButton.setEnabled(true);
-            TimeDownButton.setEnabled(false);
-        } else if (timeMult > 1) {
-            timeMult--;
-            jLabel2.setText(timeMult + "X");
-            TimeUpButton.setEnabled(true);
-        } else {
-            TimeDownButton.setEnabled(false);
-        }
+    private void TimeDownButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        timeMult = 1;
+        jLabel2.setText(timeMult + "X");
+        ctc.setTime(10);
+        TimeDownButton.setEnabled(false);
+        TimeUpButton.setEnabled(true);
     }                                              
 
     private void TimeLabelPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
@@ -818,7 +819,9 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     }                                        
 
     private void TimePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {                                               
-        
+        //thread.notify();
+        // ctc.setThreadStatus(false);
+        // thread.notify();
     }                                              
 
     private void TrackMaintenanceToggleActionPerformed(java.awt.event.ActionEvent evt) {                                                       
@@ -954,7 +957,20 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         trainSchedules.add(trainCount, temp);
         
         String firstStop = DispatchScheduleTable.getValueAt(0, 0).toString();
-        int destination = Integer.parseInt(firstStop.substring(1));
+        int destBlock = 74;
+        System.out.println(firstStop);
+        if (firstStop.length() > 4) {
+            String str[] = firstStop.split("\\|");
+            System.out.println(str[0]);
+            System.out.println(str[1]);
+            destBlock = Integer.parseInt(str[0].substring(1));
+        } else {
+            destBlock = Integer.parseInt(firstStop.substring(1));
+        }
+        
+        // Get vertex corresponding to block
+        int destination = ctc.getStop(destBlock+1).w();
+
         System.out.println("Dest:"+destination);
         
         // Calculate Authority (miles) for first stop here     
@@ -964,10 +980,10 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         switch (line) {
             case 1:
                 // Dispatch to Red Line
-                activeModel = (DefaultTableModel) ActiveRedTable.getModel();
-                activeModel.addRow(new Object[]{trainCount, "C9", 24.85, 10, 0});
-                scheduleModel.setNumRows(0);
                 ctc.dispatchTrain(74,destination);
+                activeModel = (DefaultTableModel) ActiveRedTable.getModel();
+                activeModel.addRow(new Object[]{trainCount, "C9", ctc.getSpeed()*KMH_TO_MPH, ctc.getAuthority()*M_TO_F, 30});
+                scheduleModel.setNumRows(0);
                 break;
             case 2:
                 // Dispatch to Green Line

@@ -249,6 +249,8 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (redSelected != -1) {
             redline.getBlock(redSelected).occupied = !redline.getBlock(redSelected).occupied;
+			controllers.update(redSelected, 0);
+			if (redline.getBlock(redSelected).occupied) controllers.update(redSelected, 1);
             if (redline.getBlock(redSelected).occupied) {
                 jToggleButton1.setText("Fix Block");
             }

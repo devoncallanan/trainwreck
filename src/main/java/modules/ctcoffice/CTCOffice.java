@@ -20,7 +20,7 @@ public class CTCOffice {
 	//private Track redLine;
 	//private Track greenLine;
 	//private Time currentTime;
-	private int timeMult;
+	private int time;
 	private int trainCount;
 	private double throughput;
 	private double redThroughput;
@@ -29,7 +29,7 @@ public class CTCOffice {
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
-	private double speed = 40.0;
+	private double speed = 40.0; // km/h => 24.8548 mph
 	/* - - - - - - - - - - - - - - - - - - - - - */
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
@@ -38,17 +38,22 @@ public class CTCOffice {
 
 	/* Graph Testing - - - - - - - - - - - - - - */
 	private TrackGraph track;
-	private ArrayList<String> stops;
+	
 	//private boolean[] redSwitches = new boolean[6];
 	private double authority;
 
 	/* UI variables- - - - - - - - - - - - - - - */
+	public ArrayList<BlockTemp> stops = new ArrayList<BlockTemp>();
 	public ArrayList<String> redLineData = new ArrayList<String>();
 	private boolean dispatched = false;
+	private boolean threadSuspended = false;
+
+	private final double KMH_TO_MPH = (double)1/(double)1.609344;
+	private final double M_TO_F = 3.280840;
 
 	/* SETUP */
 	public CTCOffice(MessageQueue mq) {
-		
+		time = 10;
 		// Setup Message Queue
 		this.mq = mq;
 
@@ -62,6 +67,23 @@ public class CTCOffice {
 			redSwitches[i] = new Boolean(false);
 		}
 
+
+		try {
+           for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+               if ("Nimbus".equals(info.getName())) {
+                   javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                   break;
+               }
+           }
+       } catch (ClassNotFoundException ex) {
+           java.util.logging.Logger.getLogger(CTCOfficeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+       } catch (InstantiationException ex) {
+           java.util.logging.Logger.getLogger(CTCOfficeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+       } catch (IllegalAccessException ex) {
+           java.util.logging.Logger.getLogger(CTCOfficeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+       } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+           java.util.logging.Logger.getLogger(CTCOfficeUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+       }
 		// Create GUI
 		gui = new CTCOfficeUI(this);
 
@@ -72,22 +94,58 @@ public class CTCOffice {
 		});
 	}
 
+	public void repaint() {
+		gui.increaseTime();
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public boolean getThreadStatus() {
+		return threadSuspended;
+	}
+
+	public void setThreadStatus(boolean threadSuspended) {
+		this.threadSuspended = threadSuspended;
+	}
+
+	public double getAuthority() {
+		return authority;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+	public BlockTemp getStop(int index) {
+		for (int i = 0; i < stops.size(); i++) {
+			if (stops.get(i).number() == index) {
+				return stops.get(i);
+			}
+		}
+		return null;
+	}
+
 	public void dispatchTrain(int src, int dest) {
 		src--;
 		dest--;
 		DijkstraSPD spd = new DijkstraSPD(track, src);
 		authority = spd.distTo(dest);
-		//System.out.println("SHORTEST DISTANCE : "+authority);
+		System.out.println("SHORTEST DISTANCE : "+authority);
 		//spd.pathTo(dest);
 		ArrayList<Integer> path = spd.getPath(dest);
 		setSwitches(path);
-		// for (int i = 0; i < redSwitches.length; i ++) {
-		// 	System.out.println(i+": "+redSwitches[i].booleanValue());
-		// }
-		System.out.println("DISPATCHED!");
+		for (int i = 0; i < redSwitches.length; i ++) {
+			//System.out.println(i+": "+redSwitches[i].booleanValue());
+		}
+		//System.out.println("DISPATCHED!");
 		dispatchReady = true;
 		dispatched = true;
-		System.out.println(dispatched);
+		//System.out.println(dispatched);
 	}
 
 	public void setSwitches(ArrayList<Integer> path) {
@@ -142,7 +200,6 @@ public class CTCOffice {
 
 	public boolean run(){
 		mReceive();
-		//dispatchTrain(74,32);
 		mSend();
 		return dispatched;
 	}
@@ -186,9 +243,6 @@ public class CTCOffice {
 
 	// }
 
-	// public Time modifyTime(int timeCommand) {
-
-	// }
 
 	// public Queue<Schedule> importSchedule(String filename) {
 
@@ -218,21 +272,32 @@ public class CTCOffice {
 				String trackLine = str[0];
 				String section = str[1];
 				int num = Integer.parseInt(str[2]);
-				int distance = (int)Double.parseDouble(str[3]);
+				double distance = Double.parseDouble(str[3]);
 				//str 4 - 7
 				int v = Integer.parseInt(str[8]) - 1;
 				int w = Integer.parseInt(str[9]) - 1;
 				int branch = Integer.parseInt(str[10]);
+				String info = "";
+				if (str.length > 11) {
+					info = str[11];
+				}
+				
 
 				// Add block to graph
 				BlockTemp insert = new BlockTemp(v, w, distance, section, num, branch);
 				tg.addBlockTemp(insert);
 
+				String secnum;
 				// Add string to list
-				String secnum = section+num;
+				if (info.length() > 0) {
+					secnum = section+num+"|"+info;
+				} else {
+					secnum = section+num;	
+				}
+
 				redLineData.add(secnum);
 			}
-
+			stops = tg.blocks();
 			return tg;
 			
 		} catch (Exception e) {
@@ -241,4 +306,5 @@ public class CTCOffice {
 		
 		return null;
 	}
+
 }

@@ -4,7 +4,7 @@ public class BlockTemp {
     //blocks are edges in a directed graph
     private final int v;
     private final int w;
-    private final int distance;
+    private final double distance;
     private final String section;
     private final int number;
     private final int branch;
@@ -36,7 +36,7 @@ public class BlockTemp {
         this.from = from;
     }*/
 
-    public BlockTemp(int v, int w, int distance, String section, int number, int branch) {
+    public BlockTemp(int v, int w, double distance, String section, int number, int branch) {
         this.v = v;
         this.w = w;
         this.distance = distance;
@@ -45,7 +45,7 @@ public class BlockTemp {
         this.branch = branch;
     }
 
-    public int distance() {
+    public double distance() {
         return distance;
     }
 
@@ -63,6 +63,10 @@ public class BlockTemp {
 
     public int either() {
         return v;
+    }
+
+    public int w() {
+        return w;
     }
     
     public int other(int vertex) {
