@@ -47,13 +47,12 @@ public class Train {
     	    //	System.out.println(force);
 
     	
-    	// Step 2: Calculate the slope of the train's current angle (Degrees = Tan-1 (Slope Percent/100))
+    	// Step 2: Calculate the slope
     	double slope = Math.atan2(grade,100);
     	double angle = Math.toDegrees(slope);
     	
     	// Step 3: Calculate the forces acting on the train using the coefficient of friction
-    	// and the train's weight in lbs converted to kg divided over the wheels (where the force is technically
-    	// being applied times gravity (G)
+    	// and the train's weight
     	double normalForce = (totalMass/numWheels) * grav * Math.sin((angle*Math.PI)/180);	// divide by 12 for the number of wheels
     	double downwardForce = (totalMass/numWheels) * grav * Math.cos((angle*Math.PI)/180);	// divide by 12 for the number of wheels
 
@@ -66,13 +65,12 @@ public class Train {
     	    //	System.out.println("totalForce" + totalForce);
     	
     	
-    	// Step 4: Calculate acceleration using the F = ma equation, where m = the mass of the body moving
+    	// Step 4: Calculate acceleration using the F = ma
     	double trainAcceleration = totalForce/totalMass;
     	
-    	// and have to check to make sure this acceleration does not exceed our max.
-    	if (trainAcceleration >= (maxAcc)) {	// time elapsed
-    		// set the acceleration as the max acceleration because we cannot exceed that
-    		trainAcceleration = (maxAcc);	// time elapsed
+    	// check to make sure this acceleration does not exceed max.
+    	if (trainAcceleration >= (maxAcc)) {	
+    		trainAcceleration = (maxAcc);	
     	}
     	
 		
@@ -97,10 +95,10 @@ public class Train {
     	// no negative speed
     	if(velocityFeedback < 0) {
             velocityFeedback = 0;
-        } // if the speed exceeds the speed limit then keep at speed limit
-        else if (velocityFeedback > speedLimit){
+        } // if the speed exceeds the speed limit then keep at speed limit ( now done in train controller only)
+        /*else if (velocityFeedback > speedLimit){
             velocityFeedback = speedLimit;
-        }
+        }*/
     	
     	// resetting the current speed based on our calculations
     	//currentSpeed = velocityFeedback;
