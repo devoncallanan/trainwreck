@@ -360,11 +360,13 @@ public class TrackController {
                     if(switchPos){
                          if(mainLine[i] && msplit[1] && !msplit[0]){
                               zeroSpeed(i);
+							  System.out.println("sent 1");
                          }
                     }
                     else{
                          if(mainLine[i] && side[1] && ! side[0]){
                               zeroSpeed(i);
+							  System.out.println("sent 2");
                          }
                     }
                }
@@ -372,11 +374,13 @@ public class TrackController {
                     if(switchPos){
                          if(mainLine[i] && msplit[0] && !mainLine[i+1]){
                               zeroSpeed(i);
+							  System.out.println("sent 3");
                          }
                     }
                     else{
                          if(mainLine[i] && side[0] && !mainLine[i+1]){
                               zeroSpeed(i);
+							  System.out.println("sent 4");
                          }
                     }
                }
@@ -384,11 +388,13 @@ public class TrackController {
                     if(mainDir){
                          if(mainLine[i] && mainLine[i+2] && !mainLine[i+1]){
                               zeroSpeed(i);
+							  System.out.println("sent 5");
                          }
                     }
                     else if(i>1){
                          if(mainLine[i] && mainLine[i-2] && !mainLine[i-1]){
                               zeroSpeed(i);
+							  System.out.println("sent 6");
                          }
                     }
                }
