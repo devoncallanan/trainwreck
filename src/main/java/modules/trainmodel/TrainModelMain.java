@@ -25,6 +25,7 @@ public class TrainModelMain {
      private int lights = 0;
      private int failures = 4;
      private double power,grade,speed,speedLimit;
+     private String advertisement;
      
     public TrainModelMain(MessageQueue mq) {
       this.mq = mq;
@@ -36,7 +37,7 @@ public class TrainModelMain {
           mReceive();
           velocityFeedback = train.calculateVelocity(power, velocityFeedback, grade, brakes, speedLimit, passengers);
           System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
-          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors);
+          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors,this.advertisement);
           failures = ui.getFailures();
           //System.out.println(velocityFeedback);
           mSend();
@@ -85,6 +86,9 @@ public class TrainModelMain {
                }
 		else if (m.type() == MType.GRADE){
                     this.passengers = m.dataI();
+               }
+		else if (m.type() == MType.ADVERTISEMENT){
+                    this.advertisement = m.dataS();
                }
           }
      }
