@@ -163,21 +163,26 @@ public class TrainController {
 		
 		
 		//Sends different advertisements to the train model
-		if (ad == 600) {
-			messages.send(new Message(MDest.TrCtl, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd);
-		}
-		if (ad == 1200) {
-			messages.send(new Message(MDest.TrCtl, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd);
-		}
-		if (ad == 1800) {
+		if (ad == 0) {
 			messages.send(new Message(MDest.TrCtl, ad1, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			this.pcs.firePropertyChange("ad", -1 , ad1);
+		}
+		if (ad == 360000) {
+			messages.send(new Message(MDest.TrCtl, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			this.pcs.firePropertyChange("ad", -1 , ad2);
+		}
+		if (ad == 720000) {
+			messages.send(new Message(MDest.TrCtl, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			this.pcs.firePropertyChange("ad", -1 , ad3);
 			ad = 0;
 		}
+
 		ad++;
 		
 		//Update UI with speed displays
 		this.pcs.firePropertyChange("speedLimit", -1 , velocity.speedLimit*KMH_TO_MPH);
 		this.pcs.firePropertyChange("suggestedSpeed", -1 , velocity.suggestedSpeed*KMH_TO_MPH);
+		this.pcs.firePropertyChange("setpointSpeed", -1 , velocity.setpointSpeed*KMH_TO_MPH);
 		
 		
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
@@ -191,7 +196,7 @@ public class TrainController {
         
 
 		//Check to see if the train needs to start stopping
-		if (metersRemaining - 1 <= brakingDistance) {
+		if (metersRemaining - .5 <= brakingDistance) {
 			if(!service) setService(true);
 			stopping = true;
 			power1.resetPower();

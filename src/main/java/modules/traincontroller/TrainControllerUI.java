@@ -43,6 +43,9 @@ public class TrainControllerUI extends javax.swing.JFrame {
                     case "suggestedSpeed":
                         suggSpeedPropertyChange(evt);
                         break;
+					case "setpointSpeed":
+                        setpointSpeedPropertyChange(evt);
+                        break;
                     case "brake":
                         brakePropertyChange(evt);
                         break;
@@ -63,6 +66,9 @@ public class TrainControllerUI extends javax.swing.JFrame {
                         break;
 					case "failure":	
 						failureLabelPropertyChange(evt);
+                        break;
+					case "ad":	
+						advertisementPropertyChange(evt);
                         break;
                     default:
                         break;
@@ -840,11 +846,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>                        
-
-    private void setpointSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {                                             
-        // TODO add your handling code here:
-
-    }                                            
+                                           
 
     private void currentSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {                                            
         // TODO add your handling code here:
@@ -896,6 +898,14 @@ public class TrainControllerUI extends javax.swing.JFrame {
         trainController.setVelocityInfo(speed1 * MPH_TO_KMH, 0);
     }                                           
 
+	private void setpointSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
+        // TODO add your handling code here:
+        if (evt.getPropertyName().equals("setpointSpeed")) {
+            DecimalFormat numberFormat = new DecimalFormat("#0");
+            setpointSpeed.setText(String.valueOf(numberFormat.format(evt.getNewValue())));
+        }
+    } 
+	
     private void suggSpeedPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
         // TODO add your handling code here:
         if (evt.getPropertyName().equals("suggestedSpeed")) {
@@ -948,7 +958,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         double kI = ParseDouble(ki.getText());
         double kP = ParseDouble(kp.getText());
-        if (kI >= 0 && kP >= 0)
+        if (kI >= 0 || kP >= 0)
             trainController.setTrainConstants(kP, kI);
         else
             trainController.setTrainConstants(-1, -1);
@@ -1096,6 +1106,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
 
     private void advertisementPropertyChange(java.beans.PropertyChangeEvent evt) {                                             
         // TODO add your handling code here:
+		advertisement.setText(String.valueOf(evt.getNewValue()));
     }                                            
 
 

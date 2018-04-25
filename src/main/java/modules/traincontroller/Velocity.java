@@ -17,7 +17,7 @@ public class Velocity {
 	private double velocityError;
 	private double previousVelocityError;
 	public double speedLimit;
-	private double setpointSpeed;
+	public double setpointSpeed;
 	public double suggestedSpeed;
 	private double originalSuggestedSpeed;
 	private double zeroSpeed = 0;
@@ -70,6 +70,10 @@ public class Velocity {
 				suggestedSpeed = originalSuggestedSpeed;
 			} else if (suggestedSpeed > speedLimit) {
 				suggestedSpeed = speedLimit;
+			}
+		} else {
+			if (setpointSpeed > speedLimit) {
+				setpointSpeed = speedLimit;
 			}
 		}
 	}
