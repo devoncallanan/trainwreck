@@ -56,7 +56,7 @@ public class TrainController {
 	//---------------------------------------------
 	
 	
-	public TrainController(MessageQueue messages /*, int trainID*/) {
+	public TrainController(MessageQueue messages , int trainID) {
 		this.messages = messages;
 		power1 = new Power();
 		power2 = new Power();
@@ -67,7 +67,7 @@ public class TrainController {
 		pause = true;
 		station = " ";
 		failure = 4;
-		//this.trainID = trainID;
+		this.trainID = trainID;
 		
 		//Initialize my GUI
 		try {
@@ -349,5 +349,8 @@ public class TrainController {
 		if (failure == 0 || failure == 2 || failure == 3) 
 			if(!emergency) setEmergency(true);
 	}
-
+	
+	public int getTrainID(){
+		return trainID;
+	}
 }

@@ -12,11 +12,13 @@ public class TrainControllerUI extends javax.swing.JFrame {
     TrainController trainController;
 	private final double MPH_TO_KMH = (double)1.609344;
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
+	private final int trainID;
     /**
      * Creates new form TrainControllerUI
      */
     public TrainControllerUI(TrainController trainController) {
         this.trainController = trainController;
+		this.trainID = trainController.getTrainID();
         trainController.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             @Override
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -147,9 +149,9 @@ public class TrainControllerUI extends javax.swing.JFrame {
         submitKIKP = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Train Controller");
+        setTitle("Train Controller: " + trainID);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Train Controller", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 36))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Train Controller: " + trainID, javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 36))); // NOI18N
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Speed", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 28))); // NOI18N
 
@@ -157,7 +159,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
         jLabel1.setText("Current Speed:");
 
         currentSpeed.setFont(new java.awt.Font("Tahoma", 0, 52)); // NOI18N
-        currentSpeed.setText("0.00");
+        currentSpeed.setText("0.0");
         currentSpeed.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 currentSpeedPropertyChange(evt);
