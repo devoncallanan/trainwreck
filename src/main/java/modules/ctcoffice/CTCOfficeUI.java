@@ -33,11 +33,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private final double KMH_TO_MPH = (double)1/(double)1.609344;
     private final double M_TO_F = 3.280840;
 
+    private Thread thread;
+
     /**
      * Creates new form CTCOfficeUI
      */
     public CTCOfficeUI(CTCOffice ctc) {
         this.ctc = ctc;
+        this.thread = thread;
         
         int redSize = ctc.redLineData.size();
         this.redLineData = new String[redSize];
@@ -112,7 +115,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         DispatchDepartureTextField = new javax.swing.JTextField();
         DispatchManualButton = new javax.swing.JButton();
-        jLabel18 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
@@ -124,6 +126,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         DispatchScheduleTable = new javax.swing.JTable();
+        jLabel18 = new javax.swing.JLabel();
 
         File workingDirectory = new File(System.getProperty("user.dir"));
         ImportScheduleFileChooser.setCurrentDirectory(workingDirectory);
@@ -164,7 +167,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
         TimeDownButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         TimeDownButton.setText("<<");
-        TimeDownButton.setEnabled(false);
         buttonGroup1.add(TimeDownButton);
         TimeDownButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -418,7 +420,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Start Block", "Speed (mph)", "Authority", "Passengers"
+                "Train ID", "Start Block", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
         ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -438,7 +440,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Start Block", "Speed (mph)", "Authority", "Passengers"
+                "Train ID", "Location", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
         ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -556,10 +558,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel18.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("Schedule");
-
         jLabel19.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel19.setText("Destination");
@@ -609,41 +607,42 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(DispatchDestComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DispatchDestComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DispatchAddScheduleButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                            .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                            .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(DispatchAddScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {DispatchArrivalTextField, DispatchDestComboBox, DispatchDwellTextField});
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {DispatchArrivalTextField, DispatchDwellTextField});
 
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(DispatchDestComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
                     .addComponent(jLabel20)
                     .addComponent(jLabel21))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(DispatchDestComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DispatchDwellTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DispatchArrivalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DispatchAddScheduleButton))
+                .addComponent(DispatchAddScheduleButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         DispatchScheduleTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -658,15 +657,24 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         DispatchScheduleTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
         jScrollPane2.setViewportView(DispatchScheduleTable);
 
+        jLabel18.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel18.setText("Schedule");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2)
+            .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout TrainPanelLayout = new javax.swing.GroupLayout(TrainPanel);
@@ -690,7 +698,6 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                         .addGroup(TrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(DispatchAutomaticButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(DispatchManualButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -718,10 +725,8 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                     .addComponent(DispatchDepartureTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DispatchManualButton)
                 .addGap(32, 32, 32))
@@ -748,7 +753,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ActiveTrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                    .addComponent(TrainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 680, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -758,6 +763,8 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>                        
+
+
 
     public void increaseTime() {
         millis += timeMult;
@@ -777,23 +784,20 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
     private void TimePauseButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
         // TODO add your handling code here:
+        // try {
+            
+        //     thread.wait();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     System.out.println("Resume...");
+        // }
+
+        //ctc.setThreadStatus(true);
+        
     }                                               
 
     // >> Button
-    private void TimeUpButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // if (timeMult == 9) {
-        //     timeMult++;
-        //     jLabel2.setText(timeMult + "X");
-        //     TimeDownButton.setEnabled(true);
-        //     TimeUpButton.setEnabled(false);
-        // }else if (timeMult < 10) {
-        //     timeMult++;
-        //     jLabel2.setText(timeMult + "X");
-        //     TimeDownButton.setEnabled(true);
-        // } else {
-        //     TimeUpButton.setEnabled(false);
-        // }   
-
+    private void TimeUpButtonActionPerformed(java.awt.event.ActionEvent evt) {
         timeMult = 10;
         jLabel2.setText(timeMult + "X");
         ctc.setTime(1);
@@ -802,20 +806,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     }                                            
 
     // << Button
-    private void TimeDownButtonActionPerformed(java.awt.event.ActionEvent evt) {                                               
-        // if (timeMult == 2) {
-        //     timeMult--;
-        //     jLabel2.setText(timeMult + "X");
-        //     TimeUpButton.setEnabled(true);
-        //     TimeDownButton.setEnabled(false);
-        // } else if (timeMult > 1) {
-        //     timeMult--;
-        //     jLabel2.setText(timeMult + "X");
-        //     TimeUpButton.setEnabled(true);
-        // } else {
-        //     TimeDownButton.setEnabled(false);
-        // }
-
+    private void TimeDownButtonActionPerformed(java.awt.event.ActionEvent evt) {
         timeMult = 1;
         jLabel2.setText(timeMult + "X");
         ctc.setTime(10);
@@ -828,7 +819,9 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     }                                        
 
     private void TimePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {                                               
-        
+        //thread.notify();
+        // ctc.setThreadStatus(false);
+        // thread.notify();
     }                                              
 
     private void TrackMaintenanceToggleActionPerformed(java.awt.event.ActionEvent evt) {                                                       
@@ -964,7 +957,17 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         trainSchedules.add(trainCount, temp);
         
         String firstStop = DispatchScheduleTable.getValueAt(0, 0).toString();
-        int destBlock = Integer.parseInt(firstStop.substring(1));
+        int destBlock = 74;
+        System.out.println(firstStop);
+        if (firstStop.length() > 4) {
+            String str[] = firstStop.split("\\|");
+            System.out.println(str[0]);
+            System.out.println(str[1]);
+            destBlock = Integer.parseInt(str[0].substring(1));
+        } else {
+            destBlock = Integer.parseInt(firstStop.substring(1));
+        }
+        
         // Get vertex corresponding to block
         int destination = ctc.getStop(destBlock+1).w();
 
