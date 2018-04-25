@@ -71,6 +71,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
             int to = scan.nextInt();
             int branch = scan.nextInt();
 			int switchloc = scan.nextInt();
+			int stationSide = scan.nextInt();
 			String beacon = scan.next();
 			if (beacon.equals("null") ) {
 				beacon = null;
@@ -87,7 +88,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			}				
 			String infrastructure = scan.next();
 			
-            Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch, switchloc, beacon); 
+            Block b = new Block(to, from, section, number, grade, bLength, limit, branch, switchloc,station, beacon, stationSide, extra); 
             this.addBlock(b);
             //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);
@@ -204,10 +205,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 	
 	public boolean[] getOccupancies() {
 		// StringBuilder sb = new StringBuilder();
-		// boolean[] occs = new boolean[blocks.length];
+		boolean[] occs = new boolean[blocks.length];
 		for (int i = 1; i < blocks.length; i++) {
 			occs[i] = blocks[i].occupied;
-			sb.append(occs[i]);
+			// sb.append(occs[i]);
 		}
 		// System.out.println(sb);
 		return occs;
