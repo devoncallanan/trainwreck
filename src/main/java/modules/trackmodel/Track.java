@@ -71,10 +71,20 @@ public static double MS_TO_KMH = 3600.0/10000.0;
             int to = scan.nextInt();
             int branch = scan.nextInt();
 			int switchloc = scan.nextInt();
-			String beacon = null;
-			if (scan.nextInt() == 1) {
-				beacon = "Cool Station";
+			String beacon = scan.next();
+			if (beacon.equals("null") ) {
+				beacon = null;
 			}
+			String station = scan.next();
+			if (station.equals("null") ) {
+				station = null;
+			}			
+			int underground = scan.nextInt();
+			boolean crossing = scan.nextBoolean();
+			String extra = scan.next();
+			if (extra.equals("null") ) {
+				extra = null;
+			}				
 			String infrastructure = scan.next();
 			
             Block b = new Block(to, from, section, number, infrastructure, grade, bLength, limit, branch, switchloc, beacon); 
@@ -191,6 +201,14 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     public Block getBlock(int index) {
         return blocks[index];
     }
+	
+	public boolean[] getOccupancies() {
+		boolean[] occs = new boolean[blocks.length];
+		for (int i = 0; i < blocks.length; i++) {
+			occs[i] = blocks[i].occupied;
+		}
+		return occs;
+	}
     
     public int getSize() {
         return items;
