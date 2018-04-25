@@ -31,4 +31,5 @@ public class MType {
 	public static final int GRADE = 18;					//double
 	public static final int UNDERGROUND = 19;			//int 	yes = 1, no = 0
 	public static final int REALTRACK = 20;
+	public static final int ADVERTISEMENT = 21;
 }
