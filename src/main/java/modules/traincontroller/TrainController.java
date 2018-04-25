@@ -164,13 +164,13 @@ public class TrainController {
 		
 		//Sends different advertisements to the train model
 		if (ad == 600) {
-			messages.send(new Message(MDest.TrCtl, ad2, MType.ADVERTISEMENT), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd);
 		}
 		if (ad == 1200) {
-			messages.send(new Message(MDest.TrCtl, ad3, MType.ADVERTISEMENT), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd);
 		}
 		if (ad == 1800) {
-			messages.send(new Message(MDest.TrCtl, ad1, MType.ADVERTISEMENT), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl, ad1, 0, MType.ADVERTISEMENT), MDest.TrMd);
 			ad = 0;
 		}
 		ad++;
