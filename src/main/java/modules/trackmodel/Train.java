@@ -39,6 +39,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		else {
 			distanceInTail += (DELTA_T*speed)*KMH_TO_MS;
 			tailOverflow = distanceInTail - blocks.get(0).length;
+			//System.out.println(blocks);
 		}
 		return distanceIn;
 	}

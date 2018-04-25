@@ -203,10 +203,13 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     }
 	
 	public boolean[] getOccupancies() {
-		boolean[] occs = new boolean[blocks.length];
-		for (int i = 0; i < blocks.length; i++) {
+		// StringBuilder sb = new StringBuilder();
+		// boolean[] occs = new boolean[blocks.length];
+		for (int i = 1; i < blocks.length; i++) {
 			occs[i] = blocks[i].occupied;
+			sb.append(occs[i]);
 		}
+		// System.out.println(sb);
 		return occs;
 	}
     

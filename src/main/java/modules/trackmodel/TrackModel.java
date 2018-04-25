@@ -138,7 +138,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 				if (train.tailOverflow > 0) {
 					Block exited = train.blocks.remove(0);
     				redline.setOccupancy(exited.number, false);
-					conts.update(exited.number, 0);					
+					conts.update(exited.number, 0);	
+					train.distanceInTail = 0;
 				}
     		}
         }
@@ -151,12 +152,13 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		m.send(tempM, MDest.TrMd);
 		tempM = new Message(MDest.TcMd, 70.0, MType.SPEEDLIMIT);
 		m.send(tempM, MDest.TrMd);
-		
 		for (int i = 0; i < 6; i++) {
 			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
 			m.send(tempM, MDest.TcCtl + i);
-			tempM = new Message(MDest.TcMd, redline.getOccupancies(), MType.REALTRACK);
-			m.send(tempM, MDest.TcCtl + i);
+			if (numTrains > 0) {
+				tempM = new Message(MDest.TcMd, redline.getOccupancies(), MType.REALTRACK);
+				m.send(tempM, MDest.TcCtl + i);
+			}
 		}
 		
 		if (changedBlock) {
