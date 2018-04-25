@@ -38,6 +38,11 @@ public class TrainController {
 	private int temp;
     private int currentBlock;
 	private String station;
+	private int doorSide = 1;
+	private int ad = 0;
+	private String ad1 = "University of Pittsburgh. Engineering better minds.";
+	private String ad2 = "Aerotech. Dedicated to the science of motion.";
+	private String ad3 = "Do something extraordinary.";
 	
 	private final double SERVICE_DECELERATION = 1.2; //meters/second^2
 	private final double KMH_TO_MS = (double)1000/(double)3600;
@@ -109,41 +114,66 @@ public class TrainController {
 			currentM = mymail.pop();
 
 			switch(currentM.type()){
-				case 0:
+				case 0:		//AUTH
 					authority = currentM.dataD();
 					metersRemaining = authority;
 					this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining*M_TO_F);
 					break;
-				case 2:
+				case 2:		//SPEED
 					velocity.setSuggestedSpeed(currentM.dataD());
 					break;
-				case 7:
+				case 7:		//FEEDBACK
 					velocity.setFeedback(currentM.dataD(), mode, emergency);
 					this.pcs.firePropertyChange("currentSpeed", -1 , velocity.feedback()*KMH_TO_MPH);
 					break;
-				case 9:
+				case 9:		//BLOCK
 					currentBlock = currentM.dataI();
 					break;
-				case 11:
+				case 11:	//BEACON
 					if (station.equals(currentM.dataS())) {
 						this.pcs.firePropertyChange("station", -1, " ");
+						station = " ";
 					} else {
 						station = currentM.dataS();
 						this.pcs.firePropertyChange("station", -1, currentM.dataS());
 					}
+					doorSide = currentM.dataI();
 					break;
-				case 12:
+				case 12:	//SPEEDLIMIT
 					velocity.setSpeedLimit(currentM.dataD(), mode);
 					break;
-				case 17:
+				case 15:	//ZEROSPEED
+					setEmergency(true);
+					break;
+				case 17:	//FAILURE
 					setFailure(currentM.dataI());
+					break;
+				case 19:	//UNDERGROUND
+					if(currentM.dataI() == 1) {
+						setLights(true);
+					} else {
+						setLights(false);
+					}
 					break;
 				default:
 					break;
 			}
-            //System.out.println("vF = " + velocity.feedback());
+            
 		}//End while loop for message checking
 		
+		
+		//Sends different advertisements to the train model
+		if (ad == 600) {
+			messages.send(new Message(MDest.TrCtl, ad2, MType.ADVERTISEMENT), MDest.TrMd);
+		}
+		if (ad == 1200) {
+			messages.send(new Message(MDest.TrCtl, ad3, MType.ADVERTISEMENT), MDest.TrMd);
+		}
+		if (ad == 1800) {
+			messages.send(new Message(MDest.TrCtl, ad1, MType.ADVERTISEMENT), MDest.TrMd);
+			ad = 0;
+		}
+		ad++;
 		
 		//Update UI with speed displays
 		this.pcs.firePropertyChange("speedLimit", -1 , velocity.speedLimit*KMH_TO_MPH);
@@ -200,7 +230,12 @@ public class TrainController {
 		
 		//Stopped, checking to open or close doors
 		if (!station.equals(" ") && velocity.feedback() == 0) {
-			operateDoors(1);
+			if (doorSide == -1) {
+				operateDoors(1);	//Open doors on the left
+			} else if (doorSide == 1) {
+				operateDoors(3); //Open doors on the right side
+			}
+			
 		}
 		
 		
