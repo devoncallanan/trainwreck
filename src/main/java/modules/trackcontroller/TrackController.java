@@ -116,6 +116,11 @@ public class TrackController {
                          }
                     }
                }
+               else if(m.type() == MType.REALTRACK){
+                    boolean[] rTrack = m.dataBA();
+                    m = new Message((MDest.TcCtl+id), rTrack, MType.REALTRACK);
+                    mq.send(m, MDest.CTC);
+               }
                else if(m.type() == MType.SWITCH){
                     recSwitch = m.dataB();
                }
@@ -258,6 +263,7 @@ public class TrackController {
           boolean changedMsplit = false;
           boolean changedSide = false;
 
+          checkZero();
 
           if(mainLine[0] && mainZero){
                mainDir = true;
@@ -292,16 +298,28 @@ public class TrackController {
           for(int i=0; i<mainLine.length; i++){
                if(mainLine[i] == true){
                     mainZero = false;
+                    break;
+               }
+               else{
+                    mainZero = true;
                }
           }
           for(int i=0; i<side.length; i++){
                if(side[i] == true){
                     sideZero = false;
+                    break;
+               }
+               else{
+                    sideZero = true;
                }
           }
           for(int i=0; i<msplit.length; i++){
                if(msplit[i] == true){
                     msplitZero = false;
+                    break;
+               }
+               else{
+                    msplitZero = true;
                }
           }
      }
@@ -338,129 +356,97 @@ public class TrackController {
      }
      public void checkContinue(){
           for(int i=0; i<mainLine.length-1; i++){
-               if((i == mainLine.length-2)){
+               if((i == mainLine.length-1) && mainDir){
                     if(switchPos){
-                         if(mainLine[i] && msplit[0]){
-                              if(mainDir && msplitDir){
-                                   zeroSpeed(i);
-                              }
-                              if(!mainDir && !msplitDir){
-                                   zeroSpeed(i+1);
-                              }
-                              if((mainDir && !msplitDir) || (!mainDir && msplitDir)){
-                                   zeroSpeed(i);
-                                   zeroSpeed(i+1);
-                              }
-                         }
-                         if(mainLine[i] && msplit[1]){
-                              if(mainDir && msplitDir){
-                                   zeroSpeed(i);
-                              }
-                              if(!mainDir && !msplitDir){
-                                   zeroSpeed(i+2);
-                              }
-                              if((mainDir && !msplitDir) || (!mainDir && msplitDir)){
-                                   zeroSpeed(i);
-                                   zeroSpeed(i+2);
-                              }
+                         if(mainLine[i] && msplit[1] && !msplit[0]){
+                              zeroSpeed(i);
                          }
                     }
                     else{
-                         if(mainLine[i] && side[0]){
-                              if(mainDir && sideDir){
-                                   zeroSpeed(i);
-                              }
-                              if(!mainDir && !sideDir){
-                                   zeroSpeed(i+msplit.length+1);
-                              }
-                              if((mainDir && !sideDir) || (!mainDir && sideDir)){
-                                   zeroSpeed(i);
-                                   zeroSpeed(i+msplit.length+1);
-                              }
+                         if(mainLine[i] && side[1] && ! side[0]){
+                              zeroSpeed(i);
                          }
-                         if(mainLine[i] && side[1]){
-                              if(mainDir && sideDir){
-                                   zeroSpeed(i);
-                              }
-                              if(!mainDir && !sideDir){
-                                   zeroSpeed(i+msplit.length+2);
-                              }
-                              if((mainDir && !sideDir) || (!mainDir && sideDir)){
-                                   zeroSpeed(i);
-                                   zeroSpeed(i+msplit.length+2);
-                              }
+                    }
+               }
+               else if((i == mainLine.length-2) && mainDir){
+                    if(switchPos){
+                         if(mainLine[i] && msplit[0] && !mainLine[i+1]){
+                              zeroSpeed(i);
+                         }
+                    }
+                    else{
+                         if(mainLine[i] && side[0] && !mainLine[i+1]){
+                              zeroSpeed(i);
                          }
                     }
                }
                else{
-                    if(mainLine[i] && mainLine[i+1]){
-                         if(mainDir){
+                    if(mainDir){
+                         if(mainLine[i] && mainLine[i+2] && !mainLine[i+1]){
                               zeroSpeed(i);
-                              //zeroSpeed(); main[i]
-                         }
-                         else{
-                              zeroSpeed(i+1);
-                              //zeroSpeed();main[i+1]
                          }
                     }
-                   if(mainLine[i] && mainLine[i+2]){
-                         if(mainDir){
+                    else if(i>1){
+                         if(mainLine[i] && mainLine[i-2] && !mainLine[i-1]){
                               zeroSpeed(i);
-                              //zeroSpeed();//main[i]
-                         }
-                         else{
-                              zeroSpeed(i+2);
-                              //zeroSpeed();//main[i+2]
                          }
                     }
                }
           }
-          for(int i=0; i<msplit.length-2; i++){
-               if(msplit[i] && msplit[i+1]){
-                    if(msplitDir){
-                         zeroSpeed(i+mainLine.length);
-                         //zeroSpeed(); main[i]
-                    }
-                    else{
-                         zeroSpeed(i+1+mainLine.length);
-                         //zeroSpeed();main[i+1]
+          for(int i=0; i<msplit.length-1; i++){
+               if(msplitDir && (i < msplit.length-3)){
+                    if(msplit[i] && msplit[i+2] && !msplit[i+1]){
+                         zeroSpeed(mainLine.length + i);
                     }
                }
-               if(msplit[i] && msplit[i+2]){
-                    if(msplitDir){
-                         zeroSpeed(i+mainLine.length);
-                         //zeroSpeed();//main[i]
+               else if(!msplitDir){
+                    if(!switchPos && msplit[1]){
+                         zeroSpeed(mainLine.length + 1);
+                    }
+                    if(i==0){
+                         if(msplit[i] && mainLine[mainLine.length-2] && !mainLine[mainLine.length-1]){
+                              zeroSpeed(mainLine.length + i);
+                         }
+                    }
+                    else if(i==1){
+                         if(msplit[i] && mainLine[mainLine.length-1] && !msplit[0]){
+                              zeroSpeed(mainLine.length + i);
+                         }
                     }
                     else{
-                         zeroSpeed(i+2+mainLine.length);
-                         //zeroSpeed();//main[i+2]
-                    }
-               }
-          }
-          for(int i=0; i<side.length-2; i++){
-               if(side[i] && side[i+1]){
-                    if(sideDir){
-                         zeroSpeed(i+mainLine.length+msplit.length);
-                         //zeroSpeed(); main[i]
-                    }
-                    else{
-                         zeroSpeed(i+1+mainLine.length+msplit.length);
-                         //zeroSpeed();main[i+1]
-                    }
-               }
-               if(side[i] && side[i+2]){
-                    if(sideDir){
-                         zeroSpeed(i+mainLine.length+msplit.length);
-                         //zeroSpeed();//main[i]
-                    }
-                    else{
-                         zeroSpeed(i+2+mainLine.length+msplit.length);
-                         //zeroSpeed();//main[i+2]
+                         if(msplit[i] && msplit[i-2] && !msplit[i-1]){
+                              zeroSpeed(mainLine.length + i);
+                         }
                     }
                }
           }
-
-
+          for(int i=0; i<side.length-1; i++){
+               if(sideDir && (i < side.length-3)){
+                    if(side[i] && side[i+2] && !side[i+1]){
+                         zeroSpeed(mainLine.length + msplit.length + i);
+                    }
+               }
+               else if(!sideDir){
+                    if(switchPos && side[1]){
+                         zeroSpeed(mainLine.length + msplit.length + 1);
+                    }
+                    if(i==0){
+                         if(side[i] && mainLine[mainLine.length-2] && !mainLine[mainLine.length-1]){
+                              zeroSpeed(mainLine.length + msplit.length + i);
+                         }
+                    }
+                    else if(i==1){
+                         if(side[i] && mainLine[mainLine.length-1] && !side[0]){
+                              zeroSpeed(mainLine.length + msplit.length +i);
+                         }
+                    }
+                    else{
+                         if(side[i] && side[i-2] && !side[i-1]){
+                              zeroSpeed(mainLine.length + msplit.length + i);
+                         }
+                    }
+               }
+          }
      }
      public boolean checkDist(){
           if(priority){
