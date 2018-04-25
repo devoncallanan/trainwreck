@@ -65,8 +65,9 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     
     public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append( new String(this.section + " " + this.number + " "));
 		if (this.station != null) {
-			sb.append( new String(this.section + " " + this.number + " " + this.station + " "));			
+			sb.append(this.station + " ");
 		}
 		if (this.extra != null) {
 			sb.append(this.extra + " ");
