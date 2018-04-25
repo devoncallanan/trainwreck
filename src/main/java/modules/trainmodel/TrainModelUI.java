@@ -147,7 +147,7 @@ public class TrainModelUI extends javax.swing.JFrame {
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Save 15% or more on car insurance with GEICO");
+        jTextArea1.setText("Ads here"); // advertisement text area
         jScrollPane1.setViewportView(jTextArea1);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -377,9 +377,10 @@ public class TrainModelUI extends javax.swing.JFrame {
     private javax.swing.JLabel velocityLabel;
     // End of variables declaration//GEN-END:variables
 
-    void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers,int lights,double auth,int temp,int doors) {
+    void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers,int lights,double auth,int temp,int doors,String advertisement) {
         trainMass = 40.9 + (.06803885*(passengers+2)); //add passenger weight as well as the required 2 crew members weight to train in tons
         TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: " + trainMass + "T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
+        jTextArea1.setText(advertisement); // advertisement text area
         this.velocityLabel.setText(new DecimalFormat("#.##").format(currentSpeed));
         this.velocityLabel.setText(Double.toString(currentSpeed));
         this.powerLabel.setText(Double.toString(power));
