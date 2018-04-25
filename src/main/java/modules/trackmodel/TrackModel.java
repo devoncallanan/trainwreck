@@ -123,7 +123,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     			Train train = trains[i];
     			double traveled = train.move();
     			double overflow = traveled - redline.getBlock(train.location).length ;
-                System.out.println("moving trains " + traveled + " ovf " + overflow);
+                //System.out.println("moving trains " + traveled + " ovf " + overflow);
     			if (overflow > 0) {
     				nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
     				redline.setOccupancy(train.location, false);
