@@ -231,9 +231,9 @@ public class TrainController {
 		//Stopped, checking to open or close doors
 		if (!station.equals(" ") && velocity.feedback() == 0) {
 			if (doorSide == -1) {
-				operateDoors(1);	//Open doors on the left
+				operateDoors(3);	//Open doors on the right side
 			} else if (doorSide == 1) {
-				operateDoors(3); //Open doors on the right side
+				operateDoors(1); //Open doors on the left side
 			}
 			
 		}
