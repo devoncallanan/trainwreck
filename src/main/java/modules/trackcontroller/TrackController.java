@@ -14,7 +14,7 @@ public class TrackController {
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true;
-     boolean mainDir, sideDir, msplitDir, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
+     boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
      boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false, zeroSpeedSent = false;
 
@@ -100,7 +100,7 @@ public class TrackController {
                }
                else if(m.type() == MType.SPEED){
                     speeds.add(m.dataD());
-                    System.out.println("TkCon: "+m.dataD());
+                    //System.out.println("TkCon: "+m.dataD());
                }
                else if(m.type() == MType.TRACK){
                     boolean[] track = m.dataBA();
@@ -129,7 +129,7 @@ public class TrackController {
      public void mSend(){
           for(int i=0; i<speeds.size(); i++){
                m = new Message((MDest.TcCtl+id), speeds.get(i), MType.SPEED);
-               System.out.println("TcCtl"+id+": "+speeds.get(i));
+               //System.out.println("TcCtl"+id+": "+speeds.get(i));
                mq.send(m, MDest.TcMd);
                speeds.remove(i);
           }
@@ -207,6 +207,7 @@ public class TrackController {
                     boolean closer = checkDist();
                     if(closer){
                          zeroSpeedSide();
+						 System.out.println("closer");
                          switchPos = true;
                     }
                     else{
@@ -263,7 +264,7 @@ public class TrackController {
           boolean changedMsplit = false;
           boolean changedSide = false;
 
-          checkZero();
+          //checkZero();
 
           if(mainLine[0] && mainZero){
                mainDir = true;
@@ -292,6 +293,8 @@ public class TrackController {
                     panicMsplit();
                msplitDir = true;
           }
+		  //if(id==0)
+			//System.out.println("mainDir = "+mainDir+"\nMSplitDIR = "+msplitDir+"\nSideDir = "+sideDir);
           checkZero();
      }
      public void checkZero(){
@@ -322,6 +325,8 @@ public class TrackController {
                     msplitZero = true;
                }
           }
+		  //if(id == 0)
+			//System.out.println("mainZero = "+mainZero+"\nMSplitZero = "+msplitZero+"\nSideZero = "+sideZero);
      }
      public void checkCross(){
           if(mainCross && ((mainDir && (mainLine[crossInd] || mainLine[crossInd-1])) || (!mainDir &&(mainLine[crossInd] || mainLine[crossInd+1])))){
@@ -403,25 +408,30 @@ public class TrackController {
                if(msplitDir && (i < msplit.length-3)){
                     if(msplit[i] && msplit[i+2] && !msplit[i+1]){
                          zeroSpeed(mainLine.length + i);
+						 System.out.println("1");
                     }
                }
                else if(!msplitDir){
                     if(!switchPos && msplit[1]){
                          zeroSpeed(mainLine.length + 1);
+						 System.out.println("1");
                     }
                     if(i==0){
                          if(msplit[i] && mainLine[mainLine.length-2] && !mainLine[mainLine.length-1]){
                               zeroSpeed(mainLine.length + i);
+							  System.out.println("2");
                          }
                     }
                     else if(i==1){
                          if(msplit[i] && mainLine[mainLine.length-1] && !msplit[0]){
                               zeroSpeed(mainLine.length + i);
+							  System.out.println("3");
                          }
                     }
                     else{
                          if(msplit[i] && msplit[i-2] && !msplit[i-1]){
                               zeroSpeed(mainLine.length + i);
+							  System.out.println("4");
                          }
                     }
                }
@@ -430,25 +440,30 @@ public class TrackController {
                if(sideDir && (i < side.length-3)){
                     if(side[i] && side[i+2] && !side[i+1]){
                          zeroSpeed(mainLine.length + msplit.length + i);
+						 System.out.println("5");
                     }
                }
                else if(!sideDir){
                     if(switchPos && side[1]){
                          zeroSpeed(mainLine.length + msplit.length + 1);
+						 System.out.println("6");
                     }
                     if(i==0){
                          if(side[i] && mainLine[mainLine.length-2] && !mainLine[mainLine.length-1]){
                               zeroSpeed(mainLine.length + msplit.length + i);
+							  System.out.println("7");
                          }
                     }
                     else if(i==1){
                          if(side[i] && mainLine[mainLine.length-1] && !side[0]){
                               zeroSpeed(mainLine.length + msplit.length +i);
+							  System.out.println("this8");
                          }
                     }
                     else{
                          if(side[i] && side[i-2] && !side[i-1]){
                               zeroSpeed(mainLine.length + msplit.length + i);
+							  System.out.println("9this ");
                          }
                     }
                }
