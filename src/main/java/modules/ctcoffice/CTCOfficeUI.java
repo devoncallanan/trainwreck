@@ -323,12 +323,12 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         TrackStatusLED.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         TrackStatusLED.setForeground(new java.awt.Color(102, 102, 102));
         TrackStatusLED.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        TrackStatusLED.setText("•");
+        TrackStatusLED.setText("*");
 
         TrackOccupancyLED.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         TrackOccupancyLED.setForeground(new java.awt.Color(102, 102, 102));
         TrackOccupancyLED.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        TrackOccupancyLED.setText("•");
+        TrackOccupancyLED.setText("*");
 
         TrackSwitchToggle.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackSwitchToggle.setText("Toggle Switch");

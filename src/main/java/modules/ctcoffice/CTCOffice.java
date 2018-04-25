@@ -48,8 +48,14 @@ public class CTCOffice {
 	private boolean dispatched = false;
 	private boolean threadSuspended = false;
 
+	/* Occupancy - - - - - - - - - - - - - - - - */
+	private boolean[] redOcc;
+	private boolean[] greenOcc;
+
+
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
+
 
 	/* SETUP */
 	public CTCOffice(MessageQueue mq) {
@@ -121,6 +127,7 @@ public class CTCOffice {
 	public double getSpeed() {
 		return speed;
 	}
+	
 	public BlockTemp getStop(int index) {
 		for (int i = 0; i < stops.size(); i++) {
 			if (stops.get(i).number() == index) {
