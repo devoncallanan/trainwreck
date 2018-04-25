@@ -35,9 +35,10 @@ public class Message {
 		this.type = type;
 	}
 
-	public Message(int from, String dataS, int type) {
+	public Message(int from, String dataS, int dataI, int type) {
 		this.from = from;
 		this.dataS = dataS;
+		this.dataI = dataI;
 		this.type = type;
 	}
 
