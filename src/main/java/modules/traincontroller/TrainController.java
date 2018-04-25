@@ -38,6 +38,11 @@ public class TrainController {
 	private int temp;
     private int currentBlock;
 	private String station;
+	private int doorSide = 1;
+	private int ad = 0;
+	private String ad1 = "University of Pittsburgh. Engineering better minds.";
+	private String ad2 = "Aerotech. Dedicated to the science of motion.";
+	private String ad3 = "Do something extraordinary.";
 	
 	private final double SERVICE_DECELERATION = 1.2; //meters/second^2
 	private final double KMH_TO_MS = (double)1000/(double)3600;
@@ -56,7 +61,7 @@ public class TrainController {
 	//---------------------------------------------
 	
 	
-	public TrainController(MessageQueue messages /*, int trainID*/) {
+	public TrainController(MessageQueue messages , int trainID) {
 		this.messages = messages;
 		power1 = new Power();
 		power2 = new Power();
@@ -67,7 +72,7 @@ public class TrainController {
 		pause = true;
 		station = " ";
 		failure = 4;
-		//this.trainID = trainID;
+		this.trainID = trainID;
 		
 		//Initialize my GUI
 		try {
@@ -109,45 +114,75 @@ public class TrainController {
 			currentM = mymail.pop();
 
 			switch(currentM.type()){
-				case 0:
+				case 0:		//AUTH
 					authority = currentM.dataD();
 					metersRemaining = authority;
 					this.pcs.firePropertyChange("metersRemaining", -1 , metersRemaining*M_TO_F);
 					break;
-				case 2:
+				case 2:		//SPEED
 					velocity.setSuggestedSpeed(currentM.dataD());
 					break;
-				case 7:
+				case 7:		//FEEDBACK
 					velocity.setFeedback(currentM.dataD(), mode, emergency);
 					this.pcs.firePropertyChange("currentSpeed", -1 , velocity.feedback()*KMH_TO_MPH);
 					break;
-				case 9:
+				case 9:		//BLOCK
 					currentBlock = currentM.dataI();
 					break;
-				case 11:
+				case 11:	//BEACON
 					if (station.equals(currentM.dataS())) {
 						this.pcs.firePropertyChange("station", -1, " ");
+						station = " ";
 					} else {
 						station = currentM.dataS();
 						this.pcs.firePropertyChange("station", -1, currentM.dataS());
 					}
+					doorSide = currentM.dataI();
 					break;
-				case 12:
+				case 12:	//SPEEDLIMIT
 					velocity.setSpeedLimit(currentM.dataD(), mode);
 					break;
-				case 17:
+				case 15:	//ZEROSPEED
+					setEmergency(true);
+					break;
+				case 17:	//FAILURE
 					setFailure(currentM.dataI());
+					break;
+				case 19:	//UNDERGROUND
+					if(currentM.dataI() == 1) {
+						setLights(true);
+					} else {
+						setLights(false);
+					}
 					break;
 				default:
 					break;
 			}
-            //System.out.println("vF = " + velocity.feedback());
+            
 		}//End while loop for message checking
 		
+		
+		//Sends different advertisements to the train model
+		if (ad == 0) {
+			messages.send(new Message(MDest.TrCtl, ad1, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			this.pcs.firePropertyChange("ad", -1 , ad1);
+		}
+		if (ad == 360000) {
+			messages.send(new Message(MDest.TrCtl, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			this.pcs.firePropertyChange("ad", -1 , ad2);
+		}
+		if (ad == 720000) {
+			messages.send(new Message(MDest.TrCtl, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			this.pcs.firePropertyChange("ad", -1 , ad3);
+			ad = 0;
+		}
+
+		ad++;
 		
 		//Update UI with speed displays
 		this.pcs.firePropertyChange("speedLimit", -1 , velocity.speedLimit*KMH_TO_MPH);
 		this.pcs.firePropertyChange("suggestedSpeed", -1 , velocity.suggestedSpeed*KMH_TO_MPH);
+		this.pcs.firePropertyChange("setpointSpeed", -1 , velocity.setpointSpeed*KMH_TO_MPH);
 		
 		
 		//CHECK IF TRAIN NEEDS TO START SLOWING FOR STOP
@@ -161,7 +196,7 @@ public class TrainController {
         
 
 		//Check to see if the train needs to start stopping
-		if (metersRemaining - 1 <= brakingDistance) {
+		if (metersRemaining - .5 <= brakingDistance) {
 			if(!service) setService(true);
 			stopping = true;
 			power1.resetPower();
@@ -175,10 +210,10 @@ public class TrainController {
 		
 		//POWER COMMAND
 		if (!stopping) {
-			if (velocity.error() < 0) {
+			//if (velocity.error() < 0) {
 				//if (!service) setService(true);
-				p = 0;
-			} else {
+				//p = 0;
+			//} else {
 				if (mode) {
                     if (service) setService(false);
                 }
@@ -189,7 +224,7 @@ public class TrainController {
 
 				p = vital.vote(p1, p2, p3);
 
-			}	
+			//}	
 		}
 
 		//Any brakes applied, the power command is set to 0
@@ -200,7 +235,12 @@ public class TrainController {
 		
 		//Stopped, checking to open or close doors
 		if (!station.equals(" ") && velocity.feedback() == 0) {
-			operateDoors(1);
+			if (doorSide == -1) {
+				operateDoors(3);	//Open doors on the right side
+			} else if (doorSide == 1) {
+				operateDoors(1); //Open doors on the left side
+			}
+			
 		}
 		
 		
@@ -349,5 +389,8 @@ public class TrainController {
 		if (failure == 0 || failure == 2 || failure == 3) 
 			if(!emergency) setEmergency(true);
 	}
-
+	
+	public int getTrainID(){
+		return trainID;
+	}
 }

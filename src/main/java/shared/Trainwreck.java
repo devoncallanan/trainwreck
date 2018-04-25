@@ -25,7 +25,7 @@ public class Trainwreck {
 		TrackController trackctl_5 = new TrackController(messagequeue,new boolean[6],new boolean[8],new boolean[8],5,plc);
 		TrackModel trackmodel = new TrackModel(messagequeue);
 		TrainModelMain trainmodel = new TrainModelMain(messagequeue);
-		TrainController trainctl = new TrainController(messagequeue);
+		TrainController trainctl = new TrainController(messagequeue, 0);
 		
 		try {
 			while (true) {
