@@ -104,8 +104,6 @@ public class TrackController {
                }
                else if(m.type() == MType.TRACK){
                     boolean[] track = m.dataBA();
-                    m = new Message((MDest.TcCtl+id), track, MType, MType.TRACK);
-                    mq.send(m, MDest.CTC);
                     for(int i=0; i<track.length; i++){
                          if(i<mainLine.length){
                               mainLine[i] = track[i];
@@ -117,6 +115,11 @@ public class TrackController {
                               side[i-mainLine.length-msplit.length] = track[i];
                          }
                     }
+               }
+               else if(m.type() == MType.REALTRACK){
+                    boolean[] rTrack = m.dataBA();
+                    m = new Message((MDest.TcCtl+id), rTrack, MType.REALTRACK);
+                    mq.send(m, MDest.CTC);
                }
                else if(m.type() == MType.SWITCH){
                     recSwitch = m.dataB();
