@@ -31,8 +31,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     public boolean occupied;
     public int branch;
 	public String beacon;
+	public int stationSide;
+	public String extra;
 
-    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch, int switchloc, String beacon) {
+    public Block(int to, int from, String section, int number, String station, double grade, double length, double limit, int branch, int switchloc,String station, String beacon, int stationSide, String extra) {
         this.to = to;
         this.from = from;
         this.section = section;
@@ -43,7 +45,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
         this.limit = limit;
         occupied = false;
         this.branch = branch;
+		this.station = station;
 		this.beacon = beacon;
+		this.stationSide = stationSide;
+		this.extra = extra;
     }
     
     public Block(int to, int from, boolean branch) {
@@ -59,11 +64,18 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     }
     
     public String toString() {
-        String s = new String(this.section + " " + this.number + " " + this.branch + " ");
+		StringBuilder sb = new StringBuilder();
+		if (this.station != null) {
+			sb.append( new String(this.section + " " + this.number + " " + this.station + " "));			
+		}
+		if (this.extra != null) {
+			sb.append(this.extra + " ");
+		}
+        
         if (occupied) {
-            s = s+ "CHOO-CHOO";
+            sb.append("CHOO-CHOO");
         }
-        return s;
+        return sb.toString;
     }
     
     public String extendedInfo() {

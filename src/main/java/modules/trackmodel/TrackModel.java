@@ -167,11 +167,12 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			//m.send(tempM, MDest.TrMd);
 			//beacon
 			if (nextBlock.beacon != null) {
-				tempM = new Message(MDest.TcMd, nextBlock.beacon, 0, MType.BEACON);
+				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
 				m.send(tempM, MDest.TrCtl);
 			}
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
 			m.send(tempM, MDest.TrCtl);
+			
 			
 		}
 		
