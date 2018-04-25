@@ -6,6 +6,7 @@ import java.io.*;
 
 public class PLC {
      boolean switchBias, loop, priority, lights;
+     Boolean oneWay;
      public PLC(){
 
      }
@@ -33,6 +34,9 @@ public class PLC {
                 else if(parts[0].equals("lights")){
                     lights = Boolean.parseBoolean(parts[1]);
                 }
+                else if(parts[0].equals("oneway")){
+                     oneWay = Boolean.parseBoolean(parts[1]);
+                }
             }
         } catch (IOException ex) {
              System.out.println("IO Exception!");
@@ -54,5 +58,8 @@ public class PLC {
      }
      public boolean getLights(){
           return lights;
+     }
+     public boolean getOneWay(){
+          return oneWay;
      }
 }
