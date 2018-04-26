@@ -100,5 +100,20 @@ public class Velocity {
 		}
 		
 	}
+
+	public double getSpeedLimit() {
+		// TODO Auto-generated method stub
+		return speedLimit;
+	}
+
+	public double getSetpointSpeed() {
+		// TODO Auto-generated method stub
+		return setpointSpeed;
+	}
+
+	public double getSuggestedSpeed() {
+		// TODO Auto-generated method stub
+		return suggestedSpeed;
+	}
 	
 }

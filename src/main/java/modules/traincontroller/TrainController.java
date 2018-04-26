@@ -2,7 +2,7 @@ package modules.traincontroller;
 
 import shared.*;
 import java.util.Stack;
-
+import java.util.function.BooleanSupplier;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -393,5 +393,40 @@ public class TrainController {
 	
 	public int getTrainID(){
 		return trainID;
+	}
+
+	public boolean getEmergency() {
+		// TODO Auto-generated method stub
+		return emergency;
+	}
+
+	public boolean getService() {
+		// TODO Auto-generated method stub
+		return service;
+	}
+
+	public double getAuthority() {
+		// TODO Auto-generated method stub
+		return authority;
+	}
+
+	public boolean isLeftDoors() {
+		// TODO Auto-generated method stub
+		return leftDoors;
+	}
+
+	public boolean isRightDoors() {
+		// TODO Auto-generated method stub
+		return rightDoors;
+	}
+
+	public int getTemp() {
+		// TODO Auto-generated method stub
+		return temp;
+	}
+
+	public boolean getLights() {
+		// TODO Auto-generated method stub
+		return lights;
 	}
 }
