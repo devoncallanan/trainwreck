@@ -35,6 +35,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private static int seconds = 0;
     private static int millis = 0;
     private int selected;
+    private int selectedRow = 0;
     private int line;
 
     private final double KMH_TO_MPH = (double)1/(double)1.609344;
@@ -433,16 +434,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jTabbedPane1.setFont(new java.awt.Font("Segoe UI Semilight", 0, 18)); // NOI18N
 
         ActiveRedTable.setBackground(new java.awt.Color(255, 204, 204));
-        ActiveRedTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        ActiveRedTable.setFont(new java.awt.Font("Courier New", 0, 16)); // NOI16N
         ActiveRedTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Train ID", "Station", "Suggested Speed", "Initial Authority", "Passengers"
+                "Train ID", "Station", "Speed", "Authority", "Passengers"
             }
         ));
-        ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
+        ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 16));
         ActiveRedTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ActiveRedTableMouseClicked(evt);
@@ -453,16 +454,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("Red", jScrollPane1);
 
         ActiveGreenTable.setBackground(new java.awt.Color(204, 255, 204));
-        ActiveGreenTable.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        ActiveGreenTable.setFont(new java.awt.Font("Courier New", 0, 16)); // NOI16N
         ActiveGreenTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Train ID", "Station", "Suggested Speed", "Initial Authority", "Passengers"
+                "Train ID", "Station", "Speed", "Authority", "Passengers"
             }
         ));
-        ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
+        ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 16));
         ActiveGreenTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ActiveGreenTableMouseClicked(evt);
@@ -532,6 +533,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
         ToggleEditButton.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         ToggleEditButton.setText("Edit");
+        ToggleEditButton.setEnabled(false);
         ToggleEditButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ToggleEditButtonActionPerformed(evt);
@@ -1282,9 +1284,45 @@ public class CTCOfficeUI extends javax.swing.JFrame {
      *** ACTIVE TRAINS ***
      *********************/                                
 
-    private void ActiveRedTableMouseClicked(java.awt.event.MouseEvent evt) {        
+    public void updateTrains(ArrayList<Train> trains) {
+        DefaultTableModel activeModel = new DefaultTableModel();
+        for (int i = 0; i < trains.size(); i++) {
+            int line = trains.get(i).track;
+            int trainID = trains.get(i).id;
+
+            switch (line) {
+                case RED:
+                    activeModel = (DefaultTableModel) ActiveRedTable.getModel();
+                    break;
+                case GREEN:
+                    activeModel = (DefaultTableModel) ActiveGreenTable.getModel();
+            }
+
+            int index = getIndexOfTrain(activeModel, trainID);
+            if (index > -1) {
+                // Set Station
+                activeModel.setValueAt(trains.get(i).station,index,1);
+                // Set Passengers
+                activeModel.setValueAt(trains.get(i).passengers,index,4);
+            }
+            
+        }
+    }
+
+    private int getIndexOfTrain(DefaultTableModel model, int trainID) {
+        for (int i = 0; i < model.getRowCount(); i ++) {
+            if (Integer.parseInt((model.getValueAt(i,0)).toString()) == trainID) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void ActiveRedTableMouseClicked(java.awt.event.MouseEvent evt) {
+        ToggleEditButton.setEnabled(true);        
         line = 1;                                    
         int row = ActiveRedTable.getSelectedRow();
+        selectedRow = row;
         
         if (row > -1) {
             String trainID = ActiveRedTable.getModel().getValueAt(row, 0).toString();
@@ -1298,9 +1336,11 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         }
     }                                           
 
-    private void ActiveGreenTableMouseClicked(java.awt.event.MouseEvent evt) {                                              
+    private void ActiveGreenTableMouseClicked(java.awt.event.MouseEvent evt) {
+        ToggleEditButton.setEnabled(true);                                              
         line = 2;
         int row = ActiveGreenTable.getSelectedRow();
+        selectedRow = row;
         
         if (row > -1) {
             String trainID = ActiveGreenTable.getModel().getValueAt(row, 0).toString();
@@ -1364,10 +1404,10 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         }
 
         if (speed > 0) {
-            activeModel.setValueAt(speed,selected,2);
+            activeModel.setValueAt(speed,selectedRow,2);
         }
         if (authority > 0) {
-            activeModel.setValueAt(authority,selected,3);
+            activeModel.setValueAt(authority,selectedRow,3);
         }
 
         speed *= MPH_TO_KMH;

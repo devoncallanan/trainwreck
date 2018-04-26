@@ -289,6 +289,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			if (nextBlock.beacon != null) {
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
 				if (messaging) m.send(tempM, MDest.TrCtl + id*2);
+				tempM.trainID = id;
+				if (messaging) m.send(tempM, MDest.CTC);
 			}
 			//speedlimit
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
@@ -305,6 +307,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 				}
 				tempM = new Message(MDest.TcMd, train.passengers, MType.PASSENGERS);
 				m.send(tempM, MDest.TrMd);
+				tempM.trainID = id;
+				m.send(tempM, MDest.CTC);
 			}
 		}		
 	}
@@ -341,6 +345,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			if (nextBlock.beacon != null) {
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
 				if (messaging) m.send(tempM, MDest.TrCtl + id*2);
+				tempM.trainID = id;
+				if (messaging) m.send(tempM, MDest.CTC);
 			}
 			//speedlimit
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
@@ -357,6 +363,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			}
 			tempM = new Message(MDest.TcMd, train.passengers, MType.PASSENGERS);
 			m.send(tempM, MDest.TrMd);
+			tempM.trainID = id;
+			m.send(tempM, MDest.CTC);
 		}
 	}
 	
