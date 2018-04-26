@@ -51,7 +51,7 @@ public class TrackController {
                }
           }
 		  if(crossExists){
-			  gui = new TrackControllerGUI(this, n, r, s, z + 1, p)
+			  gui = new TrackControllerGUI(this, n, r, s, z + 1, p);
 			  gui.setVisible(true);
 		  }
 		  else{
