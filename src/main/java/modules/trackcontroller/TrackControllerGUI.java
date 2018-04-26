@@ -71,7 +71,8 @@ public class TrackControllerGUI extends javax.swing.JFrame {
 		if(i<7)
 			id.setText("ID: RED "+i);
 		else{
-			i = (int) Math.ceil(i/7);
+			int temp = i%7;
+			i = 7 +temp;
 			id.setText("ID: GREEN "+i);
 		}
 
