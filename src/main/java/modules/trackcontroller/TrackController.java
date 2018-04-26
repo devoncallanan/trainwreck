@@ -313,7 +313,7 @@ public class TrackController {
                }
           }
 		  else if(!mainOcc && !msplitOcc && !sideOcc){
-			  siwtchPos = switchBias;
+			  switchPos = switchBias;
 		  }
      }
      public boolean getOcc(boolean[] t){
