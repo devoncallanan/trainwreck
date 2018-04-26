@@ -94,10 +94,11 @@ public class TrackController {
                     logic();
                checkLights();
 			   for(int i=0; i<3; i++){ 	//redundancy for vital nature
-			  if(crossExists)
-				   checkCross();
-				checkContinue();
-			}
+					if(crossExists)
+						checkCross();
+					checkContinue();
+				}
+				}
           }
 		   
           setGUI();
