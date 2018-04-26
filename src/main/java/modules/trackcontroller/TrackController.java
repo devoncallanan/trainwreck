@@ -98,8 +98,7 @@ public class TrackController {
 						checkCross();
 					checkContinue();
 				}
-				}
-          }
+			}
 		   
           setGUI();
 		  //System.out.println("zerospeed = " +zeroSpeedSent);
