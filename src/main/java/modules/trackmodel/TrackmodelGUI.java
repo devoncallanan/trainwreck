@@ -15,6 +15,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 	Track greenline;
 	Controller controllers;
     int redSelected = -1;
+	int greenSelected = -1;
     /**
      * Creates new form TrackmodelGUI
      */
@@ -41,6 +42,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList<>();
+        jList3 = new javax.swing.JList<>();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jToggleButton1 = new javax.swing.JToggleButton();
@@ -53,16 +55,18 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
+        openMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Switches");
 
-        jList1.getSelectionModel().addListSelectionListener(new TrackListSelectionHandler());
+        jList1.getSelectionModel().addListSelectionListener(new TrackListSelectionHandlerR());
         jList1.setFont(new java.awt.Font("Malgun Gothic", 0, 36)); // NOI18N
         jList1.setModel(redline);
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -71,6 +75,16 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Red Line", jScrollPane1);
 
+        jList3.getSelectionModel().addListSelectionListener(new TrackListSelectionHandlerG());
+        jList3.setFont(new java.awt.Font("Malgun Gothic", 0, 36)); // NOI18N
+        jList3.setModel(greenline);
+        jList3.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jList3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane4.setViewportView(jList3);
+		
+		jTabbedPane2.addTab("Green Line",jScrollPane4);
+
+		
         jList2.setModel(controllers);
         jScrollPane3.setViewportView(jList2);
 
@@ -200,14 +214,23 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 
         jMenu1.setText("File");
 
-        openMenuItem.setText("Open");
+        openMenuItem.setText("Redline");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(openMenuItem);
+		
+        openMenuItem2.setText("Greenline");
+        openMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
 
+		
+        jMenu1.add(openMenuItem);
+		jMenu1.add(openMenuItem2);
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -293,15 +316,21 @@ public class TrackmodelGUI extends javax.swing.JFrame {
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
         // TODO add your handling code here:
         int returnVal = jFileChooser1.showOpenDialog(this);
+		System.out.println(evt);
         if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
-            redline.loadTrack(jFileChooser1.getSelectedFile());
+			if (evt.getActionCommand().equals("Redline")){
+				redline.loadTrack(jFileChooser1.getSelectedFile());
+			}
+			else {
+				greenline.loadTrack(jFileChooser1.getSelectedFile());				
+			}
         }
         else {
             System.out.println("user terminated file load");
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
-    class TrackListSelectionHandler implements javax.swing.event.ListSelectionListener {
+    class TrackListSelectionHandlerR implements javax.swing.event.ListSelectionListener {
         public void valueChanged(javax.swing.event.ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 int selected = e.getLastIndex();
@@ -322,7 +351,29 @@ public class TrackmodelGUI extends javax.swing.JFrame {
             }
         }
     }
-    
+ 
+    class TrackListSelectionHandlerG implements javax.swing.event.ListSelectionListener {
+        public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+            if (e.getValueIsAdjusting()) {
+                int selected = e.getLastIndex();
+                if (selected == redSelected -1) {
+                    selected = e.getFirstIndex();
+                }
+                redSelected = selected +1;
+                System.out.println(selected + 1);
+                if (redline.getBlock(selected +1).occupied) {
+                    jToggleButton1.setText("Fix Block");
+                    jToggleButton1.setSelected(true);
+                }
+                else {
+                    jToggleButton1.setText("Break Block");
+                    jToggleButton1.setSelected(false);
+                }
+                jTextArea1.setText(greenline.getBlock(redSelected).extendedInfo());
+            }
+        }
+    }
+	
     class OccupationChangedListener implements javax.swing.event.ListDataListener {
         public void contentsChanged(javax.swing.event.ListDataEvent e) {
             jTextField1.setText(redline.getBlock(e.getIndex0()).toString());
@@ -381,6 +432,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JList<String> jList1;
     private javax.swing.JList<String> jList2;
+    private javax.swing.JList<String> jList3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -389,6 +441,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
@@ -396,5 +449,6 @@ public class TrackmodelGUI extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JMenuItem openMenuItem;
+    private javax.swing.JMenuItem openMenuItem2;
     // End of variables declaration//GEN-END:variables
 }
