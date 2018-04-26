@@ -35,4 +35,5 @@ public class MType {
 	public static final int MAINTENANCE = 22;			//int
 	public static final int TICKETS = 23;			//int
 	public static final int POWERFAILURE = 24;			//int
+	public static final int CTCSWITCH = 25;
 }

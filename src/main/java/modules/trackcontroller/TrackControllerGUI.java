@@ -68,7 +68,13 @@ public class TrackControllerGUI extends javax.swing.JFrame {
              crossLightGroup.add(crossingLightOffButton);
 
         id.setFont(new java.awt.Font("Ubuntu", 0, 24));
-        id.setText("ID: "+i);
+		if(i<7)
+			id.setText("ID: RED "+i);
+		else{
+			int temp = i%7;
+			i = 1 + temp;
+			id.setText("ID: GREEN "+i);
+		}
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		/*

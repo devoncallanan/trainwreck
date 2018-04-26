@@ -28,6 +28,7 @@ public class Trainwreck {
 		boolean dispatched = false;
 
 		boolean [] crossingRed = {false,true,false,false,false,false};
+		boolean [] crossingGreen = {false, true, false, false, false, false, false, false, false, false, false, false};
 		CTCOffice ctc = new CTCOffice(messagequeue, tw);
 		PLC plc = new PLC();
 		TrackController trackctl_0 = new TrackController(messagequeue,new boolean[9],new boolean[8],new boolean[9],0,plc);
@@ -36,6 +37,11 @@ public class Trainwreck {
 		TrackController trackctl_3 = new TrackController(messagequeue,new boolean[4],new boolean[3],new boolean[4],3,plc);
 		TrackController trackctl_4 = new TrackController(messagequeue,crossingRed,new boolean[3],new boolean[4],4,plc);
 		TrackController trackctl_5 = new TrackController(messagequeue,new boolean[6],new boolean[8],new boolean[8],5,plc);
+		TrackController trackctl_6 = new TrackController(messagequeue,new boolean[8],new boolean[7],new boolean[6],6,plc);
+		TrackController trackctl_7 = new TrackController(messagequeue,crossingGreen, new boolean[37],new boolean[39],7,plc);
+		TrackController trackctl_8 = new TrackController(messagequeue,new boolean[7],new boolean[11],new boolean[14],8,plc);
+		TrackController trackctl_9 = new TrackController(messagequeue,new boolean[7],new boolean[8],new boolean[8],9,plc);
+		
 		TrackModel trackmodel = new TrackModel(messagequeue);
 		// TrainModelMain trainmodel = new TrainModelMain(messagequeue);
 		// TrainController trainctl = new TrainController(messagequeue, 0);
@@ -52,6 +58,10 @@ public class Trainwreck {
 				trackctl_3.run();
 				trackctl_4.run();
 				trackctl_5.run();
+				trackctl_6.run();
+				trackctl_7.run();
+				trackctl_8.run();
+				trackctl_9.run();
 				trackmodel.run();
 				// Don't run trains until dispatched from CTC
 				if (dispatched) {
