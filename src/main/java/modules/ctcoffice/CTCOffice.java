@@ -37,14 +37,18 @@ public class CTCOffice {
 	private boolean dispatchReady = false;
 
 	/* Graph Testing - - - - - - - - - - - - - - */
-	private TrackGraph track;
+	private TrackGraph redTrack;
+	private TrackGraph greenTrack;
 	
 	//private boolean[] redSwitches = new boolean[6];
 	private double authority;
 
 	/* UI variables- - - - - - - - - - - - - - - */
-	public ArrayList<BlockTemp> stops = new ArrayList<BlockTemp>();
+	public ArrayList<BlockTemp> redStops = new ArrayList<BlockTemp>();
 	public ArrayList<String> redLineData = new ArrayList<String>();
+	public ArrayList<BlockTemp> greenStops = new ArrayList<BlockTemp>();
+	public ArrayList<String> greenLineData = new ArrayList<String>();
+
 	private boolean dispatched = false;
 	private boolean threadSuspended = false;
 
@@ -55,6 +59,8 @@ public class CTCOffice {
 
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
+	private final int RED = 1;
+	private final int GREEN = 2;
 
 
 	/* SETUP */
@@ -66,7 +72,7 @@ public class CTCOffice {
 		// Read redline csv
 		String filename = "./src/main/java/modules/ctcoffice/redline.csv";
 		File f = new File(filename);
-		track = getTrackData(f);
+		redTrack = getTrackData(f);
 
 		// Initialize switch states
 		for (int i = 0; i < redSwitches.length; i ++) {
@@ -102,6 +108,7 @@ public class CTCOffice {
 
 	public void repaint() {
 		gui.increaseTime();
+		gui.updateOccupancy();
 	}
 
 	public void setTime(int time) {
@@ -127,12 +134,33 @@ public class CTCOffice {
 	public double getSpeed() {
 		return speed;
 	}
+
+	public boolean[] getRedOcc() {
+		return redOcc;
+	}
+
+	public boolean[] getGreenOcc() {
+		return greenOcc;
+	}
 	
-	public BlockTemp getStop(int index) {
-		for (int i = 0; i < stops.size(); i++) {
-			if (stops.get(i).number() == index) {
-				return stops.get(i);
+	public BlockTemp getStop(int line, int index) {
+		switch (line) {
+		case 1: // Red Line
+			for (int i = 0; i < redStops.size(); i++) {
+				if (redStops.get(i).number() == index) {
+					return redStops.get(i);
+				}
 			}
+			break;
+		case 2: // Green Line
+			for (int i = 0; i < greenStops.size(); i++) {
+				if (greenStops.get(i).number() == index) {
+					return greenStops.get(i);
+				}
+			}
+			break;
+		default:
+			return null;
 		}
 		return null;
 	}
@@ -140,7 +168,7 @@ public class CTCOffice {
 	public void dispatchTrain(int src, int dest) {
 		src--;
 		dest--;
-		DijkstraSPD spd = new DijkstraSPD(track, src);
+		DijkstraSPD spd = new DijkstraSPD(redTrack, src);
 		authority = spd.distTo(dest);
 		System.out.println("SHORTEST DISTANCE : "+authority);
 		//spd.pathTo(dest);
@@ -217,8 +245,16 @@ public class CTCOffice {
 			m = messages.pop();
 			if(m.type() == MType.SPEED) {
 				speed = m.dataI();
-			}
-		}
+			} else if(m.type() == MType.REALTRACK) {
+	            redOcc = m.dataBA();
+	            // for (int i = 0; i < redOcc.length; i++){
+	            // 	System.out.println(i+": "+redOcc[i]);
+	            // }
+	            //System.out.println("-----");
+	        } else if(m.type() == MType.PASSENGERS) {
+
+	        }
+        }
 	}
 
 	public void mSend() {
@@ -255,24 +291,23 @@ public class CTCOffice {
 
 	// }
 
-	// public Object[] dispatchTrain() {
-
-	// }
 
 	private TrackGraph getTrackData(File f) {
+		int color = 0;
+		int size = 0;
 		try {
 			BufferedReader fr = new BufferedReader(new FileReader(f));
 			
 			// Initialize graph for number of vertices
-			//int size = Integer.parseInt(fr.readLine());
-			TrackGraph tg = new TrackGraph(74);
-			
-			// for (int i = 0; i < num; i++) {
-			// 	stops.add(fr.readLine());
-			// }
 			String delim = ",";
-
 			String line = fr.readLine();
+			String[] sizeLine = line.split(delim);
+			size = Integer.parseInt(sizeLine[1]);
+			System.out.println(size);
+
+			TrackGraph tg = new TrackGraph(size);
+			
+			line = fr.readLine();
 
 			while ((line = fr.readLine()) != null) {
 				String[] str = line.split(delim);
@@ -301,10 +336,22 @@ public class CTCOffice {
 				} else {
 					secnum = section+num;	
 				}
-
-				redLineData.add(secnum);
+				if (trackLine.equals("Red")){
+					color = 1;
+					redLineData.add(secnum);
+				} else {
+					color = 2;
+					greenLineData.add(secnum);
+				}
+				
 			}
-			stops = tg.blocks();
+			if (color == RED) { // RED LINE
+				redStops = tg.blocks();
+				redOcc = new boolean[size];
+			} else { // GREEN LINE
+				greenStops = tg.blocks();
+			}
+			
 			return tg;
 			
 		} catch (Exception e) {
