@@ -4,13 +4,15 @@ import modules.ctcoffice.*;
 import shared.*;
 public class CTCOfficeTest {
 	
+	Trainwreck _tw;
 	CTCOffice _ctc;
 	MessageQueue _mq;
 
 	@Before
 	public void setup() {
+		_tw = new Trainwreck();
 		_mq = new MessageQueue();
-		_ctc = new CTCOffice(_mq);
+		_ctc = new CTCOffice(_mq,_tw);
 	}
 
 	/***************** 
