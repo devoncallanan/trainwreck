@@ -294,7 +294,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
             tm.breakCircuits(false);
         }
         else {
-            jToggleButton3.setText("CIrcuits Up");
+            jToggleButton3.setText("Circuits Up");
             tm.breakCircuits(true);            
         }
     }//GEN-LAST:event_jToggleButton3ActionPerformed
@@ -303,11 +303,11 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (jToggleButton2.isSelected()) {
             jToggleButton2.setText("Null Power");
-            tm.setPower(true);
+            tm.setPower(false);
         }
         else {
             jToggleButton2.setText("Full Power");
-            tm.setPower(false);            
+            tm.setPower(true);            
         }        
     }//GEN-LAST:event_jToggleButton2ActionPerformed
 
