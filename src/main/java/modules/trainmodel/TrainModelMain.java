@@ -47,7 +47,7 @@ public class TrainModelMain {
 		  if (nullPower) this.power = 0;
           velocityFeedback = train.calculateVelocity(power, velocityFeedback, grade, brakes, speedLimit, passengers);
           //System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
-          ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors,this.advertisement);
+          ui.update(this.trainID,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors,this.advertisement);
           failures = ui.getFailures();
           //System.out.println(velocityFeedback);
           mSend();
