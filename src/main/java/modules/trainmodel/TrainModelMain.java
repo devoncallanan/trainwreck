@@ -26,9 +26,13 @@ public class TrainModelMain {
      private int failures = 4;
      private double power,grade,speed,speedLimit;
      private String advertisement;
+     private int trainID;
 
-    public TrainModelMain(MessageQueue mq) {
+     private final int ID = 2*trainID;
+
+    public TrainModelMain(MessageQueue mq, int trainID) {
       this.mq = mq;
+      this.trainID = trainID;
       ui.setVisible(true);
 
     }
@@ -43,14 +47,14 @@ public class TrainModelMain {
           mSend();
      }
      public void mReceive(){
-          messages = mq.receive(MDest.TrMd);
+          messages = mq.receive(MDest.TrMd+ID);
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
                     this.auth = m.dataD();
                     //System.out.println("TrMod_Auth: "+auth);
-                    m = new Message(MDest.TrMd, auth, MType.AUTH);
-                    mq.send(m, MDest.TrCtl);
+                    m = new Message(MDest.TrMd+ID, auth, MType.AUTH);
+                    mq.send(m, MDest.TrCtl+ID);
                }
                 else if(m.type() == MType.SPEED){
                     this.speed = (m.dataD());
@@ -94,22 +98,22 @@ public class TrainModelMain {
      }
      public void mSend(){
 
-               m = new Message(MDest.TrMd, velocityFeedback, MType.FEEDBACK);
-               mq.send(m, MDest.TrCtl);
+               m = new Message(MDest.TrMd+ID, velocityFeedback, MType.FEEDBACK);
+               mq.send(m, MDest.TrCtl+ID);
 
-               m = new Message(MDest.TrMd, velocityFeedback, MType.FEEDBACK);
+               m = new Message(MDest.TrMd+ID, velocityFeedback, MType.FEEDBACK);
                mq.send(m, MDest.TcMd);
-               //System.out.println("TrMd_vF:"+velocityFeedback);
+               //System.out.println("TrMd+ID_vF:"+velocityFeedback);
 
                if (speed > 0) {
-                 m = new Message(MDest.TrMd, speed, MType.SPEED);
-                 mq.send(m, MDest.TrCtl);
+                 m = new Message(MDest.TrMd+ID, speed, MType.SPEED);
+                 mq.send(m, MDest.TrCtl+ID);
                  speed = 0;
                }
 
 	       if (failures != 4) {
-	         m = new Message(MDest.TrMd, failures, MType.FAILURE);
-                 mq.send(m, MDest.TrCtl);
+	         m = new Message(MDest.TrMd+ID, failures, MType.FAILURE);
+                 mq.send(m, MDest.TrCtl+ID);
 				failures = 4;
 				ui.setFailures(4);
 	       }
