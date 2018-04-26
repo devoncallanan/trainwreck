@@ -35,11 +35,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private static int seconds = 0;
     private static int millis = 0;
     private int selected;
+    private int line;
 
     private final double KMH_TO_MPH = (double)1/(double)1.609344;
     private final double M_TO_F = 3.280840;
     private final double MPH_TO_KMH = 1.609344;
     private final double F_TO_M = (double)1/(double)3.280840;
+    private final int RED = 1;
+    private final int GREEN = 2;
 
     private Thread thread;
 
@@ -436,7 +439,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Start Block", "Suggested Speed", "Initial Authority", "Passengers"
+                "Train ID", "Station", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
         ActiveRedTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -456,7 +459,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Start Block", "Suggested Speed", "Initial Authority", "Passengers"
+                "Train ID", "Station", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
         ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -1251,14 +1254,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         // Display train in Active Trains table
         // TrainID | Start Block | Speed | Authority | Passengers
         switch (line) {
-            case 1:
+            case RED:
                 // Dispatch to Red Line
                 ctc.dispatchTrain(1,74,destination);
                 activeModel = (DefaultTableModel) ActiveRedTable.getModel();
                 activeModel.addRow(new Object[]{trainCount, "C9", ctc.getSpeed()*KMH_TO_MPH, ctc.getAuthority()*M_TO_F, 30});
                 scheduleModel.setNumRows(0);
                 break;
-            case 2:
+            case GREEN:
                 // Dispatch to Green Line
                 activeModel = (DefaultTableModel) ActiveGreenTable.getModel();
                 activeModel.addRow(new Object[]{trainCount, "J62", 37.28, 10, 0});
@@ -1279,7 +1282,8 @@ public class CTCOfficeUI extends javax.swing.JFrame {
      *** ACTIVE TRAINS ***
      *********************/                                
 
-    private void ActiveRedTableMouseClicked(java.awt.event.MouseEvent evt) {                                            
+    private void ActiveRedTableMouseClicked(java.awt.event.MouseEvent evt) {        
+        line = 1;                                    
         int row = ActiveRedTable.getSelectedRow();
         
         if (row > -1) {
@@ -1295,6 +1299,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     }                                           
 
     private void ActiveGreenTableMouseClicked(java.awt.event.MouseEvent evt) {                                              
+        line = 2;
         int row = ActiveGreenTable.getSelectedRow();
         
         if (row > -1) {
@@ -1334,19 +1339,39 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     }                                          
 
     private void UpdateTrainButtonActionPerformed(java.awt.event.ActionEvent evt) { 
-        int trainID = selected;
+        //int trainID = selected;
         double speed = -1;
         double authority = -1;
         String speedText = SpeedField.getText();
         String authorityText = AuthorityField.getText();
         if (speedText.length() > 0) {
             speed = Double.parseDouble(speedText);
-            speed *= MPH_TO_KMH;
         }
         if (authorityText.length() > 0) {
             authority = Double.parseDouble(authorityText);
-            authority *= F_TO_M;
         }
+
+        // Update Active Trains tables
+        DefaultTableModel activeModel = new DefaultTableModel();
+        switch (line) {
+            case RED:
+                activeModel = (DefaultTableModel) ActiveRedTable.getModel();
+                //activeModel.addRow(new Object[]{selected, "C9", speed, authority, 30});
+                break;
+            case GREEN:
+                activeModel = (DefaultTableModel) ActiveRedTable.getModel();
+                break;
+        }
+
+        if (speed > 0) {
+            activeModel.setValueAt(speed,selected,2);
+        }
+        if (authority > 0) {
+            activeModel.setValueAt(authority,selected,3);
+        }
+
+        speed *= MPH_TO_KMH;
+        authority *= F_TO_M;
         ctc.updateTrain(selected,speed,authority);
     }    
 
