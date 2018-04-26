@@ -5,9 +5,9 @@ import java.io.*;
 
 
 public class PLC {
-     boolean switchBias, loop, priority, lights, error = false;
-     boolean switchBias1, loop1, priority1, lights1;
-     boolean switchBias2, loop2, priority2, lights2;
+     Boolean switchBias, loop, priority, lights, error = false;
+     Boolean switchBias1, loop1, priority1, lights1;
+     Boolean switchBias2, loop2, priority2, lights2;
      Boolean oneWay = null, oneWay1 = null, oneWay2 = null;
      public PLC(){
 
@@ -145,18 +145,30 @@ public class PLC {
 		 if(!error)
           return switchBias;
 		else
-			return; 
+			return null; 
      }
      public boolean getLoop(){
+		 if(!error)
           return loop;
+		else
+			return null;
      }
      public boolean getPriority(){
+		 if(!error)
           return priority;
+	  else
+		  return null;
      }
      public boolean getLights(){
-          return lights;
+         if(!error)
+		  return lights;
+		else
+			return null;
      }
      public boolean getOneWay(){
+		 if(!error)
           return oneWay;
+		else
+			return null;
      }
 }
