@@ -2,7 +2,7 @@ package modules.traincontroller;
 
 import shared.*;
 import java.util.Stack;
-
+import java.util.function.BooleanSupplier;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -49,8 +49,9 @@ public class TrainController {
 	private final double MS_TO_KMH = (double)3600/(double)1000;
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
+	private int ID;
 	
-	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport pcs;
 
     
 	
@@ -62,6 +63,7 @@ public class TrainController {
 	
 	
 	public TrainController(MessageQueue messages , int trainID) {
+		this.ID = 2*trainID;
 		this.messages = messages;
 		power1 = new Power();
 		power2 = new Power();
@@ -73,7 +75,7 @@ public class TrainController {
 		station = " ";
 		failure = 4;
 		this.trainID = trainID;
-		
+		this.pcs = new PropertyChangeSupport(this);
 		//Initialize my GUI
 		try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -108,7 +110,7 @@ public class TrainController {
 	
 	public void run() {
 		
-		mymail = messages.receive(MDest.TrCtl);
+		mymail = messages.receive(MDest.TrCtl+ID);
 		
 		while(!mymail.isEmpty()) {
 			currentM = mymail.pop();
@@ -143,6 +145,7 @@ public class TrainController {
 					velocity.setSpeedLimit(currentM.dataD(), mode);
 					break;
 				case 15:	//ZEROSPEED
+					//System.out.println("ZEROSPEED");
 					setEmergency(true);
 					break;
 				case 17:	//FAILURE
@@ -164,15 +167,15 @@ public class TrainController {
 		
 		//Sends different advertisements to the train model
 		if (ad == 0) {
-			messages.send(new Message(MDest.TrCtl, ad1, 0, MType.ADVERTISEMENT), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl+ID, ad1, 0, MType.ADVERTISEMENT), MDest.TrMd+ID);
 			this.pcs.firePropertyChange("ad", -1 , ad1);
 		}
-		if (ad == 360000) {
-			messages.send(new Message(MDest.TrCtl, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd);
+		if (ad == 3600) {
+			messages.send(new Message(MDest.TrCtl+ID, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd+ID);
 			this.pcs.firePropertyChange("ad", -1 , ad2);
 		}
-		if (ad == 720000) {
-			messages.send(new Message(MDest.TrCtl, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd);
+		if (ad == 7200) {
+			messages.send(new Message(MDest.TrCtl+ID, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd+ID);
 			this.pcs.firePropertyChange("ad", -1 , ad3);
 			ad = 0;
 		}
@@ -247,7 +250,7 @@ public class TrainController {
 		//SEND POWER COMMAND
 		//send(new Message(From who, Data being sent, Type of data), message destination);
         this.pcs.firePropertyChange("powerUpdate", -1 , p);
-		messages.send(new Message(MDest.TrCtl, p, MType.POWER), MDest.TrMd);
+		messages.send(new Message(MDest.TrCtl+ID, p, MType.POWER), MDest.TrMd+ID);
 		
 
    
@@ -275,12 +278,12 @@ public class TrainController {
 	public void setEmergency(boolean emergency) {
 		this.emergency = emergency;
 		if (emergency) {
-			messages.send(new Message(MDest.TrCtl, 3, MType.BRAKES), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl+ID, 3, MType.BRAKES), MDest.TrMd+ID);
             this.pcs.firePropertyChange("brake", -1 , "Emergency");
 		} else {
 			operateDoors(0);
 			operateDoors(2);
-			messages.send(new Message(MDest.TrCtl, 2, MType.BRAKES), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl+ID, 2, MType.BRAKES), MDest.TrMd+ID);
             this.pcs.firePropertyChange("brake", -1 , " ");
 		}
 	}
@@ -289,12 +292,12 @@ public class TrainController {
 	public void setService(boolean service) {
 		this.service = service;
 		if (service) {
-			messages.send(new Message(MDest.TrCtl, 1, MType.BRAKES), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl+ID, 1, MType.BRAKES), MDest.TrMd+ID);
 			this.pcs.firePropertyChange("brake", -1 , "Service");
 		} else {
 			operateDoors(0);
 			operateDoors(2);
-			messages.send(new Message(MDest.TrCtl, 0, MType.BRAKES), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl+ID, 0, MType.BRAKES), MDest.TrMd+ID);
 			this.pcs.firePropertyChange("brake", -1 , " ");
 		}
 	}
@@ -323,22 +326,22 @@ public class TrainController {
 			switch(opDoors) {
 				case 0:	//close left doors
 					leftDoors = false; 
-					messages.send(new Message(MDest.TrCtl, 0, MType.DOORS), MDest.TrMd);
+					messages.send(new Message(MDest.TrCtl+ID, 0, MType.DOORS), MDest.TrMd+ID);
 					this.pcs.firePropertyChange("doors", -1 , 0);
 					break;
 				case 1:	//open left doors
 					leftDoors = true; 
-					messages.send(new Message(MDest.TrCtl, 1, MType.DOORS), MDest.TrMd);
+					messages.send(new Message(MDest.TrCtl+ID, 1, MType.DOORS), MDest.TrMd+ID);
 					this.pcs.firePropertyChange("doors", -1 , 1);
 					break;
 				case 2:	//close right doors
 					rightDoors = false;
-					messages.send(new Message(MDest.TrCtl, 2, MType.DOORS), MDest.TrMd);
+					messages.send(new Message(MDest.TrCtl+ID, 2, MType.DOORS), MDest.TrMd+ID);
 					this.pcs.firePropertyChange("doors", -1 , 2);
 					break;
 				case 3:	//open right doors
 					rightDoors = true;
-					messages.send(new Message(MDest.TrCtl, 3, MType.DOORS), MDest.TrMd); 
+					messages.send(new Message(MDest.TrCtl+ID, 3, MType.DOORS), MDest.TrMd+ID); 
 					this.pcs.firePropertyChange("doors", -1 , 3);					
 					break;
 				default:
@@ -351,7 +354,7 @@ public class TrainController {
 	public boolean setTemp(int temp) {
 		if (temp >= 60 && temp <= 80) {
 			this.temp = temp;
-			messages.send(new Message(MDest.TrCtl, temp, MType.TEMP), MDest.TrMd); 
+			messages.send(new Message(MDest.TrCtl+ID, temp, MType.TEMP), MDest.TrMd+ID); 
 			return true;
 		}
 		return false;
@@ -362,9 +365,9 @@ public class TrainController {
 	public void setLights(boolean lights) {
         this.lights = lights;
 		if (lights)
-			messages.send(new Message(MDest.TrCtl, 1, MType.LIGHTS), MDest.TrMd); 
+			messages.send(new Message(MDest.TrCtl+ID, 1, MType.LIGHTS), MDest.TrMd+ID); 
 		else 
-			messages.send(new Message(MDest.TrCtl, 0, MType.LIGHTS), MDest.TrMd);
+			messages.send(new Message(MDest.TrCtl+ID, 0, MType.LIGHTS), MDest.TrMd+ID);
 	}
 	
 	//Same as authority (Used because of testing UI)
@@ -392,5 +395,40 @@ public class TrainController {
 	
 	public int getTrainID(){
 		return trainID;
+	}
+
+	public boolean getEmergency() {
+		// TODO Auto-generated method stub
+		return emergency;
+	}
+
+	public boolean getService() {
+		// TODO Auto-generated method stub
+		return service;
+	}
+
+	public double getAuthority() {
+		// TODO Auto-generated method stub
+		return authority;
+	}
+
+	public boolean isLeftDoors() {
+		// TODO Auto-generated method stub
+		return leftDoors;
+	}
+
+	public boolean isRightDoors() {
+		// TODO Auto-generated method stub
+		return rightDoors;
+	}
+
+	public int getTemp() {
+		// TODO Auto-generated method stub
+		return temp;
+	}
+
+	public boolean getLights() {
+		// TODO Auto-generated method stub
+		return lights;
 	}
 }

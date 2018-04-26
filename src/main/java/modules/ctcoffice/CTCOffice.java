@@ -14,18 +14,13 @@ import shared.*;
  *  o Send switch states
  */
 public class CTCOffice {
-	//private CTCOffice ctc;
+	private Trainwreck tw;
 	private CTCOfficeUI gui;
 	private ArrayList<Queue<Schedule>> schedules;
 	//private Track redLine;
 	//private Track greenLine;
 	//private Time currentTime;
-	private int time;
-	private int trainCount;
-	private double throughput;
-	private double redThroughput;
-	private double greenThroughput;
-	private int ticketCount;
+	
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
@@ -37,22 +32,55 @@ public class CTCOffice {
 	private boolean dispatchReady = false;
 
 	/* Graph Testing - - - - - - - - - - - - - - */
-	private TrackGraph track;
+	private int dispatchLine = 1;
+	private TrackGraph redTrack;
+	private TrackGraph greenTrack;
 	
 	//private boolean[] redSwitches = new boolean[6];
 	private double authority;
 
 	/* UI variables- - - - - - - - - - - - - - - */
-	public ArrayList<BlockTemp> stops = new ArrayList<BlockTemp>();
+	public ArrayList<BlockTemp> redStops = new ArrayList<BlockTemp>();
 	public ArrayList<String> redLineData = new ArrayList<String>();
+	public ArrayList<BlockTemp> greenStops = new ArrayList<BlockTemp>();
+	public ArrayList<String> greenLineData = new ArrayList<String>();
+
 	private boolean dispatched = false;
 	private boolean threadSuspended = false;
 
+	/* Occupancy - - - - - - - - - - - - - - - - */
+	private boolean[] redOcc;
+	private boolean[] greenOcc;
+
+	/* Maintenance - - - - - - - - - - - - - - - */
+	private int maintenanceLine = 0;
+	private int maintenanceBlock = 0;
+	private boolean maintenanceReady = false;
+
+	/* Multiple Trains - - - - - - - - - - - - - */
+	private int trainCount = 0;
+
+	/* Throughput- - - - - - - - - - - - - - - - */
+	private double throughput = 0;
+	private double redThroughput = 0;
+	private double greenThroughput = 0;
+	private int totalTickets = 0;
+	private int redTickets = 0;
+	private int greenTickets = 0;
+	private int time;
+	private double hours;
+
+	/* FINAL */
+
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
+	private final int RED = 1;
+	private final int GREEN = 2;
+
 
 	/* SETUP */
-	public CTCOffice(MessageQueue mq) {
+	public CTCOffice(MessageQueue mq, Trainwreck tw) {
+		this.tw = tw;
 		time = 10;
 		// Setup Message Queue
 		this.mq = mq;
@@ -60,7 +88,7 @@ public class CTCOffice {
 		// Read redline csv
 		String filename = "./src/main/java/modules/ctcoffice/redline.csv";
 		File f = new File(filename);
-		track = getTrackData(f);
+		redTrack = getTrackData(f);
 
 		// Initialize switch states
 		for (int i = 0; i < redSwitches.length; i ++) {
@@ -96,6 +124,8 @@ public class CTCOffice {
 
 	public void repaint() {
 		gui.increaseTime();
+		gui.updateOccupancy();
+		gui.updateThroughput(throughput, redThroughput, greenThroughput);
 	}
 
 	public void setTime(int time) {
@@ -121,34 +151,89 @@ public class CTCOffice {
 	public double getSpeed() {
 		return speed;
 	}
-	public BlockTemp getStop(int index) {
-		for (int i = 0; i < stops.size(); i++) {
-			if (stops.get(i).number() == index) {
-				return stops.get(i);
+
+	public boolean[] getRedOcc() {
+		return redOcc;
+	}
+
+	public boolean[] getGreenOcc() {
+		return greenOcc;
+	}
+
+	public double getRedThroughput() {
+		return redThroughput;
+	}
+
+	public double getGreenThroughput() {
+		return greenThroughput;
+	}
+
+	public double getThroughput() {
+		return throughput;
+	}
+
+	private void calcThroughput() {
+		totalTickets = redTickets + greenTickets;
+		hours = gui.getHours();
+		redThroughput = redTickets/hours;
+		greenThroughput = greenTickets/hours;
+		throughput = totalTickets/hours;
+	}
+	
+	public BlockTemp getStop(int line, int index) {
+		switch (line) {
+		case 1: // Red Line
+			for (int i = 0; i < redStops.size(); i++) {
+				if (redStops.get(i).number() == index) {
+					return redStops.get(i);
+				}
 			}
+			break;
+		case 2: // Green Line
+			for (int i = 0; i < greenStops.size(); i++) {
+				if (greenStops.get(i).number() == index) {
+					return greenStops.get(i);
+				}
+			}
+			break;
+		default:
+			return null;
 		}
 		return null;
 	}
 
-	public void dispatchTrain(int src, int dest) {
+	public void dispatchTrain(int line, int src, int dest) {
 		src--;
 		dest--;
-		DijkstraSPD spd = new DijkstraSPD(track, src);
-		authority = spd.distTo(dest);
-		System.out.println("SHORTEST DISTANCE : "+authority);
-		//spd.pathTo(dest);
-		ArrayList<Integer> path = spd.getPath(dest);
-		setSwitches(path);
-		for (int i = 0; i < redSwitches.length; i ++) {
-			//System.out.println(i+": "+redSwitches[i].booleanValue());
+		switch (line) {
+			case RED:
+				DijkstraSPD spd = new DijkstraSPD(redTrack, src);
+				authority = spd.distTo(dest);
+				System.out.println("SHORTEST DISTANCE : "+authority);
+				ArrayList<Integer> path = spd.getPath(dest);
+				setRedSwitches(path);
+				dispatchReady = true;
+				dispatched = true;
+				break;
+			case GREEN:
+			default:
+				dispatchReady = false;
+				dispatched = false;
 		}
-		//System.out.println("DISPATCHED!");
-		dispatchReady = true;
-		dispatched = true;
-		//System.out.println(dispatched);
+		
 	}
 
-	public void setSwitches(ArrayList<Integer> path) {
+	public void trackMaintenance(int line, int block, boolean open) {
+		maintenanceLine = line;
+		if (open) { // Open block
+			maintenanceBlock = block;
+		} else { // Close block
+			maintenanceBlock = -1*block;
+		}
+		maintenanceReady = true;
+	}
+
+	public void setRedSwitches(ArrayList<Integer> path) {
 		for (int i = 0; i < path.size()-1; i++) {
 			int current = path.get(i);
 			//System.out.println("C:"+current);
@@ -200,6 +285,7 @@ public class CTCOffice {
 
 	public boolean run(){
 		mReceive();
+		calcThroughput();
 		mSend();
 		return dispatched;
 	}
@@ -210,62 +296,93 @@ public class CTCOffice {
 			m = messages.pop();
 			if(m.type() == MType.SPEED) {
 				speed = m.dataI();
-			}
-		}
+			} else if(m.type() == MType.REALTRACK) {
+	            redOcc = m.dataBA();
+	        } else if(m.type() == MType.TICKETS) {
+	        	switch (m.trainID) {
+	        		case RED:
+	        			redTickets += m.dataI();
+	        			break;
+	        		case GREEN:
+	        			greenTickets += m.dataI();
+	        			break;
+	        	}
+	        }
+        }
 	}
 
 	public void mSend() {
 		
 		if (dispatchReady) {
+
 			// Send Speed (default limit for now);
 			m = new Message(MDest.CTC, speed, MType.SPEED);
 			System.out.println("CTC_Speed: "+speed);
+			m.trainID = trainCount;
 			mq.send(m, MDest.TcCtl);
 			// Send Authority
 			m = new Message(MDest.CTC, authority, MType.AUTH);
 			System.out.println("CTC_Authority: "+authority);
+			m.trainID = trainCount;
 			mq.send(m, MDest.TcCtl);
 			// Send Switch Positions
-			for (int i = 0; i < 6; i ++) {
-				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); // MType.SWITCH
+			for (int i = 0; i < 6; i++) {
+				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); 
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
 				mq.send(m, MDest.TcCtl+i);
 			}
-			// Add Train to Message Queue
-			mq.addTrain();
+
+			// Add Train to Message Queue & Trainwreck
+			System.out.println("Adding Train: "+trainCount);
+			mq.addTrain(dispatchLine);
+			tw.addTrain(trainCount++);
 			dispatchReady = false;
+		}
+
+		if (maintenanceReady) {
+			m = new Message(MDest.CTC, maintenanceBlock, MType.MAINTENANCE);
+			switch (maintenanceLine) {
+				case RED:
+					for (int i = 0; i < 6; i++) {
+						mq.send(m, MDest.TcCtl+i);
+					}
+					break;
+				case GREEN:
+					for (int i = 6; i < 11; i++) {
+						mq.send(m, MDest.TcCtl+i);
+					}
+					break;
+				default:
+					System.out.println("No Line Selected!");
+			}
+			maintenanceReady = false;
 		}
 	}
 
 
-
-	// private double calcThroughput(Line line, int ticketCount) {
-
-	// }
 
 
 	// public Queue<Schedule> importSchedule(String filename) {
 
 	// }
 
-	// public Object[] dispatchTrain() {
-
-	// }
 
 	private TrackGraph getTrackData(File f) {
+		int color = 0;
+		int size = 0;
 		try {
 			BufferedReader fr = new BufferedReader(new FileReader(f));
 			
 			// Initialize graph for number of vertices
-			//int size = Integer.parseInt(fr.readLine());
-			TrackGraph tg = new TrackGraph(74);
-			
-			// for (int i = 0; i < num; i++) {
-			// 	stops.add(fr.readLine());
-			// }
 			String delim = ",";
-
 			String line = fr.readLine();
+			String[] sizeLine = line.split(delim);
+			size = Integer.parseInt(sizeLine[1]);
+			System.out.println(size);
+
+			TrackGraph tg = new TrackGraph(size);
+			
+			line = fr.readLine();
 
 			while ((line = fr.readLine()) != null) {
 				String[] str = line.split(delim);
@@ -294,10 +411,22 @@ public class CTCOffice {
 				} else {
 					secnum = section+num;	
 				}
-
-				redLineData.add(secnum);
+				if (trackLine.equals("Red")){
+					color = 1;
+					redLineData.add(secnum);
+				} else {
+					color = 2;
+					greenLineData.add(secnum);
+				}
+				
 			}
-			stops = tg.blocks();
+			if (color == RED) { // RED LINE
+				redStops = tg.blocks();
+				redOcc = new boolean[size];
+			} else { // GREEN LINE
+				greenStops = tg.blocks();
+			}
+			
 			return tg;
 			
 		} catch (Exception e) {

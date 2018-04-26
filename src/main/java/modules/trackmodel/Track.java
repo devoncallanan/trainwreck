@@ -22,6 +22,7 @@ public class Track extends javax.swing.AbstractListModel<String>{
     public int[][] switches;  //change back to private later [location][position]
     private int length;
     private int items;
+	private boolean loaded;
     
 public static double KMH_TO_MS = 1000.0/3600.0; 
 public static double MS_TO_KMH = 3600.0/10000.0; 
@@ -30,6 +31,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
         this.length = 0;
         this.items = 0;
         switches = new int[0][0];
+		this.loaded = false;
     }
     public Track(int length) {
         this.track = new Block[length][3];
@@ -37,6 +39,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
         this.switches = new int[length][2];
         this.length = length;
         this.items = 0;
+		this.loaded = false;
     }
     
     public void loadTrack(java.io.File trackfile) {
@@ -49,8 +52,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
             System.err.println(e);
         }
         
-        
-        int length = 1 + 76;//+ scan.nextInt();
+        // System.out.println(scan.nextInt());
+        int length = 1 + scan.nextInt();
         this.track = new Block[length][3];
         this.blocks = new Block[length];
         this.switches = new int[length][2];
@@ -69,6 +72,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			double cumElevation = scan.nextDouble();
             int from = scan.nextInt();
             int to = scan.nextInt();
+			int ways = scan.nextInt();
             int branch = scan.nextInt();
 			int switchloc = scan.nextInt();
 			int stationSide = scan.nextInt();
@@ -86,23 +90,26 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			if (extra.equals("null") ) {
 				extra = null;
 			}				
-			String infrastructure = scan.next();
+			//String infrastructure = scan.next();
 			
-            Block b = new Block(to, from, section, number, grade, bLength, limit, branch, switchloc,station, beacon, stationSide, extra); 
-            this.addBlock(b);
+            Block b = new Block(to, from, section, number, grade, bLength, limit, branch, switchloc,station, beacon, stationSide, extra, ways); 
+            this.addBlock(b, ways);
             //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);
         }
+		this.loaded = true;
         //this.printTrack();
 
     }
     
-    public void addBlock(Block b) {
+    public void addBlock(Block b,int ways) {
         int to = b.to;
         int from = b.from;
         int err;
-        err = addTo(to, b);
-        err += addTo(from, b);
+		err = addTo(from, b);
+		if (ways > 1) {
+			err += addTo(to, b);
+		}
         if (err == -1) {
             System.err.println("couldnt add block");
         }
@@ -212,6 +219,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		}
 		// System.out.println(sb);
 		return occs;
+	}
+	
+	public boolean isLoaded() {
+		return loaded;
 	}
     
     public int getSize() {

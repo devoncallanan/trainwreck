@@ -5,17 +5,30 @@ import modules.trackcontroller.*;
 import modules.trackmodel.*;
 import modules.traincontroller.*;
 import modules.trainmodel.*;
+import java.io.*;
+import java.util.*;
 
 public class Trainwreck {
-	public static void main(String[] args) {
 
+	private MessageQueue messagequeue = new MessageQueue();
+	private static Trainwreck tw;
+
+	private ArrayList<TrainModelMain> trainmodels;
+	private ArrayList<TrainController> trainctls;
+
+	public static void main(String[] args) {
+		tw = new Trainwreck();
+
+		tw.run();
+	}
+
+	private void run() {
 		java.util.Scanner pauseScan = new java.util.Scanner(System.in);
 		int time = 10;
 		boolean dispatched = false;
 
-		MessageQueue messagequeue = new MessageQueue();
 		boolean [] crossingRed = {false,true,false,false,false,false};
-		CTCOffice ctc = new CTCOffice(messagequeue);
+		CTCOffice ctc = new CTCOffice(messagequeue, tw);
 		PLC plc = new PLC();
 		TrackController trackctl_0 = new TrackController(messagequeue,new boolean[9],new boolean[8],new boolean[9],0,plc);
 		TrackController trackctl_1 = new TrackController(messagequeue,new boolean[6],new boolean[3],new boolean[4],1,plc);
@@ -24,8 +37,11 @@ public class Trainwreck {
 		TrackController trackctl_4 = new TrackController(messagequeue,crossingRed,new boolean[3],new boolean[4],4,plc);
 		TrackController trackctl_5 = new TrackController(messagequeue,new boolean[6],new boolean[8],new boolean[8],5,plc);
 		TrackModel trackmodel = new TrackModel(messagequeue);
-		TrainModelMain trainmodel = new TrainModelMain(messagequeue);
-		TrainController trainctl = new TrainController(messagequeue, 0);
+		// TrainModelMain trainmodel = new TrainModelMain(messagequeue);
+		// TrainController trainctl = new TrainController(messagequeue, 0);
+
+		trainmodels = new ArrayList<TrainModelMain>();
+		trainctls = new ArrayList<TrainController>();
 
 		try {
 			while (true) {
@@ -39,8 +55,10 @@ public class Trainwreck {
 				trackmodel.run();
 				// Don't run trains until dispatched from CTC
 				if (dispatched) {
-					trainmodel.run();
-					trainctl.run();
+					for (int i = 0; i < trainmodels.size(); i++) {
+						trainmodels.get(i).run();
+						trainctls.get(i).run();
+					}					
 				}
 
 				//Will get the time to sleep from CTC once implemented
@@ -53,5 +71,10 @@ public class Trainwreck {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void addTrain(int id) {
+		trainmodels.add(id, new TrainModelMain(messagequeue, id));
+		trainctls.add(id, new TrainController(messagequeue, id));
 	}
 }

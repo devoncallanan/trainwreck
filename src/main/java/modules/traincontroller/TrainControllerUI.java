@@ -19,7 +19,12 @@ public class TrainControllerUI extends javax.swing.JFrame {
     public TrainControllerUI(TrainController trainController) {
         this.trainController = trainController;
 		this.trainID = trainController.getTrainID();
-        trainController.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        initComponents();
+        jPanel2.setVisible(false);
+        jPanel3.setVisible(false);
+        jPanel4.setVisible(false);
+        jPanel5.setVisible(false);
+		trainController.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             @Override
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String event = evt.getPropertyName();
@@ -75,11 +80,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
                 }
             }
         });
-        initComponents();
-        jPanel2.setVisible(false);
-        jPanel3.setVisible(false);
-        jPanel4.setVisible(false);
-        jPanel5.setVisible(false);
+
     }
 
     /**
@@ -1071,6 +1072,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
         // TODO add your handling code here:
 		if (evt.getPropertyName().equals("speedLimit")) {
 			DecimalFormat numberFormat = new DecimalFormat("#0");
+			//System.out.println(evt);
             speedLimit.setText(String.valueOf(numberFormat.format(evt.getNewValue())));
         }
     }                                         
@@ -1099,6 +1101,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
 				failureLabel.setText("Signal failure.");
 			} else if ((int)evt.getNewValue() == 3) {
 				failureLabel.setText("Engine failure.");
+			} else if ((int)evt.getNewValue() == 0) {
+				failureLabel.setText("Emergency brake set.");
 			}
 		}
 		
@@ -1106,7 +1110,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
 
     private void advertisementPropertyChange(java.beans.PropertyChangeEvent evt) {                                             
         // TODO add your handling code here:
-		advertisement.setText(String.valueOf(evt.getNewValue()));
+		if(evt.getPropertyName().equals("ad"))
+			advertisement.setText(String.valueOf(evt.getNewValue()));
     }                                            
 
 

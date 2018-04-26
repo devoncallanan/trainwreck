@@ -20,8 +20,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 	public int id;							//train ID
 	public double init;
 	private static double DELTA_T = .01;		//quantum for calculations
+	public int track;
+	public int passengers;
 	
-	public Train(int id, int location, int node) {
+	public Train(int id, int location, int node, int track) {
 		this.location = location;
 		this.id = id;
 		this.distanceIn = 0;
@@ -29,6 +31,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		this.init = 0;
 		this.backNode = node;
 		this.blocks = new java.util.ArrayList<Block>();
+		this.track = track;
+		this.passengers = 0;
 	}
 	
 	public double move() {

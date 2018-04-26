@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java/modules/ctcoffice"/>
+	<classpathentry kind="src" path="src/test/java/modules/trackcontroller"/>
+	<classpathentry kind="src" path="src/test/java/modules/trackmodel"/>
+	<classpathentry kind="src" path="src/test/java/modules/traincontroller"/>
+	<classpathentry kind="src" path="src/test/java/modules/trainmodel"/>
+	<classpathentry kind="src" path="SystemIntegration"/>
+	<classpathentry kind="src" path="TrackModel"/>
+	<classpathentry kind="src" path="UI-prototypes/CTCOfficeUI/CTCPrototype/src"/>
+	<classpathentry kind="lib" path="build/libs/trainwreck.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="output" path="build/classes/java/main"/>
+</classpath>
