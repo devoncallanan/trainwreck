@@ -26,7 +26,6 @@ public class PLC {
                 String[] parts = line.split(">");
                 if(parts[0].equals("switch")){
                     switchBias = Boolean.parseBoolean(parts[1]);
-					System.out.println("SwitchBias = "+ switchBias);
                 }
                 else if(parts[0].equals("loop")){
                     loop = Boolean.parseBoolean(parts[1]);
