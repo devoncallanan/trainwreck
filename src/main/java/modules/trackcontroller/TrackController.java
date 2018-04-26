@@ -55,7 +55,8 @@ public class TrackController {
 			  gui.setVisible(true);
 		  }
 		  else{
-			  
+			  gui = new NoCrossTCGUI(this, n, r, s, z+1, p);
+                 gui.setVisible(true);
 		  }
           checkZero();
      }
