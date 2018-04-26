@@ -285,6 +285,19 @@ public class TrackmodelGUI extends javax.swing.JFrame {
             jList1.updateUI();
             jTextArea1.setText(redline.getBlock(redSelected).extendedInfo());
         }
+		else if(greenSelected != -1) {
+            greenline.getBlock(greenSelected).occupied = !greenline.getBlock(greenSelected).occupied;
+			controllers.update(greenSelected, 0, 2);
+			if (greenline.getBlock(greenSelected).occupied) controllers.update(greenSelected, 1, 2);
+            if (greenline.getBlock(greenSelected).occupied) {
+                jToggleButton1.setText("Fix Block");
+            }
+            else {
+                jToggleButton1.setText("Break Block");                
+            }
+            jList3.updateUI();
+            jTextArea1.setText(greenline.getBlock(greenSelected).extendedInfo());
+        }			
     }//GEN-LAST:event_jToggleButton1MouseClicked
 
     private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
@@ -336,6 +349,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         public void valueChanged(javax.swing.event.ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 int selected = e.getLastIndex();
+				greenSelected = -1;
                 if (selected == redSelected -1) {
                     selected = e.getFirstIndex();
                 }
@@ -358,10 +372,11 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         public void valueChanged(javax.swing.event.ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 int selected = e.getLastIndex();
-                if (selected == redSelected -1) {
+				redSelected = -1;
+                if (selected == greenSelected -1) {
                     selected = e.getFirstIndex();
                 }
-                redSelected = selected +1;
+                greenSelected = selected +1;
                 System.out.println(selected + 1);
                 if (redline.getBlock(selected +1).occupied) {
                     jToggleButton1.setText("Fix Block");
@@ -371,7 +386,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
                     jToggleButton1.setText("Break Block");
                     jToggleButton1.setSelected(false);
                 }
-                jTextArea1.setText(greenline.getBlock(redSelected).extendedInfo());
+                jTextArea1.setText(greenline.getBlock(greenSelected).extendedInfo());
             }
         }
     }
