@@ -283,10 +283,12 @@ public class CTCOffice {
 			// Send Speed (default limit for now);
 			m = new Message(MDest.CTC, speed, MType.SPEED);
 			System.out.println("CTC_Speed: "+speed);
+			m.trainID = trainCount;
 			mq.send(m, MDest.TcCtl);
 			// Send Authority
 			m = new Message(MDest.CTC, authority, MType.AUTH);
 			System.out.println("CTC_Authority: "+authority);
+			m.trainID = trainCount;
 			mq.send(m, MDest.TcCtl);
 			// Send Switch Positions
 			for (int i = 0; i < 6; i++) {

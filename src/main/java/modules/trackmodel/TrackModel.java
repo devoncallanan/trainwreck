@@ -72,11 +72,12 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			switch (mail.type()) {
 				case MType.AUTH:
 					System.out.println(mail.dataD());
-					m.send(mail, MDest.TrMd);
+					m.send(mail, MDest.TrMd +  (2 * mail.trainID));
+					System.out.println(" train " +  MDest.TrMd +  (2 * mail.trainID) + " auth: " + mail.dataD());
 					break;
 				case MType.SPEED:
 					System.out.println(mail.dataD());
-					m.send(mail, MDest.TrMd);
+					m.send(mail, MDest.TrMd + (2 * mail.trainID));
 					break;	
 				case MType.NEWTRAIN:
 					Train[] temp = new Train[numTrains + 1];
@@ -182,19 +183,19 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			}
 		}
 		
-		if (changedBlock) {
+		// if (changedBlock) {
 			//grade
-			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
-			m.send(tempM, MDest.TrMd);
+			// tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			// m.send(tempM, MDest.TrMd);
 			//beacon
-			if (nextBlock.beacon != null) {
-				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
-				m.send(tempM, MDest.TrCtl);
-			}
+			// if (nextBlock.beacon != null) {
+				// tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
+				// m.send(tempM, MDest.TrCtl);
+			// }
 			//speedlimit
-			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
-			m.send(tempM, MDest.TrCtl);			
-		}
+			// tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
+			// m.send(tempM, MDest.TrCtl);			
+		// }
 		
 
         

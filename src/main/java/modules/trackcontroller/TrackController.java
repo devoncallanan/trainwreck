@@ -141,10 +141,12 @@ public class TrackController {
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
-                    authority.add(m.dataD());
+				   mq.send(m, MDest.TcMd);
+                    //authority.add(m.dataD());
                }
                else if(m.type() == MType.SPEED){
-                    speeds.add(m.dataD());
+				   mq.send(m, MDest.TcMd);
+                    //speeds.add(m.dataD());
                     //System.out.println("TkCon: "+m.dataD());
                }
                else if(m.type() == MType.TRACK){

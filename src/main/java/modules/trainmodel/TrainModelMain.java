@@ -12,8 +12,8 @@ import java.util.*;
  */
 public class TrainModelMain {
      public MessageQueue mq = new MessageQueue();
-     public TrainModelUI ui = new TrainModelUI();
-     public Train train = new Train();
+     public TrainModelUI ui;
+     public Train train;
      private Stack<Message> messages;
      private Message m;
      private double velocityFeedback;
@@ -28,12 +28,16 @@ public class TrainModelMain {
      private String advertisement;
      private int trainID;
 
-     private final int ID = 2*trainID;
+     private int ID;
 
     public TrainModelMain(MessageQueue mq, int trainID) {
       this.mq = mq;
       this.trainID = trainID;
-      ui.setVisible(true);
+	  this.ui = new TrainModelUI();
+	        ui.setVisible(true);
+	  this.train  = new Train();
+	  this.ID  = 2*trainID;
+	  System.out.println("Bry " + ID + " trainid " + trainID);
 
     }
 
@@ -48,10 +52,12 @@ public class TrainModelMain {
      }
      public void mReceive(){
           messages = mq.receive(MDest.TrMd+ID);
+		  //System.out.println("Bryan" + MDest.TrMd+ID);
           while(!messages.isEmpty()){
                m = messages.pop();
                if(m.type() == MType.AUTH){
                     this.auth = m.dataD();
+					System.out.println("Train " + m.trainID + " sending to " + ID + " auth " + m.dataD());
                     //System.out.println("TrMod_Auth: "+auth);
                     m = new Message(MDest.TrMd+ID, auth, MType.AUTH);
                     mq.send(m, MDest.TrCtl+ID);
