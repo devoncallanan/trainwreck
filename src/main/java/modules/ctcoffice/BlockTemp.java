@@ -8,6 +8,7 @@ public class BlockTemp {
     private final String section;
     private final int number;
     private final int branch;
+    private final double limit;
     
     /*public String section;
     public int number;
@@ -36,13 +37,14 @@ public class BlockTemp {
         this.from = from;
     }*/
 
-    public BlockTemp(int v, int w, double distance, String section, int number, int branch) {
+    public BlockTemp(int v, int w, double distance, String section, int number, int branch, double limit) {
         this.v = v;
         this.w = w;
         this.distance = distance;
         this.section = section;
         this.number = number;
         this.branch = branch;
+        this.limit = limit;
     }
 
     public double distance() {
@@ -59,6 +61,10 @@ public class BlockTemp {
 
     public int branch() {
         return branch;
+    }
+
+    public double limit() {
+        return limit;
     }
 
     public int either() {

@@ -24,20 +24,17 @@ public class CTCOffice {
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
-	private double speed = 40.0; // km/h => 24.8548 mph
+	
 	/* - - - - - - - - - - - - - - - - - - - - - */
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
 	private Message m;
-	private boolean dispatchReady = false;
+	
 
 	/* Graph Testing - - - - - - - - - - - - - - */
 	private int dispatchLine = 1;
 	private TrackGraph redTrack;
 	private TrackGraph greenTrack;
-	
-	//private boolean[] redSwitches = new boolean[6];
-	private double authority;
 
 	/* UI variables- - - - - - - - - - - - - - - */
 	public ArrayList<BlockTemp> redStops = new ArrayList<BlockTemp>();
@@ -56,9 +53,20 @@ public class CTCOffice {
 	private int maintenanceLine = 0;
 	private int maintenanceBlock = 0;
 	private boolean maintenanceReady = false;
+	private boolean switchReady = false;
+	private Boolean currentSwitch = new Boolean(null);
+	private int trackCtlIndex = 0;
 
 	/* Multiple Trains - - - - - - - - - - - - - */
 	private int trainCount = 0;
+	private int trainID = 0;
+	private boolean changeSpeed = false;
+	private boolean changeAuthority = false;
+	private double speed = 0; // km/h => 24.8548 mph
+	private double authority = 0;
+	private boolean dispatchReady = false;
+	private boolean updateReady = false;
+	private ArrayList<Train> trains = new ArrayList<Train>();
 
 	/* Throughput- - - - - - - - - - - - - - - - */
 	private double throughput = 0;
@@ -126,6 +134,7 @@ public class CTCOffice {
 		gui.increaseTime();
 		gui.updateOccupancy();
 		gui.updateThroughput(throughput, redThroughput, greenThroughput);
+		gui.updateTrains(trains);
 	}
 
 	public void setTime(int time) {
@@ -202,11 +211,31 @@ public class CTCOffice {
 		return null;
 	}
 
+	public void updateTrain(int trainID, double speed, double authority) {
+		this.trainID = trainID;
+		if (speed > 0) {
+			this.speed = speed;
+			changeSpeed = true;
+		} else {
+			changeSpeed = false;
+		}
+		if (authority > 0) {
+			this.authority = authority;
+			changeAuthority = true;
+		} else {
+			changeAuthority = false;
+		}
+		updateReady = true;
+	}
+
 	public void dispatchTrain(int line, int src, int dest) {
+		trains.add(new Train(trainCount,line,"YARD"));
 		src--;
 		dest--;
 		switch (line) {
 			case RED:
+				speed = redStops.get(8).limit(); // Limit at C9
+				System.out.println("Limit: "+speed);
 				DijkstraSPD spd = new DijkstraSPD(redTrack, src);
 				authority = spd.distTo(dest);
 				System.out.println("SHORTEST DISTANCE : "+authority);
@@ -231,6 +260,37 @@ public class CTCOffice {
 			maintenanceBlock = -1*block;
 		}
 		maintenanceReady = true;
+	}
+
+	public void switchToggle(int line, int block, boolean state) {
+		currentSwitch = new Boolean(state);
+		switch (line) {
+			case RED:
+				switch (block) {
+					case 15:
+						trackCtlIndex = 0;
+						break;
+					case 27:
+						trackCtlIndex = 1;
+						break;
+					case 32:
+						trackCtlIndex = 2;
+						break;
+					case 38:
+						trackCtlIndex = 3;
+						break;
+					case 43:
+						trackCtlIndex = 4;
+						break;
+					case 52:
+						trackCtlIndex = 5;
+						break;
+				}
+				break;
+			case GREEN:
+				break;
+		}
+		switchReady = true;
 	}
 
 	public void setRedSwitches(ArrayList<Integer> path) {
@@ -307,6 +367,10 @@ public class CTCOffice {
 	        			greenTickets += m.dataI();
 	        			break;
 	        	}
+	        } else if(m.type() == MType.PASSENGERS) {
+	        	trains.get(m.trainID).passengers = m.dataI();
+	        } else if(m.type() == MType.BEACON) {
+	        	trains.get(m.trainID).station = m.dataS();
 	        }
         }
 	}
@@ -339,6 +403,22 @@ public class CTCOffice {
 			dispatchReady = false;
 		}
 
+		if (updateReady) {
+			if (changeSpeed) {
+				m = new Message(MDest.CTC, speed, MType.SPEED);
+				System.out.println("Update Speed: "+speed);
+				m.trainID = trainID;
+				mq.send(m, MDest.TcCtl);
+			}
+			if (changeAuthority) {
+				m = new Message(MDest.CTC, authority, MType.AUTH);
+				System.out.println("Update Authority: "+authority);
+				m.trainID = trainID;
+				mq.send(m, MDest.TcCtl);
+			}
+			updateReady = false;
+		}
+
 		if (maintenanceReady) {
 			m = new Message(MDest.CTC, maintenanceBlock, MType.MAINTENANCE);
 			switch (maintenanceLine) {
@@ -356,6 +436,15 @@ public class CTCOffice {
 					System.out.println("No Line Selected!");
 			}
 			maintenanceReady = false;
+		}
+
+		if (switchReady) {
+			m = new Message(MDest.CTC, currentSwitch, MType.CTCSWITCH);
+			System.out.println("CTC_Switch: "+trackCtlIndex+": "+currentSwitch);
+			mq.send(m, MDest.TcCtl+trackCtlIndex);
+			if (!currentSwitch) {
+				switchReady = false;
+			}
 		}
 	}
 
@@ -390,6 +479,7 @@ public class CTCOffice {
 				String section = str[1];
 				int num = Integer.parseInt(str[2]);
 				double distance = Double.parseDouble(str[3]);
+				double limit = Double.parseDouble(str[5]);
 				//str 4 - 7
 				int v = Integer.parseInt(str[8]) - 1;
 				int w = Integer.parseInt(str[9]) - 1;
@@ -401,7 +491,7 @@ public class CTCOffice {
 				
 
 				// Add block to graph
-				BlockTemp insert = new BlockTemp(v, w, distance, section, num, branch);
+				BlockTemp insert = new BlockTemp(v, w, distance, section, num, branch, limit);
 				tg.addBlockTemp(insert);
 
 				String secnum;
