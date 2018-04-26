@@ -92,7 +92,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			}				
 			//String infrastructure = scan.next();
 			
-            Block b = new Block(to, from, section, number, grade, bLength, limit, branch, switchloc,station, beacon, stationSide, extra); 
+            Block b = new Block(to, from, section, number, grade, bLength, limit, branch, switchloc,station, beacon, stationSide, extra, ways); 
             this.addBlock(b, ways);
             //this.setSwitch(number, branch, dir);
             fireContentsChanged(this, number, number);

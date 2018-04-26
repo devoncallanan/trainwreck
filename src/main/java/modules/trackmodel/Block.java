@@ -33,8 +33,9 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 	public String beacon;
 	public int stationSide;
 	public String extra;
+	private int ways;
 
-    public Block(int to, int from, String section, int number, double grade, double length, double limit, int branch, int switchloc,String station, String beacon, int stationSide, String extra) {
+    public Block(int to, int from, String section, int number, double grade, double length, double limit, int branch, int switchloc,String station, String beacon, int stationSide, String extra, int ways) {
         this.to = to;
         this.from = from;
         this.section = section;
@@ -49,6 +50,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		this.beacon = beacon;
 		this.stationSide = stationSide;
 		this.extra = extra;
+		this.ways = ways;
     }
     
     public Block(int to, int from, boolean branch) {
@@ -80,7 +82,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     }
     
     public String extendedInfo() {
-        String s = new String("Section: " + section + "\t\t\tBlock Number: " + number + "\nStation: " + station + "\t\t\tGrade: " + grade + "\nLength: " + length*3.28084 + "\t\t\t Speed Limit: " + limit*0.621371 + "\nOccupied: " + occupied);
+        String s = new String("Section: " + section + "\t\tBlock Number: " + number + "\nStation: " + station + "\t\tGrade: " + grade + "\nLength: " + length*3.28084 + "\t\t Speed Limit: " + limit*0.621371 + "\nOccupied: " + occupied + "\t\tWays of travel: " + ways);
         return s;
     }
 }

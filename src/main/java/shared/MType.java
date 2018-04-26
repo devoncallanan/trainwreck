@@ -33,4 +33,5 @@ public class MType {
 	public static final int REALTRACK = 20;
 	public static final int ADVERTISEMENT = 21;
 	public static final int MAINTENANCE = 22;			//int
+	public static final int TICKETS = 23;			//int
 }
