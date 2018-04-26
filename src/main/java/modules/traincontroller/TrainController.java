@@ -49,9 +49,9 @@ public class TrainController {
 	private final double MS_TO_KMH = (double)3600/(double)1000;
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
-	private final int ID = 2*trainID;
+	private int ID;
 	
-	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport pcs;
 
     
 	
@@ -63,6 +63,7 @@ public class TrainController {
 	
 	
 	public TrainController(MessageQueue messages , int trainID) {
+		this.ID = 2*trainID;
 		this.messages = messages;
 		power1 = new Power();
 		power2 = new Power();
@@ -74,7 +75,7 @@ public class TrainController {
 		station = " ";
 		failure = 4;
 		this.trainID = trainID;
-		
+		this.pcs = new PropertyChangeSupport(this);
 		//Initialize my GUI
 		try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -109,7 +110,7 @@ public class TrainController {
 	
 	public void run() {
 		
-		mymail = messages.receive(MDest.TrCtl+ID + trainID*2);
+		mymail = messages.receive(MDest.TrCtl+ID);
 		
 		while(!mymail.isEmpty()) {
 			currentM = mymail.pop();

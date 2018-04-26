@@ -69,20 +69,31 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 	}
 
 	public boolean[] getOccArray(int controllerid) {
-		boolean[] arr = new boolean[27];
-		for (int i = 0; i< 27; i++) {
+		boolean[] arr = new boolean[100];
+		for (int i = 0; i< 100; i++) {
 			arr[i] = occupancy[controllerid][i] == 1;
 		}
 		return arr;
 	}
 
-	public void update(int realBlock, int occ) {
-		for (int i = 0; i<numControllers; i++) {
-			for (int j = 0; j<27; j++) {
-				if (convert[i][j] == realBlock) {
-					occupancy[i][j] = occ;
+	public void update(int realBlock, int occ, int line) {
+		if (line == 1) {
+			for (int i = 0; i<6; i++) {
+				for (int j = 0; j<100; j++) {
+					if (convert[i][j] == realBlock) {
+						occupancy[i][j] = occ;
+					}
 				}
 			}
+		}
+		else {
+			for (int i = 6; i<10; i++) {
+				for (int j = 0; j<100; j++) {
+					if (convert[i][j] == realBlock) {
+						occupancy[i][j] = occ;
+					}
+				}
+			}			
 		}
 	}
 

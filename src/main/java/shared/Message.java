@@ -19,7 +19,7 @@ public class Message {
 	private Boolean dataB;
 	private String dataS;
 	private int type;
-	private int trainID;
+	public int trainID;
 	private boolean[] occupancy;
 
 
