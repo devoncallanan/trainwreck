@@ -20,7 +20,7 @@ public class TrainModelMain {
      private double auth;
      private int passengers;
      private int doors = 0;
-     private int temp = 65;
+     private int temp = 70;
      private int brakes = 0;
      private int lights = 0;
      private int failures = 4;
