@@ -39,7 +39,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		numTrains = 0;
         redline = new Track();
 		greenline = new Track();
-		conts = new Controller(6);
+		conts = new Controller(10);
 		conts.init();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -95,13 +95,19 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
                     break;
 				case MType.SWITCH:
-                    if (redline.getSize() > 70) {
+                    if (redline.isLoaded() && greenline.isLoaded()) {
     					int contid = mail.from() - MDest.TcCtl;
     					int realBlock = conts.getSwitchConvert(contid);
     					int branch = 1;
     					if (!mail.dataB()) branch = -1;
-    					redline.setSwitch(realBlock, branch, 0);
 						conts.setSwitch(contid, branch);
+						if (contid < 6) {
+							redline.setSwitch(realBlock, branch, 0);							
+						}
+						else {
+							greenline.setSwitch(realBlock, branch, 0);	
+						}
+						
                     }
                     break;
 			}
@@ -119,7 +125,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		boolean changedBlock = false;
 		Block nextBlock = null;
         //System.out.println("Loaded Track");
-		if (redline.getSize() > 70) {
+		if (redline.isLoaded() && greenline.isLoaded()) {
     		for (int i = 0; i < numTrains; i++) {
     			Train train = trains[i];
     			double traveled = train.move();
