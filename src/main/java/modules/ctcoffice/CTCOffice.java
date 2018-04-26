@@ -20,12 +20,7 @@ public class CTCOffice {
 	//private Track redLine;
 	//private Track greenLine;
 	//private Time currentTime;
-	private int time;
 	
-	private double throughput;
-	private double redThroughput;
-	private double greenThroughput;
-	private int ticketCount;
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
@@ -64,6 +59,18 @@ public class CTCOffice {
 
 	/* Multiple Trains - - - - - - - - - - - - - */
 	private int trainCount = 0;
+
+	/* Throughput- - - - - - - - - - - - - - - - */
+	private double throughput = 0;
+	private double redThroughput = 0;
+	private double greenThroughput = 0;
+	private int totalTickets = 0;
+	private int redTickets = 0;
+	private int greenTickets = 0;
+	private int time;
+	private double hours;
+
+	/* FINAL */
 
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
@@ -118,6 +125,7 @@ public class CTCOffice {
 	public void repaint() {
 		gui.increaseTime();
 		gui.updateOccupancy();
+		gui.updateThroughput(throughput, redThroughput, greenThroughput);
 	}
 
 	public void setTime(int time) {
@@ -151,6 +159,26 @@ public class CTCOffice {
 	public boolean[] getGreenOcc() {
 		return greenOcc;
 	}
+
+	public double getRedThroughput() {
+		return redThroughput;
+	}
+
+	public double getGreenThroughput() {
+		return greenThroughput;
+	}
+
+	public double getThroughput() {
+		return throughput;
+	}
+
+	private void calcThroughput() {
+		totalTickets = redTickets + greenTickets;
+		hours = gui.getHours();
+		redThroughput = redTickets/hours;
+		greenThroughput = greenTickets/hours;
+		throughput = totalTickets/hours;
+	}
 	
 	public BlockTemp getStop(int line, int index) {
 		switch (line) {
@@ -174,22 +202,25 @@ public class CTCOffice {
 		return null;
 	}
 
-	public void dispatchTrain(int src, int dest) {
+	public void dispatchTrain(int line, int src, int dest) {
 		src--;
 		dest--;
-		DijkstraSPD spd = new DijkstraSPD(redTrack, src);
-		authority = spd.distTo(dest);
-		System.out.println("SHORTEST DISTANCE : "+authority);
-		//spd.pathTo(dest);
-		ArrayList<Integer> path = spd.getPath(dest);
-		setSwitches(path);
-		for (int i = 0; i < redSwitches.length; i ++) {
-			//System.out.println(i+": "+redSwitches[i].booleanValue());
+		switch (line) {
+			case RED:
+				DijkstraSPD spd = new DijkstraSPD(redTrack, src);
+				authority = spd.distTo(dest);
+				System.out.println("SHORTEST DISTANCE : "+authority);
+				ArrayList<Integer> path = spd.getPath(dest);
+				setRedSwitches(path);
+				dispatchReady = true;
+				dispatched = true;
+				break;
+			case GREEN:
+			default:
+				dispatchReady = false;
+				dispatched = false;
 		}
-		//System.out.println("DISPATCHED!");
-		dispatchReady = true;
-		dispatched = true;
-		//System.out.println(dispatched);
+		
 	}
 
 	public void trackMaintenance(int line, int block, boolean open) {
@@ -202,7 +233,7 @@ public class CTCOffice {
 		maintenanceReady = true;
 	}
 
-	public void setSwitches(ArrayList<Integer> path) {
+	public void setRedSwitches(ArrayList<Integer> path) {
 		for (int i = 0; i < path.size()-1; i++) {
 			int current = path.get(i);
 			//System.out.println("C:"+current);
@@ -254,6 +285,7 @@ public class CTCOffice {
 
 	public boolean run(){
 		mReceive();
+		calcThroughput();
 		mSend();
 		return dispatched;
 	}
@@ -266,13 +298,16 @@ public class CTCOffice {
 				speed = m.dataI();
 			} else if(m.type() == MType.REALTRACK) {
 	            redOcc = m.dataBA();
-	            // for (int i = 0; i < redOcc.length; i++){
-	            // 	System.out.println(i+": "+redOcc[i]);
-	            // }
-	            //System.out.println("-----");
-	        } else if(m.type() == MType.PASSENGERS) {
-
-	        }
+	        } /*else if(m.type() == MType.TICKETS) {
+	        	switch (m.trainID) {
+	        		case RED:
+	        			redTickets += m.dataI();
+	        			break;
+	        		case GREEN:
+	        			greenTickets += m.dataI();
+	        			break;
+	        	}
+	        }*/
         }
 	}
 
@@ -292,7 +327,7 @@ public class CTCOffice {
 			mq.send(m, MDest.TcCtl);
 			// Send Switch Positions
 			for (int i = 0; i < 6; i++) {
-				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); // MType.SWITCH
+				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); 
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
 				mq.send(m, MDest.TcCtl+i);
 			}
@@ -325,10 +360,6 @@ public class CTCOffice {
 	}
 
 
-
-	// private double calcThroughput(Line line, int ticketCount) {
-
-	// }
 
 
 	// public Queue<Schedule> importSchedule(String filename) {
