@@ -149,7 +149,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 					for (int i = 0; i < trains.length; i++) {
 						if (trains[i].location == mail.dataI()) {
 							tempM = new Message(MDest.TcMd, 0, MType.ZEROSPEED);
-							if (messaging) m.send(tempM, MDest.TrCtl + trains[i].id*2);
+							System.out.println("Zero received: from "+mail.from());
+							//if (messaging) m.send(tempM, MDest.TrCtl + trains[i].id*2);
 						}
 					}
 			}

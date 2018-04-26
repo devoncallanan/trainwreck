@@ -24,6 +24,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private final String[] redLineData;
     private boolean[] redOcc;
     private boolean[] redMaintenance;
+    private boolean[] redSwitches;
     private final String[] greenLineData;
     private boolean[] greenOcc;
     private final String[] scheduleColumnVector;
@@ -49,6 +50,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         int redSize = ctc.redLineData.size();
         this.redLineData = new String[redSize];
         this.redMaintenance = new boolean[redSize+1];
+        this.redSwitches = new boolean[redSize+1];
         for (int i = 0; i < redSize; i++) {
             this.redLineData[i] = ctc.redLineData.get(i);
         }
@@ -338,15 +340,20 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         TrackSwitchToggle.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackSwitchToggle.setText("Toggle Switch");
         TrackSwitchToggle.setEnabled(false);
+        TrackSwitchToggle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TrackSwitchToggleActionPerformed(evt);
+            }
+        });
 
         TrackMaintenanceToggle.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         TrackMaintenanceToggle.setText("Close for Maintenance");
         TrackMaintenanceToggle.setEnabled(false);
-        TrackMaintenanceToggle.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                TrackMaintenanceToggleStateChanged(evt);
-            }
-        });
+        // TrackMaintenanceToggle.addChangeListener(new javax.swing.event.ChangeListener() {
+        //     public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        //         TrackMaintenanceToggleStateChanged(evt);
+        //     }
+        // });
         TrackMaintenanceToggle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TrackMaintenanceToggleActionPerformed(evt);
@@ -900,6 +907,12 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                         TrackOccupancyLED.setForeground(new Color(102,102,102));
                     }
                     
+                    // Check Switch
+                    if (redSwitches[trackBlockIndex+1]) {
+                        TrackSwitchToggle.setSelected(true);
+                    } else {
+                        TrackSwitchToggle.setSelected(false);
+                    }
 
                     break;
                 case 2: // GREEN
@@ -913,8 +926,9 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         } 
     }
 
+    // Change Track Status
     private void TrackMaintenanceToggleActionPerformed(java.awt.event.ActionEvent evt) {                                                       
-       int trackLineIndex = TrackLineComboBox.getSelectedIndex();
+        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
         int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
         if (TrackMaintenanceToggle.isSelected()) {
             // Request track close
@@ -951,12 +965,32 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         }
     }                                                      
 
-    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {
-        
-                
+    // Change Switch State
+    private void TrackSwitchToggleActionPerformed(java.awt.event.ActionEvent evt) {
+        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
+        int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
+        if (TrackSwitchToggle.isSelected()) {
+            // Send switch to siding
+            ctc.switchToggle(trackLineIndex, trackBlockIndex+1, true);
+            switch (trackLineIndex) {
+                case 1:
+                    redSwitches[trackBlockIndex+1] = true;
+                    break;
+                case 2:
+                    break;
+            }
+        } else {
+            // Send switch to main
+            ctc.switchToggle(trackLineIndex, trackBlockIndex+1, false);
+            switch (trackLineIndex) {
+                case 1:
+                    redSwitches[trackBlockIndex+1] = false;
+                    break;
+                case 2:
+                    break;
+            }
+        }
     }
-
-    // TrackSwitchToggle
 
     private void TrackLineComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         int trackLine = TrackLineComboBox.getSelectedIndex();

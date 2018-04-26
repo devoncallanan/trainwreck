@@ -56,6 +56,9 @@ public class CTCOffice {
 	private int maintenanceLine = 0;
 	private int maintenanceBlock = 0;
 	private boolean maintenanceReady = false;
+	private boolean switchReady = false;
+	private Boolean currentSwitch = new Boolean(null);
+	private int trackCtlIndex = 0;
 
 	/* Multiple Trains - - - - - - - - - - - - - */
 	private int trainCount = 0;
@@ -233,6 +236,37 @@ public class CTCOffice {
 		maintenanceReady = true;
 	}
 
+	public void switchToggle(int line, int block, boolean state) {
+		currentSwitch = new Boolean(state);
+		switch (line) {
+			case RED:
+				switch (block) {
+					case 15:
+						trackCtlIndex = 0;
+						break;
+					case 27:
+						trackCtlIndex = 1;
+						break;
+					case 32:
+						trackCtlIndex = 2;
+						break;
+					case 38:
+						trackCtlIndex = 3;
+						break;
+					case 43:
+						trackCtlIndex = 4;
+						break;
+					case 52:
+						trackCtlIndex = 5;
+						break;
+				}
+				break;
+			case GREEN:
+				break;
+		}
+		switchReady = true;
+	}
+
 	public void setRedSwitches(ArrayList<Integer> path) {
 		for (int i = 0; i < path.size()-1; i++) {
 			int current = path.get(i);
@@ -356,6 +390,13 @@ public class CTCOffice {
 					System.out.println("No Line Selected!");
 			}
 			maintenanceReady = false;
+		}
+
+		if (switchReady) {
+			m = new Message(MDest.CTC, currentSwitch, MType.SWITCH);
+			System.out.println("CTC_Switch: "+trackCtlIndex+": "+currentSwitch);
+			mq.send(m, MDest.TcCtl+trackCtlIndex);
+			switchReady = false;
 		}
 	}
 
