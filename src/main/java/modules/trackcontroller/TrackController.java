@@ -11,6 +11,7 @@ public class TrackController {
      public PLC plcCode = new PLC();
      private Stack<Message> messages;
      TrackControllerGUI gui;
+     NoCrossTCGUI ngui;
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true, oneWay = null;
@@ -55,8 +56,8 @@ public class TrackController {
 			  gui.setVisible(true);
 		  }
 		  else{
-			  gui = new NoCrossTCGUI(this, n, r, s, z+1, p);
-                 gui.setVisible(true);
+			  ngui = new NoCrossTCGUI(this, n, r, s, z+1, p);
+                 ngui.setVisible(true);
 		  }
           checkZero();
      }
@@ -655,18 +656,28 @@ public class TrackController {
           mode = m;
      }
      public void setGUI(){
-
-          gui.changeSwitch(switchPos);
-          gui.changeSwitchLight(switchLight);
           if(crossExists){
+               gui.changeSwitch(switchPos);
+               gui.changeSwitchLight(switchLight);
+
                gui.changeCrossing(crossPos);
                gui.changeCrossLight(crossLights);
-          }
-          //gui.zeroSpeedSent(zeroSpeedSent);
-          gui.updateMain(mainLine);
 
-          gui.updateMsplit(msplit);
-          gui.updateSide(side);
+               //gui.zeroSpeedSent(zeroSpeedSent);
+               gui.updateMain(mainLine);
+
+               gui.updateMsplit(msplit);
+               gui.updateSide(side);
+          }
+          else{
+               ngui.changeSwitch(switchPos);
+               ngui.changeSwitchLight(switchLight);
+
+               ngui.updateMain(mainLine);
+
+               ngui.updateMsplit(msplit);
+               ngui.updateSide(side);
+          }
 
      }
 }
