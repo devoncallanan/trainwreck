@@ -38,7 +38,9 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        AutManGroup = new javax.swing.ButtonGroup();
+        autManGroup = new javax.swing.ButtonGroup();
+        switchGroup = new javax.swing.ButtonGroup();
+        switchLightGroup = new javax.swing.ButtonGroup();
         automaticButton = new javax.swing.JRadioButton();
         manualButton = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
