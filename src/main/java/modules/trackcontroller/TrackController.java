@@ -100,7 +100,7 @@ public class TrackController {
 				checkContinue();
 			}
           setGUI();
-		  System.out.println("zerospeed = " +zeroSpeedSent);
+		  //System.out.println("zerospeed = " +zeroSpeedSent);
           mSend();
      }
      public void manualMode(){
@@ -266,12 +266,12 @@ public class TrackController {
                     boolean closer = checkDist();
                     if(closer){
                          zeroSpeedSide();
-						 System.out.println("closer");
+						 //System.out.println("closer");
                          switchPos = true;
                     }
                     else{
                          zeroSpeedMsplit(); //msplit
-						 System.out.println("msplit");
+						 //System.out.println("msplit");
                          switchPos = false;
                     }
                }
@@ -287,12 +287,12 @@ public class TrackController {
                     boolean closer = checkDist(); // look at priority in checkdist
                     if(closer){
                          zeroSpeedSide();
-						 System.out.println("closer2");
+						 //System.out.println("closer2");
                          switchPos = true;
                     }
                     else{
                          zeroSpeedMsplit();
-						 System.out.println("msplit2");
+						 //System.out.println("msplit2");
                          switchPos = false;
                     }
                }
@@ -427,13 +427,13 @@ public class TrackController {
                     if(switchPos){
                          if(mainLine[i] && msplit[1] && !msplit[0]){
                               zeroSpeed(i);
-							  System.out.println("sent 1");
+							  //System.out.println("sent 1");
                          }
                     }
                     else{
                          if(mainLine[i] && side[1] && ! side[0]){
                               zeroSpeed(i);
-							  System.out.println("sent 2");
+							  //System.out.println("sent 2");
                          }
                     }
                }
@@ -441,13 +441,13 @@ public class TrackController {
                     if(switchPos){
                          if(mainLine[i] && msplit[0] && !mainLine[i+1]){
                               zeroSpeed(i);
-							  System.out.println("sent 3");
+							  //System.out.println("sent 3");
                          }
                     }
                     else{
                          if(mainLine[i] && side[0] && !mainLine[i+1]){
                               zeroSpeed(i);
-							  System.out.println("sent 4");
+							  //System.out.println("sent 4");
                          }
                     }
                }
@@ -455,13 +455,13 @@ public class TrackController {
                     if(mainDir){
                          if(mainLine[i] && mainLine[i+2] && !mainLine[i+1]){
                               zeroSpeed(i);
-							  System.out.println("sent 5");
+							  //System.out.println("sent 5");
                          }
                     }
                     else if(i>1){
                          if(mainLine[i] && mainLine[i-2] && !mainLine[i-1]){
                               zeroSpeed(i);
-							  System.out.println("sent 6");
+							  //System.out.println("sent 6");
                          }
                     }
                }
@@ -470,30 +470,30 @@ public class TrackController {
                if(msplitDir && (i < msplit.length-3)){
                     if(msplit[i] && msplit[i+2] && !msplit[i+1]){
                          zeroSpeed(mainLine.length + i);
-						 System.out.println("1");
+						 //System.out.println("1");
                     }
                }
                else if(!msplitDir){
                     if(!switchPos && msplit[1]){
                          zeroSpeed(mainLine.length + 1);
-						 System.out.println("1");
+						 //System.out.println("1");
                     }
                     if(i==0){
                          if(msplit[i] && mainLine[mainLine.length-2] && !mainLine[mainLine.length-1]){
                               zeroSpeed(mainLine.length + i);
-							  System.out.println("2");
+							  //System.out.println("2");
                          }
                     }
                     else if(i==1){
                          if(msplit[i] && mainLine[mainLine.length-1] && !msplit[0]){
                               zeroSpeed(mainLine.length + i);
-							  System.out.println("3");
+							  //System.out.println("3");
                          }
                     }
                     else{
                          if(msplit[i] && msplit[i-2] && !msplit[i-1]){
                               zeroSpeed(mainLine.length + i);
-							  System.out.println("4");
+							  //System.out.println("4");
                          }
                     }
                }
@@ -502,30 +502,30 @@ public class TrackController {
                if(sideDir && (i < side.length-3)){
                     if(side[i] && side[i+2] && !side[i+1]){
                          zeroSpeed(mainLine.length + msplit.length + i);
-						 System.out.println("5");
+						 //System.out.println("5");
                     }
                }
                else if(!sideDir){
                     if(switchPos && side[1]){
                          zeroSpeed(mainLine.length + msplit.length + 1);
-						 System.out.println("6");
+						 //System.out.println("6");
                     }
                     if(i==0){
                          if(side[i] && mainLine[mainLine.length-2] && !mainLine[mainLine.length-1]){
                               zeroSpeed(mainLine.length + msplit.length + i);
-							  System.out.println("7");
+							  //System.out.println("7");
                          }
                     }
                     else if(i==1){
                          if(side[i] && mainLine[mainLine.length-1] && !side[0]){
                               zeroSpeed(mainLine.length + msplit.length +i);
-							  System.out.println("this8");
+							  //System.out.println("this8");
                          }
                     }
                     else{
                          if(side[i] && side[i-2] && !side[i-1]){
                               zeroSpeed(mainLine.length + msplit.length + i);
-							  System.out.println("9this ");
+							  //System.out.println("9this ");
                          }
                     }
                }
