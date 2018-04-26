@@ -52,7 +52,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
             System.err.println(e);
         }
         
-        
+        System.out.println(scan.nextInt());
         int length = 1 + scan.nextInt();
         this.track = new Block[length][3];
         this.blocks = new Block[length];
