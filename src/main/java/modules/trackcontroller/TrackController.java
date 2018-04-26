@@ -15,7 +15,7 @@ public class TrackController {
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true, oneWay = null, loop = false, lights = true, priority = true, switchBias = true;
-     boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false, ctcSwitchPos;
+     boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false, ctcSwitchPos, ctcSwitch;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, crossPos = false, prevMainOcc, prevMsplitOcc, prevSideOcc, prevMainOcc2, prevMsplitOcc2, prevSideOcc2;
      boolean crossLights = false, switchLight = true, onSwitch = false, zeroSpeedSent = false, switchBias1, switchBias2, loop1, loop2, priority1, priority2, lights1, lights2, oneWay1, oneWay2;
 
