@@ -114,27 +114,27 @@ public class TrackController {
           switchBias1 = plcCode.getSwitchBias();
           switchBias2 = plcCode.getSwitchBias();
 		  if(!(switchBias == switchBias1 == switchBias2))
-			  throw new Exception("PLC Error");
+			  throw new IllegalArgumentExceptionException("PLC Error");
           loop = plcCode.getLoop();
           loop1 = plcCode.getLoop();
           loop2 = plcCode.getLoop();
 		  if(!(loop == loop1 == loop2))
-			  throw new Exception("PLC Error");
+			  throw new IllegalArgumentExceptionException("PLC Error");
           priority = plcCode.getPriority();
           priority1 = plcCode.getPriority();
           priority2 = plcCode.getPriority();
 		  if(!(priority == priority1 == priority2))
-			  throw new Exception("PLC Error");
+			  throw new IllegalArgumentExceptionException("PLC Error");
           lights = plcCode.getLights();
           lights1 = plcCode.getLights();
           lights2 = plcCode.getLights();
 		  if(!(lights == lights1 == lights2))
-			  throw new Exception("PLC Error");
+			  throw new IllegalArgumentExceptionException("PLC Error");
           oneWay = plcCode.getOneWay();
           oneWay1 = plcCode.getOneWay();
           oneWay1 = plcCode.getOneWay();
 		  if(oneWay!=null && !(oneWay == oneWay1 == oneWay2))
-			  throw new Exception("PLC Error");
+			  throw new IllegalArgumentExceptionException("PLC Error");
      }
      public void mReceive(){
           messages = mq.receive(MDest.TcCtl+id);
