@@ -694,6 +694,7 @@ public class TrackController {
      public void setCross(boolean c){
           if(!mode)
                crossPos = c;
+		   setGUI();
      }
      public void setSwitchLight(boolean s){
           if(!mode)
@@ -702,6 +703,7 @@ public class TrackController {
      public void setCrossLight(boolean c){
           if(!mode)
                crossLights = c;
+		   setGUI();
      }
      public void setMode(boolean m){
           mode = m;
