@@ -140,15 +140,17 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
 
 
         mainLineList.setColumns(20);
-        mainLineList.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        mainLineList.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
         mainLineList.setRows(5);
         jScrollPane4.setViewportView(mainLineList);
 
         sideList.setColumns(20);
+		sideList.setFont(new java.awt.Font("Ubuntu", 0, 20));
         sideList.setRows(5);
         jScrollPane5.setViewportView(sideList);
 
         msplitList.setColumns(20);
+		msplitList.setFont(new java.awt.Font("Ubuntu", 0, 20));
         msplitList.setRows(5);
         jScrollPane6.setViewportView(msplitList);
 
