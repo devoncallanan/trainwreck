@@ -16,8 +16,8 @@ public class TrackController {
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true, oneWay = null;
      boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
-     boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false;
-     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false, zeroSpeedSent = false;
+     boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false, prevMainOcc, prevMsplitOcc, prevSideOcc, prevMainOcc2, prevMsplitOcc2, prevSideOcc2;
+     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false, zeroSpeedSent = false, switchBias1, sitchBias2, loop1, loop2, priority1, priority2, lights1, lights2, oneWay1, oneWay2;
 
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
@@ -63,9 +63,24 @@ public class TrackController {
      }
      public void run(){
           mReceive();
-		  mainOcc = getOcc(mainLine);
-		  sideOcc = getOcc(side);
-		  msplitOcc = getOcc(msplit);
+			mainOcc = getOcc(mainLine);
+			prevMainOcc = getOcc(mainLine);
+			prevMainOcc2 = getOcc(mainLine);
+			sideOcc = getOcc(side);
+			prevSideOcc = getOcc(side);
+			prevSideOcc2 = getOcc(side);
+			msplitOcc = getOcc(msplit);
+			prevMsplitOcc = getOcc(msplit);
+			prevMsplitOcc2 = getOcc(msplit);
+			if(mainOcc != prevMainOcc || mainOcc != prevMainOcc2 || prevMainOcc != prevMainOcc2){		// Checks the occupancy 3 times to insure vital nature through redundancy
+				panicMain();
+			}
+			if(sideOcc != prevSideOcc || sideOcc != prevSideOcc2 || prevSideOcc != prevSideOcc2){
+				panicSide();
+			}
+			if(msplitOcc != prevMsplitOcc || msplitOcc != prevMsplitOcc2 || prevMsplitOcc != prevMsplitOcc2){
+				panicMsplit();
+			}
           getDir();
           if(mainLine[mainLine.length-1])
                onSwitch = true;
@@ -81,7 +96,9 @@ public class TrackController {
           }
           if(crossExists)
                checkCross();
-          checkContinue();
+		   for(int i=0; i<3; i++){ 	//redundancy for vital nature
+				checkContinue();
+		   }
           setGUI();
 		  System.out.println("zerospeed = " +zeroSpeedSent);
           mSend();
@@ -94,10 +111,30 @@ public class TrackController {
      }
      public void plcImported(){
           switchBias = plcCode.getSwitchBias();
+          switchBias1 = plcCode.getSwitchBias();
+          switchBias2 = plcCode.getSwitchBias();
+		  if(!(switchBias == switchBias1 == switchBias2))
+			  throw new Exception("PLC Error");
           loop = plcCode.getLoop();
+          loop1 = plcCode.getLoop();
+          loop2 = plcCode.getLoop();
+		  if(!(loop == loop1 == loop2))
+			  throw new Exception("PLC Error");
           priority = plcCode.getPriority();
+          priority1 = plcCode.getPriority();
+          priority2 = plcCode.getPriority();
+		  if(!(priority == priority1 == priority2))
+			  throw new Exception("PLC Error");
           lights = plcCode.getLights();
+          lights1 = plcCode.getLights();
+          lights2 = plcCode.getLights();
+		  if(!(lights == lights1 == lights2))
+			  throw new Exception("PLC Error");
           oneWay = plcCode.getOneWay();
+          oneWay1 = plcCode.getOneWay();
+          oneWay1 = plcCode.getOneWay();
+		  if(oneWay!=null && !(oneWay == oneWay1 == oneWay2))
+			  throw new Exception("PLC Error");
      }
      public void mReceive(){
           messages = mq.receive(MDest.TcCtl+id);
