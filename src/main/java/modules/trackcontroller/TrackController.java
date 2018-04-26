@@ -312,7 +312,7 @@ public class TrackController {
                     panic();
                }
           }
-		  elseif(!mainOcc && !msplitOcc && !sideOcc){
+		  else if(!mainOcc && !msplitOcc && !sideOcc){
 			  siwtchPos = switchBias;
 		  }
      }
