@@ -56,6 +56,11 @@ public class CTCOffice {
 	private boolean[] redOcc;
 	private boolean[] greenOcc;
 
+	/* Maintenance - - - - - - - - - - - - - - - */
+	private int maintenanceLine = 0;
+	private int maintenanceBlock = 0;
+	private boolean maintenanceReady = false;
+
 
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
@@ -183,6 +188,16 @@ public class CTCOffice {
 		//System.out.println(dispatched);
 	}
 
+	public void trackMaintenance(int line, int block, boolean open) {
+		maintenanceLine = line;
+		if (open) { // Open block
+			maintenanceBlock = block;
+		} else { // Close block
+			maintenanceBlock = -1*block;
+		}
+		maintenanceReady = true;
+	}
+
 	public void setSwitches(ArrayList<Integer> path) {
 		for (int i = 0; i < path.size()-1; i++) {
 			int current = path.get(i);
@@ -269,7 +284,7 @@ public class CTCOffice {
 			System.out.println("CTC_Authority: "+authority);
 			mq.send(m, MDest.TcCtl);
 			// Send Switch Positions
-			for (int i = 0; i < 6; i ++) {
+			for (int i = 0; i < 6; i++) {
 				m = new Message(MDest.CTC, redSwitches[i], MType.SWITCH); // MType.SWITCH
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
 				mq.send(m, MDest.TcCtl+i);
@@ -277,6 +292,25 @@ public class CTCOffice {
 			// Add Train to Message Queue
 			mq.addTrain();
 			dispatchReady = false;
+		}
+
+		if (maintenanceReady) {
+			m = new Message(MDest.CTC, maintenanceBlock, MType.MAINTENANCE);
+			switch (maintenanceLine) {
+				case RED:
+					for (int i = 0; i < 6; i++) {
+						mq.send(m, MDest.TcCtl+i);
+					}
+					break;
+				case GREEN:
+					for (int i = 6; i < 11; i++) {
+						mq.send(m, MDest.TcCtl+i);
+					}
+					break;
+				default:
+					System.out.println("No Line Selected!");
+			}
+			maintenanceReady = false;
 		}
 	}
 

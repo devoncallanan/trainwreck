@@ -890,11 +890,19 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }                                                      
 
-    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {                                                    
+    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {
+        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
+        int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
         if (TrackMaintenanceToggle.isSelected()) {
+            // Request track close
+            ctc.trackMaintenance(trackLineIndex, trackBlockIndex+1, false);
+
             TrackStatusLED.setForeground(new Color(255,0,0));
             TrackSwitchToggle.setEnabled(false);
         } else {
+            // Request track open
+            ctc.trackMaintenance(trackLineIndex, trackBlockIndex+1, true);
+
             TrackStatusLED.setForeground(new Color(0,204,0));
             String trackBlock = TrackBlockComboBox.getSelectedItem().toString();
             if (trackBlock.toLowerCase().contains("switch")) {
