@@ -371,60 +371,24 @@ public static double MS_TO_KMH = 3600.0/10000.0;
      */
     public static void main(String[] args) {
         // TODO code application logic here
-   
-        
-		
-		
-
-		
-        /*
-        Pattern p = Pattern.compile("[,\\s]");
-        java.io.File file;
-        java.util.Scanner scan = null;
-        try {
-            file = new java.io.File("src/data/redline.csv");
-            scan = new java.util.Scanner(file).useDelimiter(",|\\r\\n");
-        }
-        catch (Exception e) {
-            System.err.println(e);
-        }
-        
-        
-        redline = new Track(scan.nextInt() + 1);
-        while (scan.hasNext()) {
-            //A,1,50,0.5,40, ,1,15
-            String section = scan.next();
-            //System.out.println(section);
-            int number = scan.nextInt();
-            //System.out.println(number);
-            int length = scan.nextInt();
-            //System.out.println(length);
-            double grade = scan.nextDouble();
-            //System.out.println(grade);
-            int limit = scan.nextInt();
-            //System.out.println(limit);
-            String station = scan.next();
-            //System.out.println(station);
-            int to = scan.nextInt();
-            //System.out.println(to);
-            int from = scan.nextInt();
-            //System.out.println(from);
-            int branch = scan.nextInt();
-            int dir = scan.nextInt();
-            Block b = new Block(to, from, section, number, station, grade, length, limit, branch); 
-            redline.addBlock(b);
-            b.dir = dir;
-            redline.setSwitch(number, branch, dir);
-        }
-        redline.printTrack();
-        //System.out.println(redline);
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TrackmodelGUI(redline).setVisible(true);
-            }
-        });
-        */
-
+		MessageQueue m = new MessageQueue();
+		m.addTrain(1);
+		TrackModel tm = new TrackModel(m);
+		Message tempM = new Message(MDest.TrMd, 70, MType.FEEDBACK);
+		m.send(tempM, MDest.TcMd);
+		m.addTrain(2);
+		tempM = new Message(MDest.TrMd, 70, MType.FEEDBACK);
+		m.send(tempM, MDest.TcMd + 2);
+        while (true) {
+			
+			tm.run();
+			try {
+				Thread.sleep(100);
+			}
+			catch (Exception e) {
+				System.out.println(e);
+			}
+		}
         
 
     }
