@@ -49,15 +49,15 @@ public class PLC {
             System.out.println("IO Exception!");
         }
 		
-		BufferedReader file = null;
+		BufferedReader file1 = null;
         try {
-            file = new BufferedReader (new FileReader(f));
+            file1 = new BufferedReader (new FileReader(f));
         } catch (FileNotFoundException ex) {
              System.out.println("Error: File not found!");
         }
         try {
             String line;
-            while( (line = file.readLine()) != null)
+            while( (line = file1.readLine()) != null)
             {
                 String[] parts = line.split(">");
                 if(parts[0].equals("switch")){
@@ -85,15 +85,15 @@ public class PLC {
             System.out.println("IO Exception!");
         }
 		
-		BufferedReader file = null;
+		BufferedReader file2 = null;
         try {
-            file = new BufferedReader (new FileReader(f));
+            file2 = new BufferedReader (new FileReader(f));
         } catch (FileNotFoundException ex) {
              System.out.println("Error: File not found!");
         }
         try {
             String line;
-            while( (line = file.readLine()) != null)
+            while( (line = file2.readLine()) != null)
             {
                 String[] parts = line.split(">");
                 if(parts[0].equals("switch")){
@@ -145,7 +145,7 @@ public class PLC {
 		 if(!error)
           return switchBias;
 		else
-			return null; 
+			return; 
      }
      public boolean getLoop(){
           return loop;
