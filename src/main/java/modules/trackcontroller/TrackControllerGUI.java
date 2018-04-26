@@ -377,6 +377,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
         chooser.showOpenDialog(null);
         File f = chooser.getSelectedFile();
         plc.importPLC(f);
+		tc.plcImported();
     }
 
     public void changeSwitch(Boolean s){
