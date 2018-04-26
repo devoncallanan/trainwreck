@@ -6,7 +6,7 @@ import java.io.*;
 
 public class PLC {
      boolean switchBias, loop, priority, lights;
-     Boolean oneWay;
+     Boolean oneWay = null;
      public PLC(){
 
      }
