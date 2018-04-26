@@ -141,31 +141,31 @@ public class PLC {
 			  error = true;
 		 }
      }
-     public boolean getSwitchBias(){
+     public Boolean getSwitchBias(){
 		 if(!error)
           return switchBias;
 		else
 			return null; 
      }
-     public boolean getLoop(){
+     public Boolean getLoop(){
 		 if(!error)
           return loop;
 		else
 			return null;
      }
-     public boolean getPriority(){
+     public Boolean getPriority(){
 		 if(!error)
           return priority;
 	  else
 		  return null;
      }
-     public boolean getLights(){
+     public Boolean getLights(){
          if(!error)
 		  return lights;
 		else
 			return null;
      }
-     public boolean getOneWay(){
+     public Boolean getOneWay(){
 		 if(!error)
           return oneWay;
 		else
