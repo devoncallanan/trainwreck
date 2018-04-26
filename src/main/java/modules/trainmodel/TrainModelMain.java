@@ -27,6 +27,7 @@ public class TrainModelMain {
      private double power,grade,speed,speedLimit;
      private String advertisement;
      private int trainID;
+	 private boolean nullPower;
 
      private int ID;
 
@@ -43,6 +44,7 @@ public class TrainModelMain {
 
      public void run(){
           mReceive();
+		  if (nullPower) this.power = 0;
           velocityFeedback = train.calculateVelocity(power, velocityFeedback, grade, brakes, speedLimit, passengers);
           //System.out.println("TrMod_vF(afterRec):"+velocityFeedback);
           ui.update(1,this.power,this.velocityFeedback,this.grade,this.brakes,this.speedLimit,this.passengers,this.lights,this.auth,this.temp,this.doors,this.advertisement);
@@ -100,6 +102,9 @@ public class TrainModelMain {
 		else if (m.type() == MType.ADVERTISEMENT){
                     this.advertisement = m.dataS();
                }
+			   else if (m.type() == MType.POWERFAILURE) {
+				   this.nullPower = 1 == m.dataI();
+			   }
           }
      }
      public void mSend(){

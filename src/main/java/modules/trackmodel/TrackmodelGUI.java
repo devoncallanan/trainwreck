@@ -16,10 +16,12 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 	Controller controllers;
     int redSelected = -1;
 	int greenSelected = -1;
+	TrackModel tm;
     /**
      * Creates new form TrackmodelGUI
      */
-    public TrackmodelGUI(Track redline, Track greenline, Controller controllers) {
+    public TrackmodelGUI(TrackModel trackmodel, Track redline, Track greenline, Controller controllers) {
+		this.tm = trackmodel;
         this.redline = redline;
 		this.greenline = greenline;
 		this.controllers = controllers;
@@ -102,7 +104,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 
         jLabel4.setText("Switch 1 on block 2");
 
-        jToggleButton2.setText("Left");
+        jToggleButton2.setText("Full power");
         jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton2ActionPerformed(evt);
@@ -111,7 +113,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
 
         jLabel5.setText("Switch 2 on block 5");
 
-        jToggleButton3.setText("Left");
+        jToggleButton3.setText("Circuits Up");
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton3ActionPerformed(evt);
@@ -288,24 +290,24 @@ public class TrackmodelGUI extends javax.swing.JFrame {
     private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
         // TODO add your handling code here:
         if (jToggleButton3.isSelected()) {
-            jToggleButton3.setText("Right");
-            redline.switches[5][0] = -1;
+            jToggleButton3.setText("Circuits Down");
+            tm.breakCircuits(true);
         }
         else {
-            jToggleButton3.setText("Left");
-            redline.switches[5][0] = 1;            
+            jToggleButton3.setText("CIrcuits Up");
+            tm.breakCircuits(false);            
         }
     }//GEN-LAST:event_jToggleButton3ActionPerformed
 
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
         // TODO add your handling code here:
         if (jToggleButton2.isSelected()) {
-            jToggleButton2.setText("Right");
-            redline.switches[1][0] = -1;
+            jToggleButton2.setText("Null Power");
+            tm.setPower(true);
         }
         else {
-            jToggleButton2.setText("Left");
-            redline.switches[1][0] = 1;            
+            jToggleButton2.setText("Full Power");
+            tm.setPower(false);            
         }        
     }//GEN-LAST:event_jToggleButton2ActionPerformed
 

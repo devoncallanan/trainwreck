@@ -34,6 +34,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 	private Stack<Message> mailbox;
 	
 	Random rnd;
+	boolean messaging;
+	boolean power;
 	
 	
     public TrackModel(MessageQueue m) {
@@ -43,12 +45,12 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		greenline = new Track();
 		conts = new Controller(10);
 		conts.init();
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TrackmodelGUI(redline, greenline, conts).setVisible(true);
-            }
+		java.awt.EventQueue.invokeLater(() -> {
+		                new TrackmodelGUI(this, redline, greenline, conts).setVisible(true);
         });
 		
+		messaging = true;
+		power = true;
 		rnd = new Random();
     }
     
@@ -75,13 +77,10 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			Message mail = mailbox.pop();
 			switch (mail.type()) {
 				case MType.AUTH:
-					System.out.println(mail.dataD());
-					m.send(mail, MDest.TrMd +  (2 * mail.trainID));
-					System.out.println(" train " +  MDest.TrMd +  (2 * mail.trainID) + " auth: " + mail.dataD());
+					if (messaging) m.send(mail, MDest.TrMd +  (2 * mail.trainID));
 					break;
 				case MType.SPEED:
-					System.out.println(mail.dataD());
-					m.send(mail, MDest.TrMd + (2 * mail.trainID));
+					if (messaging) m.send(mail, MDest.TrMd + (2 * mail.trainID));
 					break;	
 				case MType.NEWTRAIN:
 					Train[] temp = new Train[numTrains + 1];
@@ -146,7 +145,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 					for (int i = 0; i < trains.length; i++) {
 						if (trains[i].location == mail.dataI()) {
 							tempM = new Message(MDest.TcMd, 0, MType.ZEROSPEED);
-							m.send(tempM, MDest.TrCtl + trains[i].id*2);
+							if (messaging) m.send(tempM, MDest.TrCtl + trains[i].id*2);
 						}
 					}
 			}
@@ -163,36 +162,24 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 
 		boolean changedBlock = false;
 		Block nextBlock = null;
-        //System.out.println("Loaded Track");
 		if (redline.isLoaded() && greenline.isLoaded()) {
     		for (int i = 0; i < numTrains; i++) {
     			Train train = trains[i];
-
+				if (!power) {
+					tempM = new Message(MDest.TcMd, 1, MType.POWERFAILURE);
+					m.send(tempM, MDest.TrMd +i*2);
+				}
+				else {
+					tempM = new Message(MDest.TcMd, 0, MType.POWERFAILURE);
+					m.send(tempM, MDest.TrMd +i*2);					
+				}
 				if (train.track == 1) {
 					chugR(train, redline, conts, i);
 				}
 				else {
 					chugG(train,greenline,conts,i);
 				}
-    			// double traveled = train.move();
-    			// double overflow = traveled - redline.getBlock(train.location).length ;
-                ////System.out.println("moving trains " + traveled + " ovf " + overflow);
-    			// if (overflow > 0) {
-    				// nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
-    				// train.backNode = redline.getBlock(train.location).other(train.backNode);
-    				// train.location = nextBlock.number;
-    				// redline.setOccupancy(train.location, true);
-					// conts.update(train.location, 1);
-					// train.blocks.add(nextBlock);
-    				// train.distanceIn = overflow;
-					// changedBlock = true;
-    			// }
-				// if (train.tailOverflow > 0) {
-					// Block exited = train.blocks.remove(0);
-    				// redline.setOccupancy(exited.number, false);
-					// conts.update(exited.number, 0);	
-					// train.distanceInTail = 0;
-				// }
+
     		}
         }
 		
@@ -209,6 +196,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 				m.send(tempM, MDest.TcCtl + i);
 			}
 		}
+		
+
 		
 		// if (changedBlock) {
 			//grade
@@ -294,11 +283,11 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			//beacon
 			if (nextBlock.beacon != null) {
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
-				m.send(tempM, MDest.TrCtl + id*2);
+				if (messaging) m.send(tempM, MDest.TrCtl + id*2);
 			}
 			//speedlimit
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
-			m.send(tempM, MDest.TrCtl + id*2);	
+			if (messaging) m.send(tempM, MDest.TrCtl + id*2);	
 			//tickets/passengers
 			if (nextBlock.station != null) {
 				int temppass = rnd.nextInt(148);
@@ -316,7 +305,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 	}
 	
 	
-public void chugG(Train train, Track redline, Controller conts, int id) {
+	public void chugG(Train train, Track redline, Controller conts, int id) {
 		boolean changedBlock = false;
 		Block nextBlock = null;
 		double traveled = train.move();
@@ -346,11 +335,11 @@ public void chugG(Train train, Track redline, Controller conts, int id) {
 			//beacon
 			if (nextBlock.beacon != null) {
 				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
-				m.send(tempM, MDest.TrCtl + id*2);
+				if (messaging) m.send(tempM, MDest.TrCtl + id*2);
 			}
 			//speedlimit
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
-			m.send(tempM, MDest.TrCtl + id*2);			
+			if (messaging) m.send(tempM, MDest.TrCtl + id*2);			
 		}		
 		if (nextBlock.station != null) {
 			int temppass = rnd.nextInt(148);
@@ -364,6 +353,14 @@ public void chugG(Train train, Track redline, Controller conts, int id) {
 			tempM = new Message(MDest.TcMd, train.passengers, MType.PASSENGERS);
 			m.send(tempM, MDest.TrMd);
 		}
+	}
+	
+	public void breakCircuits(boolean op) {
+		this.messaging = op;
+	}
+	
+	public void setPower(boolean op) {
+		this.power = op;
 	}
     /**
      * @param args the command line arguments
