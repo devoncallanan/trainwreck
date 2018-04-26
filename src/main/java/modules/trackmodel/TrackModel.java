@@ -85,11 +85,20 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 						temp[i] = trains[i];
 					}
 					trains = temp;
-                    trains[numTrains] = new Train(numTrains,9, 10);
-					redline.setOccupancy(9, true);
-					conts.update(9, 1);
-					trains[numTrains].blocks.add(redline.getBlock(9));
-					numTrains++;
+					if (mail.dataI() == 1) {
+						trains[numTrains] = new Train(numTrains,9, 10, 1);
+						redline.setOccupancy(9, true);
+						conts.update(9, 1, 1);
+						trains[numTrains].blocks.add(redline.getBlock(9));
+						numTrains++;
+					}
+					else {
+						trains[numTrains] = new Train(numTrains,62, 61, 2);
+						greenline.setOccupancy(62, true);
+						conts.update(62, 1, 2);
+						trains[numTrains].blocks.add(greenline.getBlock(62));
+						numTrains++;						
+					}
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
@@ -128,25 +137,31 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		if (redline.isLoaded() && greenline.isLoaded()) {
     		for (int i = 0; i < numTrains; i++) {
     			Train train = trains[i];
-    			double traveled = train.move();
-    			double overflow = traveled - redline.getBlock(train.location).length ;
-                //System.out.println("moving trains " + traveled + " ovf " + overflow);
-    			if (overflow > 0) {
-    				nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
-    				train.backNode = redline.getBlock(train.location).other(train.backNode);
-    				train.location = nextBlock.number;
-    				redline.setOccupancy(train.location, true);
-					conts.update(train.location, 1);
-					train.blocks.add(nextBlock);
-    				train.distanceIn = overflow;
-					changedBlock = true;
-    			}
-				if (train.tailOverflow > 0) {
-					Block exited = train.blocks.remove(0);
-    				redline.setOccupancy(exited.number, false);
-					conts.update(exited.number, 0);	
-					train.distanceInTail = 0;
+				if (train.track == 1) {
+					chugR(train, redline, conts, i);
 				}
+				else {
+					chugG(train,greenline,conts,i);
+				}
+    			// double traveled = train.move();
+    			// double overflow = traveled - redline.getBlock(train.location).length ;
+                ////System.out.println("moving trains " + traveled + " ovf " + overflow);
+    			// if (overflow > 0) {
+    				// nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
+    				// train.backNode = redline.getBlock(train.location).other(train.backNode);
+    				// train.location = nextBlock.number;
+    				// redline.setOccupancy(train.location, true);
+					// conts.update(train.location, 1);
+					// train.blocks.add(nextBlock);
+    				// train.distanceIn = overflow;
+					// changedBlock = true;
+    			// }
+				// if (train.tailOverflow > 0) {
+					// Block exited = train.blocks.remove(0);
+    				// redline.setOccupancy(exited.number, false);
+					// conts.update(exited.number, 0);	
+					// train.distanceInTail = 0;
+				// }
     		}
         }
 		
@@ -178,9 +193,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 			}
 			//speedlimit
 			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
-			m.send(tempM, MDest.TrCtl);
-			
-			
+			m.send(tempM, MDest.TrCtl);			
 		}
 		
 
@@ -221,44 +234,90 @@ public static double MS_TO_KMH = 3600.0/10000.0;
         
     }
 	
-	public void chug() {
-		while (redline.getSize() == 0){
-			System.out.println("boo");
+	
+	
+	public void chugR(Train train, Track redline, Controller conts, int id) {
+		boolean changedBlock = false;
+		Block nextBlock = null;
+		double traveled = train.move();
+		double overflow = traveled - redline.getBlock(train.location).length ;
+		Message tempM;
+		//System.out.println("moving trains " + traveled + " ovf " + overflow);
+		if (overflow > 0) {
+			nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
+			train.backNode = redline.getBlock(train.location).other(train.backNode);
+			train.location = nextBlock.number;
+			redline.setOccupancy(train.location, true);
+			conts.update(train.location, 1, 1);
+			train.blocks.add(nextBlock);
+			train.distanceIn = overflow;
+			changedBlock = true;
 		}
-        int i = 0;
-        int j = 0;
-        Block curr = redline.getBlock(1);
-        Block temp = curr;
-        int lastNode = 2;
-        System.out.println(lastNode + " " + curr);
-        redline.setOccupancy(curr.number, true);
-        while(true) {
-            System.out.print(lastNode + " " + curr);
-
-            temp = redline.next(curr, lastNode);
-            lastNode = curr.other(lastNode);
-            redline.setOccupancy(curr.number, false);
-            curr = temp;
-            redline.setOccupancy(curr.number, true);
-            //System.out.println(lastNode);
-            //redline.setOccupancy(lastNode, false);
-            try {
-            Thread.sleep(1000);
-            }
-            catch (Exception e) {
-                System.out.println("didnt sleep");
-            }
-            //redline.setOccupancy(j%15, false);
-            //j++;
-        }
+		if (train.tailOverflow > 0) {
+			Block exited = train.blocks.remove(0);
+			redline.setOccupancy(exited.number, false);
+			conts.update(exited.number, 0, 1);	
+			train.distanceInTail = 0;
+		}		
+		if (changedBlock) {
+			//grade
+			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			m.send(tempM, MDest.TrMd + id*2);
+			//beacon
+			if (nextBlock.beacon != null) {
+				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
+				m.send(tempM, MDest.TrCtl + id*2);
+			}
+			//speedlimit
+			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
+			m.send(tempM, MDest.TrCtl + id*2);			
+		}		
+	}
+	
+	
+public void chugG(Train train, Track redline, Controller conts, int id) {
+		boolean changedBlock = false;
+		Block nextBlock = null;
+		double traveled = train.move();
+		double overflow = traveled - redline.getBlock(train.location).length ;
+		Message tempM;
+		//System.out.println("moving trains " + traveled + " ovf " + overflow);
+		if (overflow > 0) {
+			nextBlock = redline.next(redline.getBlock(train.location), train.backNode);
+			train.backNode = redline.getBlock(train.location).other(train.backNode);
+			train.location = nextBlock.number;
+			redline.setOccupancy(train.location, true);
+			conts.update(train.location, 1, 2);
+			train.blocks.add(nextBlock);
+			train.distanceIn = overflow;
+			changedBlock = true;
+		}
+		if (train.tailOverflow > 0) {
+			Block exited = train.blocks.remove(0);
+			redline.setOccupancy(exited.number, false);
+			conts.update(exited.number, 0, 2);	
+			train.distanceInTail = 0;
+		}		
+		if (changedBlock) {
+			//grade
+			tempM = new Message(MDest.TcMd, nextBlock.grade, MType.GRADE);
+			m.send(tempM, MDest.TrMd + id*2);
+			//beacon
+			if (nextBlock.beacon != null) {
+				tempM = new Message(MDest.TcMd, nextBlock.beacon, nextBlock.stationSide, MType.BEACON);
+				m.send(tempM, MDest.TrCtl + id*2);
+			}
+			//speedlimit
+			tempM = new Message(MDest.TcMd, nextBlock.limit, MType.SPEEDLIMIT);
+			m.send(tempM, MDest.TrCtl + id*2);			
+		}		
 	}
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        TrackModel tm = new TrackModel(new MessageQueue());
-        tm.chug();
+   
         
 		
 		
