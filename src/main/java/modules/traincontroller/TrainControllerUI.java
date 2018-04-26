@@ -518,7 +518,7 @@ public class TrainControllerUI extends javax.swing.JFrame {
         jLabel16.setText("Lights:");
 
         lightsLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        lightsLabel.setText("On");
+        lightsLabel.setText("Off");
 
         lights.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         lights.setText("Switch");

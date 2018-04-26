@@ -75,6 +75,7 @@ public class TrainController {
 		station = " ";
 		failure = 4;
 		this.trainID = trainID;
+		setLights(false);
 		this.pcs = new PropertyChangeSupport(this);
 		//Initialize my GUI
 		try {
