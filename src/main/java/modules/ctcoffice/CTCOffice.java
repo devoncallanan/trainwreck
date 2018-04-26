@@ -298,7 +298,7 @@ public class CTCOffice {
 				speed = m.dataI();
 			} else if(m.type() == MType.REALTRACK) {
 	            redOcc = m.dataBA();
-	        } /*else if(m.type() == MType.TICKETS) {
+	        } else if(m.type() == MType.TICKETS) {
 	        	switch (m.trainID) {
 	        		case RED:
 	        			redTickets += m.dataI();
@@ -307,7 +307,7 @@ public class CTCOffice {
 	        			greenTickets += m.dataI();
 	        			break;
 	        	}
-	        }*/
+	        }
         }
 	}
 
