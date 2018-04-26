@@ -69,7 +69,12 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
         switchLightGroup.add(switchLightOffButton);
 
         id.setFont(new java.awt.Font("Ubuntu", 0, 24));
-        id.setText("ID: "+i);
+		if(i<7)
+			id.setText("ID: RED "+i);
+		else{
+			i = (int) Math.ceil(i/7);
+			id.setText("ID: GREEN "+i);
+		}
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
