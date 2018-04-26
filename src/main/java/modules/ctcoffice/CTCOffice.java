@@ -14,14 +14,14 @@ import shared.*;
  *  o Send switch states
  */
 public class CTCOffice {
-	//private CTCOffice ctc;
+	private Trainwreck tw;
 	private CTCOfficeUI gui;
 	private ArrayList<Queue<Schedule>> schedules;
 	//private Track redLine;
 	//private Track greenLine;
 	//private Time currentTime;
 	private int time;
-	private int trainCount;
+	
 	private double throughput;
 	private double redThroughput;
 	private double greenThroughput;
@@ -37,6 +37,7 @@ public class CTCOffice {
 	private boolean dispatchReady = false;
 
 	/* Graph Testing - - - - - - - - - - - - - - */
+	private int dispatchLine = 1;
 	private TrackGraph redTrack;
 	private TrackGraph greenTrack;
 	
@@ -61,6 +62,8 @@ public class CTCOffice {
 	private int maintenanceBlock = 0;
 	private boolean maintenanceReady = false;
 
+	/* Multiple Trains - - - - - - - - - - - - - */
+	private int trainCount = 0;
 
 	private final double KMH_TO_MPH = (double)1/(double)1.609344;
 	private final double M_TO_F = 3.280840;
@@ -69,7 +72,8 @@ public class CTCOffice {
 
 
 	/* SETUP */
-	public CTCOffice(MessageQueue mq) {
+	public CTCOffice(MessageQueue mq, Trainwreck tw) {
+		this.tw = tw;
 		time = 10;
 		// Setup Message Queue
 		this.mq = mq;
@@ -275,6 +279,7 @@ public class CTCOffice {
 	public void mSend() {
 		
 		if (dispatchReady) {
+
 			// Send Speed (default limit for now);
 			m = new Message(MDest.CTC, speed, MType.SPEED);
 			System.out.println("CTC_Speed: "+speed);
@@ -289,8 +294,11 @@ public class CTCOffice {
 				System.out.println("CTC_Switch: "+i+": "+redSwitches[i]);
 				mq.send(m, MDest.TcCtl+i);
 			}
-			// Add Train to Message Queue
-			mq.addTrain();
+
+			// Add Train to Message Queue & Trainwreck
+			System.out.println("Adding Train: "+trainCount);
+			mq.addTrain(dispatchLine);
+			tw.addTrain(trainCount++);
 			dispatchReady = false;
 		}
 
