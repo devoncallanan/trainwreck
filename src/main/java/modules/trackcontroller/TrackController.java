@@ -93,12 +93,13 @@ public class TrackController {
                if(!onSwitch)
                     logic();
                checkLights();
-          }
-		   for(int i=0; i<3; i++){ 	//redundancy for vital nature
+			   for(int i=0; i<3; i++){ 	//redundancy for vital nature
 			  if(crossExists)
 				   checkCross();
 				checkContinue();
 			}
+          }
+		   
           setGUI();
 		  //System.out.println("zerospeed = " +zeroSpeedSent);
           mSend();
