@@ -24,20 +24,17 @@ public class CTCOffice {
 	private ArrayList<Object[]> trainList;
 	private Boolean[] redSwitches = new Boolean[6];
 	private Boolean[] greenSwitches;
-	private double speed = 40.0; // km/h => 24.8548 mph
+	
 	/* - - - - - - - - - - - - - - - - - - - - - */
 	public MessageQueue mq = new MessageQueue();
 	private Stack<Message> messages;
 	private Message m;
-	private boolean dispatchReady = false;
+	
 
 	/* Graph Testing - - - - - - - - - - - - - - */
 	private int dispatchLine = 1;
 	private TrackGraph redTrack;
 	private TrackGraph greenTrack;
-	
-	//private boolean[] redSwitches = new boolean[6];
-	private double authority;
 
 	/* UI variables- - - - - - - - - - - - - - - */
 	public ArrayList<BlockTemp> redStops = new ArrayList<BlockTemp>();
@@ -62,6 +59,13 @@ public class CTCOffice {
 
 	/* Multiple Trains - - - - - - - - - - - - - */
 	private int trainCount = 0;
+	private int trainID = 0;
+	private boolean changeSpeed = false;
+	private boolean changeAuthority = false;
+	private double speed = 40.0; // km/h => 24.8548 mph
+	private double authority = 0;
+	private boolean dispatchReady = false;
+	private boolean updateReady = false;
 
 	/* Throughput- - - - - - - - - - - - - - - - */
 	private double throughput = 0;
@@ -203,6 +207,23 @@ public class CTCOffice {
 			return null;
 		}
 		return null;
+	}
+
+	public void updateTrain(int trainID, double speed, double authority) {
+		this.trainID = trainID;
+		if (speed > 0) {
+			this.speed = speed;
+			changeSpeed = true;
+		} else {
+			changeSpeed = false;
+		}
+		if (authority > 0) {
+			this.authority = authority;
+			changeAuthority = true;
+		} else {
+			changeAuthority = false;
+		}
+		updateReady = true;
 	}
 
 	public void dispatchTrain(int line, int src, int dest) {
@@ -373,6 +394,22 @@ public class CTCOffice {
 			dispatchReady = false;
 		}
 
+		if (updateReady) {
+			if (changeSpeed) {
+				m = new Message(MDest.CTC, speed, MType.SPEED);
+				System.out.println("Update Speed: "+speed);
+				m.trainID = trainID;
+				mq.send(m, MDest.TcCtl);
+			}
+			if (changeAuthority) {
+				m = new Message(MDest.CTC, authority, MType.AUTH);
+				System.out.println("Update Authority: "+authority);
+				m.trainID = trainID;
+				mq.send(m, MDest.TcCtl);
+			}
+			updateReady = false;
+		}
+
 		if (maintenanceReady) {
 			m = new Message(MDest.CTC, maintenanceBlock, MType.MAINTENANCE);
 			switch (maintenanceLine) {
@@ -392,12 +429,12 @@ public class CTCOffice {
 			maintenanceReady = false;
 		}
 
-		if (switchReady) {
-			m = new Message(MDest.CTC, currentSwitch, MType.CTCSWITCH);
-			System.out.println("CTC_Switch: "+trackCtlIndex+": "+currentSwitch);
-			mq.send(m, MDest.TcCtl+trackCtlIndex);
-			switchReady = false;
-		}
+		// if (switchReady) {
+		// 	m = new Message(MDest.CTC, currentSwitch, MType.CTCSWITCH);
+		// 	System.out.println("CTC_Switch: "+trackCtlIndex+": "+currentSwitch);
+		// 	mq.send(m, MDest.TcCtl+trackCtlIndex);
+		// 	switchReady = false;
+		// }
 	}
 
 
