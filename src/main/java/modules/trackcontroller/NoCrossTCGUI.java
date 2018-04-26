@@ -18,7 +18,7 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
      TrackController tc;
      PLC plc;
      int i;
-     public TrackControllerGUI(TrackController t, boolean[] n, boolean[] r, boolean[] s, int z, PLC p) {
+     public NoCrossTCGUI(TrackController t, boolean[] n, boolean[] r, boolean[] s, int z, PLC p) {
          plc = p;
          tc = t;
          cross = c;
