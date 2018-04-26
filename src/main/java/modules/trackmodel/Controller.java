@@ -18,8 +18,8 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 	int[] positions;
 	
 	Controller(int numControllers) {
-		this.occupancy = new int[numControllers][50];
-		this.convert = new int[numControllers][50];
+		this.occupancy = new int[numControllers][100];
+		this.convert = new int[numControllers][100];
 		this.numControllers = numControllers;
 		this.switchConvert = new int[numControllers];
 		this.positions = new int[numControllers];
@@ -48,7 +48,7 @@ public class Controller extends javax.swing.AbstractListModel<String>{
 		while (scanLine.hasNext()){
 			this.setSwitchConvert(scanLine.nextInt(), i);
 			this.setSwitch(i, 1);
-			if(i < 5) {
+			if(i < 9) {
 				i++;
 			} else {
 				break;
