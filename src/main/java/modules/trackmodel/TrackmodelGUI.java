@@ -291,11 +291,11 @@ public class TrackmodelGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (jToggleButton3.isSelected()) {
             jToggleButton3.setText("Circuits Down");
-            tm.breakCircuits(true);
+            tm.breakCircuits(false);
         }
         else {
             jToggleButton3.setText("CIrcuits Up");
-            tm.breakCircuits(false);            
+            tm.breakCircuits(true);            
         }
     }//GEN-LAST:event_jToggleButton3ActionPerformed
 

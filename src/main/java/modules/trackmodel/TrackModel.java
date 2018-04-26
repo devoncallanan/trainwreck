@@ -95,14 +95,18 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 						conts.update(9, 1, 1);
 						trains[numTrains].blocks.add(redline.getBlock(9));
 						numTrains++;
+						tempM = new Message(MDest.TcMd, redline.getBlock(9).limit, MType.SPEEDLIMIT);
+						if (messaging) m.send(tempM, MDest.TrCtl);	
 					}
 					else {
 						trains[numTrains] = new Train(numTrains,62, 61, 2);
 						greenline.setOccupancy(62, true);
 						conts.update(62, 1, 2);
 						trains[numTrains].blocks.add(greenline.getBlock(62));
-						numTrains++;						
-					}
+						numTrains++;	
+						tempM = new Message(MDest.TcMd, greenline.getBlock(62).limit, MType.SPEEDLIMIT);
+						if (messaging) m.send(tempM, MDest.TrCtl);							
+					}	
 					break;		
 				case MType.FEEDBACK:
 					trains[(mail.from() - MDest.TrMd)/2].speed = mail.dataD();
@@ -186,8 +190,8 @@ public static double MS_TO_KMH = 3600.0/10000.0;
 		
 		/* ---------------- send messages -------------------------- */
 		
-		tempM = new Message(MDest.TcMd, 70.0, MType.SPEEDLIMIT);
-		m.send(tempM, MDest.TrMd);
+		//tempM = new Message(MDest.TcMd, 70.0, MType.SPEEDLIMIT);
+		//m.send(tempM, MDest.TrMd);
 		for (int i = 0; i < 10; i++) {
 			tempM = new Message(MDest.TcMd, conts.getOccArray(i), MType.TRACK);
 			m.send(tempM, MDest.TcCtl + i);
