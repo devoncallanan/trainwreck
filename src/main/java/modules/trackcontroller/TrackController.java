@@ -15,7 +15,7 @@ public class TrackController {
      private Message m;
      boolean[] mainLine, side, msplit, temp;
      Boolean recSwitch = null, switchPos = true, oneWay = null, loop = false, lights = true, priority = true, switchBias = true;
-     boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
+     boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false, ctcSwitchPos, ctcswitch = false;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, crossPos = false, prevMainOcc, prevMsplitOcc, prevSideOcc, prevMainOcc2, prevMsplitOcc2, prevSideOcc2;
      boolean crossLights = false, switchLight = true, onSwitch = false, zeroSpeedSent = false, switchBias1, switchBias2, loop1, loop2, priority1, priority2, lights1, lights2, oneWay1, oneWay2;
 
@@ -62,6 +62,7 @@ public class TrackController {
           checkZero();
      }
      public void run(){
+		 ctcswitch = false;
           mReceive();
 			mainOcc = getOcc(mainLine);
 			prevMainOcc = getOcc(mainLine);
@@ -90,15 +91,19 @@ public class TrackController {
 
           }
           else{
-               if(!onSwitch)
+			  if(ctcswitch && !onSwitch){
+				  switchPos = ctcSwitchPos;
+			  }
+              else if(!onSwitch)
                     logic();
                checkLights();
-          }
-		   for(int i=0; i<3; i++){ 	//redundancy for vital nature
-			  if(crossExists)
-				   checkCross();
-				checkContinue();
+			   for(int i=0; i<3; i++){ 	//redundancy for vital nature
+					if(crossExists)
+						checkCross();
+					checkContinue();
+				}
 			}
+		   
           setGUI();
 		  //System.out.println("zerospeed = " +zeroSpeedSent);
           mSend();
@@ -176,6 +181,10 @@ public class TrackController {
                     m = new Message((MDest.TcCtl+id), index, MType.MAINTENANCE);
                     mq.send(m, MDest.TcMd);
                }
+			   else if(m.type() == MType.CTCSWITCH){
+				   ctcSwitchPos = m.dataB();
+				   ctcswitch = true;
+			   }
           }
      }
      public void mSend(){
@@ -694,6 +703,7 @@ public class TrackController {
      public void setCross(boolean c){
           if(!mode)
                crossPos = c;
+		   setGUI();
      }
      public void setSwitchLight(boolean s){
           if(!mode)
@@ -702,6 +712,7 @@ public class TrackController {
      public void setCrossLight(boolean c){
           if(!mode)
                crossLights = c;
+		   setGUI();
      }
      public void setMode(boolean m){
           mode = m;
