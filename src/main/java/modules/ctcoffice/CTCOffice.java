@@ -438,12 +438,14 @@ public class CTCOffice {
 			maintenanceReady = false;
 		}
 
-		// if (switchReady) {
-		// 	m = new Message(MDest.CTC, currentSwitch, MType.CTCSWITCH);
-		// 	System.out.println("CTC_Switch: "+trackCtlIndex+": "+currentSwitch);
-		// 	mq.send(m, MDest.TcCtl+trackCtlIndex);
-		// 	switchReady = false;
-		// }
+		if (switchReady) {
+			m = new Message(MDest.CTC, currentSwitch, MType.CTCSWITCH);
+			System.out.println("CTC_Switch: "+trackCtlIndex+": "+currentSwitch);
+			mq.send(m, MDest.TcCtl+trackCtlIndex);
+			if (!currentSwitch) {
+				switchReady = false;
+			}
+		}
 	}
 
 

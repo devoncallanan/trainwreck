@@ -1162,9 +1162,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             String delim = ",";
             DefaultTableModel model = (DefaultTableModel) DispatchScheduleTable.getModel();
             // Load CSV into schedule table
+
+            
+            // String[] trackRow = line.split(delim);
+            // int track = Integer.parseInt(trackRow[1]);
+            // DispatchLineComboBox.setIndex(track);
+            
             try {
 
                 BufferedReader br = new BufferedReader(new FileReader(csvFile));
+                line = br.readLine();
                 while ((line = br.readLine()) != null) {
 
                     // use comma as separator
@@ -1403,7 +1410,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 break;
         }
 
-        if (speed > 0) {
+        if (speed > 0 && speed <= 25) {
             activeModel.setValueAt(speed,selectedRow,2);
         }
         if (authority > 0) {
