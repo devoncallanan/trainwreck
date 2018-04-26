@@ -23,11 +23,13 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private static int trainCount = 0;
     private final String[] redLineData;
     private boolean[] redOcc;
+    private boolean[] redMaintenance;
     private final String[] greenLineData;
     private boolean[] greenOcc;
     private final String[] scheduleColumnVector;
     private ArrayList<Object[][]> trainSchedules;
     public final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private static int hours = 0;
     private static int minutes = 0;
     private static int seconds = 0;
     private static int millis = 0;
@@ -46,6 +48,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         
         int redSize = ctc.redLineData.size();
         this.redLineData = new String[redSize];
+        this.redMaintenance = new boolean[redSize+1];
         for (int i = 0; i < redSize; i++) {
             this.redLineData[i] = ctc.redLineData.get(i);
         }
@@ -772,8 +775,8 @@ public class CTCOfficeUI extends javax.swing.JFrame {
      *************************/
 
     public void increaseTime() {
-        millis += timeMult;
-        if (millis >= 99) {
+        millis += timeMult; // 1 = 10ms, 10 = 100ms
+        if (millis >= 100) {
             millis = 0;
             seconds += 1;
         }
@@ -781,10 +784,22 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             seconds = 0;
             minutes += 1;
         }
+        if (minutes >= 60) {
+            minutes = 0;
+            hours += 1;
+        }
+        String hoursString = String.format("%02d", hours);
         String minutesString = String.format("%02d", minutes);
         String secondsString = String.format("%02d", seconds);
-        String millisString = String.format("%02d", millis);
-        TimeLabel.setText(minutesString+":"+secondsString+":"+millisString);
+        //String millisString = String.format("%02d", millis);
+        TimeLabel.setText(hoursString+":"+minutesString+":"+secondsString);
+    }
+
+    public double getHours() {
+        double minToHour = (double)minutes/60;
+        double secToHour = (double)seconds/3600;
+        double milToHour = (double)millis/216000;
+        return (double)hours + minToHour + secToHour + milToHour;
     }
 
     private void TimePauseButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
@@ -827,7 +842,16 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         //thread.notify();
         // ctc.setThreadStatus(false);
         // thread.notify();
-    }           
+    } 
+
+    public void updateThroughput(double t, double rt, double gt) {
+        String tString = String.format("%.2f", t);
+        String rtString = String.format("%.2f", rt);
+        String gtString = String.format("%.2f", gt);
+        ThroughputLabel.setText(tString);
+        ThroughputRedLabel.setText(rtString);
+        ThroughputGreenLabel.setText(gtString);
+    }
 
 
 
@@ -845,7 +869,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private void updateStatus() {
         int trackLineIndex = TrackLineComboBox.getSelectedIndex();
         int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
-        if (trackBlockIndex > 0) {
+        if (TrackBlockComboBox.getSelectedItem() != null) {
             String trackBlock = TrackBlockComboBox.getSelectedItem().toString();
             
             // Check if switch
@@ -856,52 +880,66 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             }
 
             TrackMaintenanceToggle.setEnabled(true);
-            if (TrackMaintenanceToggle.isSelected()) {
-                TrackStatusLED.setForeground(new Color(255,0,0));
-                TrackSwitchToggle.setEnabled(false);
-            } else {
-                TrackStatusLED.setForeground(new Color(0,204,0));
-            }
             
-            if (trackLineIndex == 1) {  // Check if selected red block is occupied
-                if (redOcc[trackBlockIndex+1]) {   // If occupied = true
-                    TrackOccupancyLED.setForeground(new Color(0,204,0));
-                } else {
-                    TrackOccupancyLED.setForeground(new Color(102,102,102));
-                }
+            switch (trackLineIndex) {
+                case 1: // RED
+                    // Check Status
+                    if (redMaintenance[trackBlockIndex+1]) {// If closed = true
+                        TrackMaintenanceToggle.setSelected(true);
+                        TrackStatusLED.setForeground(new Color(255,0,0));
+                        TrackSwitchToggle.setEnabled(false);
+                    } else {
+                        TrackMaintenanceToggle.setSelected(false);
+                        TrackStatusLED.setForeground(new Color(0,204,0));
+                    }
 
-            } else if (trackLineIndex == 2) {   // Check if starting green block is occupied (J62)
-                if (ActiveGreenTable.getRowCount() > 0) {
-                    TrackOccupancyLED.setForeground(new Color(0,204,0));
-                }
-            } else {
-                TrackOccupancyLED.setForeground(new Color(102,102,102));
+                    // Check Occupancy
+                    if (redOcc[trackBlockIndex+1]) {   // If occupied = true
+                        TrackOccupancyLED.setForeground(new Color(0,204,0));
+                    } else {
+                        TrackOccupancyLED.setForeground(new Color(102,102,102));
+                    }
+                    
+
+                    break;
+                case 2: // GREEN
+                    if (ActiveGreenTable.getRowCount() > 0) {
+                        TrackOccupancyLED.setForeground(new Color(0,204,0));
+                    }
+                    break;
+                default:
+                    TrackOccupancyLED.setForeground(new Color(102,102,102));
             }
-        } /*else {
-            TrackMaintenanceToggle.setEnabled(false);
-            TrackSwitchToggle.setEnabled(false);
-            TrackStatusLED.setForeground(new Color(102,102,102));
-            TrackOccupancyLED.setForeground(new Color(102,102,102));
-        }*/
-        
+        } 
     }
 
     private void TrackMaintenanceToggleActionPerformed(java.awt.event.ActionEvent evt) {                                                       
-        // TODO add your handling code here:
-    }                                                      
-
-    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {
-        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
+       int trackLineIndex = TrackLineComboBox.getSelectedIndex();
         int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
         if (TrackMaintenanceToggle.isSelected()) {
             // Request track close
             ctc.trackMaintenance(trackLineIndex, trackBlockIndex+1, false);
+            switch (trackLineIndex) {
+                case 1:
+                    redMaintenance[trackBlockIndex+1] = true;
+                    break;
+                case 2:
+                    break;
+            }
+            
 
             TrackStatusLED.setForeground(new Color(255,0,0));
             TrackSwitchToggle.setEnabled(false);
         } else {
             // Request track open
             ctc.trackMaintenance(trackLineIndex, trackBlockIndex+1, true);
+            switch (trackLineIndex) {
+                case 1:
+                    redMaintenance[trackBlockIndex+1] = false;
+                    break;
+                case 2:
+                    break;
+            }
 
             TrackStatusLED.setForeground(new Color(0,204,0));
             String trackBlock = TrackBlockComboBox.getSelectedItem().toString();
@@ -911,8 +949,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 TrackSwitchToggle.setEnabled(false);
             }
         }
+    }                                                      
+
+    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {
+        
                 
-    }                                                   
+    }
+
+    // TrackSwitchToggle
 
     private void TrackLineComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         int trackLine = TrackLineComboBox.getSelectedIndex();
@@ -937,6 +981,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 TrackOccupancyLED.setForeground(new Color(102,102,102));
                 break;
         }
+        updateStatus();
     }                                                 
 
     private void TrackBlockComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1088,7 +1133,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         switch (line) {
             case 1:
                 // Dispatch to Red Line
-                ctc.dispatchTrain(74,destination);
+                ctc.dispatchTrain(1,74,destination);
                 activeModel = (DefaultTableModel) ActiveRedTable.getModel();
                 activeModel.addRow(new Object[]{trainCount, "C9", ctc.getSpeed()*KMH_TO_MPH, ctc.getAuthority()*M_TO_F, 30});
                 scheduleModel.setNumRows(0);
