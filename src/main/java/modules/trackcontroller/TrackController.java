@@ -169,6 +169,11 @@ public class TrackController {
                else if(m.type() == MType.SWITCH){
                     recSwitch = m.dataB();
                }
+               else if(m.type() == MType.MAINTENANCE){
+                    int index = m.dataI();
+                    m = new Message((MDest.TcCtl+id), index, MType.MAINTENANCE);
+                    mq.send(m, MDest.TcMd);
+               }
           }
      }
      public void mSend(){
