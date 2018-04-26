@@ -13,7 +13,6 @@ public class TrackControllerGUI extends javax.swing.JFrame {
     public TrackControllerGUI(TrackController t, boolean[] n, boolean[] r, boolean[] s, int z, PLC p) {
         plc = p;
         tc = t;
-        cross = c;
         mainLine = n;
         msplit = r;
         side = s;
