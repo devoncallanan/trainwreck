@@ -22,7 +22,9 @@ public class CTCOfficeUI extends javax.swing.JFrame {
     private static int timeMult = 1;
     private static int trainCount = 0;
     private final String[] redLineData;
+    private boolean[] redOcc;
     private final String[] greenLineData;
+    private boolean[] greenOcc;
     private final String[] scheduleColumnVector;
     private ArrayList<Object[][]> trainSchedules;
     public final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -243,21 +245,26 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(TimeUpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(TimeThroughputPanelLayout.createSequentialGroup()
-                        .addComponent(TimePlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TimePauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(TimePlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(TimePauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ThroughputLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(TimeThroughputPanelLayout.createSequentialGroup()
                         .addGroup(TimeThroughputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ThroughputRedLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(TimeThroughputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ThroughputGreenLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(TimeThroughputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(ThroughputGreenLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
+
+        TimeThroughputPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {TimePauseButton, TimePlayButton});
+
+        TimeThroughputPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ThroughputGreenLabel, ThroughputRedLabel});
+
         TimeThroughputPanelLayout.setVerticalGroup(
             TimeThroughputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TimeThroughputPanelLayout.createSequentialGroup()
@@ -355,31 +362,25 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         TrackStatusPanel.setLayout(TrackStatusPanelLayout);
         TrackStatusPanelLayout.setHorizontalGroup(
             TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TrackStatusPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrackStatusPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(TrackStatusPanelLayout.createSequentialGroup()
+                .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TrackSwitchToggle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TrackMaintenanceToggle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TrackBlockComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, TrackStatusPanelLayout.createSequentialGroup()
                         .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(TrackStatusLED, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(TrackOccupancyLED, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(TrackSwitchToggle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TrackMaintenanceToggle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(TrackStatusPanelLayout.createSequentialGroup()
-                        .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(TrackLineComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(TrackBlockComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(TrackOccupancyLED, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TrackLineComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        TrackStatusPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {TrackLineComboBox, jLabel10});
 
         TrackStatusPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {TrackOccupancyLED, TrackStatusLED, jLabel12, jLabel13});
 
@@ -387,14 +388,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TrackStatusPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11))
+                .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TrackLineComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TrackBlockComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addComponent(TrackLineComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TrackBlockComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(jLabel13))
@@ -402,11 +403,11 @@ public class CTCOfficeUI extends javax.swing.JFrame {
                 .addGroup(TrackStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TrackStatusLED)
                     .addComponent(TrackOccupancyLED))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TrackMaintenanceToggle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TrackSwitchToggle)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         ActiveTrainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Active Trains", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Semilight", 0, 30))); // NOI18N
@@ -440,7 +441,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Train ID", "Location", "Suggested Speed", "Initial Authority", "Passengers"
+                "Train ID", "Start Block", "Suggested Speed", "Initial Authority", "Passengers"
             }
         ));
         ActiveGreenTable.getTableHeader().setFont(new java.awt.Font("Courier New", 1, 18));
@@ -480,7 +481,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         ActiveTrainPanel.setLayout(ActiveTrainPanelLayout);
         ActiveTrainPanelLayout.setHorizontalGroup(
             ActiveTrainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane4)
             .addGroup(ActiveTrainPanelLayout.createSequentialGroup()
@@ -738,10 +739,10 @@ public class CTCOfficeUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(TrackStatusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(TimeThroughputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                    .addComponent(TrackStatusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TrainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7)
                 .addComponent(ActiveTrainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -762,9 +763,13 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>                        
+    }                  
 
 
+
+    /*************************
+     *** TIME & THROUGHPUT ***
+     *************************/
 
     public void increaseTime() {
         millis += timeMult;
@@ -822,17 +827,82 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         //thread.notify();
         // ctc.setThreadStatus(false);
         // thread.notify();
-    }                                              
+    }           
+
+
+
+    /********************
+     *** TRACK STATUS ***
+     ********************/                           
+
+    public void updateOccupancy() {
+        redOcc = ctc.getRedOcc();
+        greenOcc = ctc.getGreenOcc();
+
+        updateStatus();
+    }
+
+    private void updateStatus() {
+        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
+        int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
+        if (trackBlockIndex > 0) {
+            String trackBlock = TrackBlockComboBox.getSelectedItem().toString();
+            
+            // Check if switch
+            if (trackBlock.toLowerCase().contains("switch")) {
+                TrackSwitchToggle.setEnabled(true);
+            } else {
+                TrackSwitchToggle.setEnabled(false);
+            }
+
+            TrackMaintenanceToggle.setEnabled(true);
+            if (TrackMaintenanceToggle.isSelected()) {
+                TrackStatusLED.setForeground(new Color(255,0,0));
+                TrackSwitchToggle.setEnabled(false);
+            } else {
+                TrackStatusLED.setForeground(new Color(0,204,0));
+            }
+            
+            if (trackLineIndex == 1) {  // Check if selected red block is occupied
+                if (redOcc[trackBlockIndex+1]) {   // If occupied = true
+                    TrackOccupancyLED.setForeground(new Color(0,204,0));
+                } else {
+                    TrackOccupancyLED.setForeground(new Color(102,102,102));
+                }
+
+            } else if (trackLineIndex == 2) {   // Check if starting green block is occupied (J62)
+                if (ActiveGreenTable.getRowCount() > 0) {
+                    TrackOccupancyLED.setForeground(new Color(0,204,0));
+                }
+            } else {
+                TrackOccupancyLED.setForeground(new Color(102,102,102));
+            }
+        } /*else {
+            TrackMaintenanceToggle.setEnabled(false);
+            TrackSwitchToggle.setEnabled(false);
+            TrackStatusLED.setForeground(new Color(102,102,102));
+            TrackOccupancyLED.setForeground(new Color(102,102,102));
+        }*/
+        
+    }
 
     private void TrackMaintenanceToggleActionPerformed(java.awt.event.ActionEvent evt) {                                                       
         // TODO add your handling code here:
     }                                                      
 
-    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {                                                    
+    private void TrackMaintenanceToggleStateChanged(javax.swing.event.ChangeEvent evt) {
+        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
+        int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
         if (TrackMaintenanceToggle.isSelected()) {
+            // Request track close
+            ctc.trackMaintenance(trackLineIndex, trackBlockIndex+1, false);
+
             TrackStatusLED.setForeground(new Color(255,0,0));
             TrackSwitchToggle.setEnabled(false);
         } else {
+            // Request track open
+            ctc.trackMaintenance(trackLineIndex, trackBlockIndex+1, true);
+
             TrackStatusLED.setForeground(new Color(0,204,0));
             String trackBlock = TrackBlockComboBox.getSelectedItem().toString();
             if (trackBlock.toLowerCase().contains("switch")) {
@@ -843,6 +913,44 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         }
                 
     }                                                   
+
+    private void TrackLineComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+        int trackLine = TrackLineComboBox.getSelectedIndex();
+        switch (trackLine) {
+            case 1:
+                // Red Line Selected
+                TrackBlockComboBox.setEnabled(true);
+                TrackBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(redLineData));
+                break;
+            case 2:
+                // Green Line Selected
+                TrackBlockComboBox.setEnabled(true);
+                TrackBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(greenLineData));
+                break;
+            default:
+                // No Line Selected
+                TrackMaintenanceToggle.setEnabled(false);
+                TrackSwitchToggle.setEnabled(false);
+                TrackBlockComboBox.setEnabled(false);
+                TrackBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
+                TrackStatusLED.setForeground(new Color(102,102,102));
+                TrackOccupancyLED.setForeground(new Color(102,102,102));
+                break;
+        }
+    }                                                 
+
+    private void TrackBlockComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+        TrackMaintenanceToggle.setSelected(false);
+        TrackSwitchToggle.setSelected(false);
+
+        updateStatus();
+    } 
+
+
+
+    /**********************
+     *** DISPATCH TRAIN ***
+     **********************/
 
     private void DispatchDepartureTextFieldActionPerformed(java.awt.event.ActionEvent evt) {                                                           
         // TODO add your handling code here:
@@ -969,14 +1077,14 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         }
         
         // Get vertex corresponding to block
-        int destination = ctc.getStop(destBlock+1).w();
+        int destination = ctc.getStop(line,destBlock+1).w();
 
         System.out.println("Dest:"+destination);
         
         // Calculate Authority (miles) for first stop here     
         
         // Display train in Active Trains table
-        // TrainID | Location | Speed | Authority | Passengers
+        // TrainID | Start Block | Speed | Authority | Passengers
         switch (line) {
             case 1:
                 // Dispatch to Red Line
@@ -998,7 +1106,13 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         
         trainCount++;
         DispatchManualButton.setEnabled(false);
-    }                                                    
+    }                    
+
+
+
+    /*********************
+     *** ACTIVE TRAINS ***
+     *********************/                                
 
     private void ActiveRedTableMouseClicked(java.awt.event.MouseEvent evt) {                                            
         int row = ActiveRedTable.getSelectedRow();
@@ -1028,64 +1142,7 @@ public class CTCOfficeUI extends javax.swing.JFrame {
         }
     }                                             
 
-    private void TrackLineComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-        int trackLine = TrackLineComboBox.getSelectedIndex();
-        switch (trackLine) {
-            case 1:
-                // Red Line Selected
-                TrackBlockComboBox.setEnabled(true);
-                TrackBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(redLineData));
-                break;
-            case 2:
-                // Green Line Selected
-                TrackBlockComboBox.setEnabled(true);
-                TrackBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(greenLineData));
-                break;
-            default:
-                // No Line Selected
-                TrackMaintenanceToggle.setEnabled(false);
-                TrackSwitchToggle.setEnabled(false);
-                TrackBlockComboBox.setEnabled(false);
-                TrackBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
-                TrackStatusLED.setForeground(new Color(102,102,102));
-                TrackOccupancyLED.setForeground(new Color(102,102,102));
-                break;
-        }
-    }                                                 
-
-    private void TrackBlockComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                   
-        int trackLineIndex = TrackLineComboBox.getSelectedIndex();
-        int trackBlockIndex = TrackBlockComboBox.getSelectedIndex();
-        String trackBlock = TrackBlockComboBox.getSelectedItem().toString();
-        
-        TrackMaintenanceToggle.setSelected(false);
-        TrackSwitchToggle.setSelected(false);
-        
-        TrackMaintenanceToggle.setEnabled(true);
-        TrackStatusLED.setForeground(new Color(0,204,0));
-        
-        // Check if switch
-        if (trackBlock.toLowerCase().contains("switch")) {
-            TrackSwitchToggle.setEnabled(true);
-        } else {
-            TrackSwitchToggle.setEnabled(false);
-        }
-        
-        // Check if starting red block is occupied (C9)
-        if (trackLineIndex == 1 && trackBlockIndex == 8) {
-            if (ActiveRedTable.getRowCount() > 0) {
-                TrackOccupancyLED.setForeground(new Color(0,204,0));
-            }
-        } else if (trackLineIndex == 2 && trackBlockIndex == 61) {
-            // Check if starting green block is occupied (J62)
-            if (ActiveGreenTable.getRowCount() > 0) {
-                TrackOccupancyLED.setForeground(new Color(0,204,0));
-            }
-        } else {
-            TrackOccupancyLED.setForeground(new Color(102,102,102));
-        }
-        
-    }                                                  
+                                                     
 
     /**
      * @param args the command line arguments

@@ -38,20 +38,20 @@ public class DijkstraSPD {
         while (!pq.isEmpty()) {
             //System.out.println("- - - - - -");
             int del = pq.delMin();
-            System.out.println("DELETE: "+(del+1));
+            //System.out.println("DELETE: "+(del+1));
         	relax(G, del);
         }
     }
 
     private void relax(TrackGraph G, int v)
     {
-        System.out.println("prevBranch: "+prevBranch);
+        //System.out.println("prevBranch: "+prevBranch);
         int tempBranch = 0;
         if (G.adj(v).size() > 2) {
-            System.out.println("BRANCH DETECTED: "+(v+1));
+            //System.out.println("BRANCH DETECTED: "+(v+1));
             for(BlockTemp e : G.adj(v))
             {
-                System.out.println(e.toString());
+                //System.out.println(e.toString());
                 //System.out.println(G.adj(v).size());
                 // if (e.branch() == prevBranch)
 
@@ -63,11 +63,11 @@ public class DijkstraSPD {
                         //System.out.println("DECREASE:"+ w);
                         pq.decreaseKey(w, distTo[w]);
                     } else {
-                        System.out.print(e.number()+":  ");
-                        System.out.println("prev: "+prevBranch+" curr: "+e.branch());
+                        //System.out.print(e.number()+":  ");
+                        //System.out.println("prev: "+prevBranch+" curr: "+e.branch());
                         tempBranch = e.branch();
                         if (prevBranch != e.branch()) {
-                            System.out.println("INSERT:"+ (w+1)+" b:"+tempBranch);
+                            //System.out.println("INSERT:"+ (w+1)+" b:"+tempBranch);
                             pq.insert(w, distTo[w]);
                         }
                     }
@@ -87,10 +87,10 @@ public class DijkstraSPD {
                         //System.out.println("DECREASE:"+ w);
                         pq.decreaseKey(w, distTo[w]);
                     } else {
-                        System.out.print(e.number()+":  ");
-                        System.out.println("prev: "+prevBranch+" curr: "+e.branch());
+                        //System.out.print(e.number()+":  ");
+                        //System.out.println("prev: "+prevBranch+" curr: "+e.branch());
                         tempBranch = e.branch();
-                        System.out.println("INSERT:"+ (w+1)+" b:"+tempBranch);
+                        //System.out.println("INSERT:"+ (w+1)+" b:"+tempBranch);
                         pq.insert(w, distTo[w]);
 
                     }
