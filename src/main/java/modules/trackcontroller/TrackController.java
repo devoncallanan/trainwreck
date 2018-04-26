@@ -658,8 +658,10 @@ public class TrackController {
 
           gui.changeSwitch(switchPos);
           gui.changeSwitchLight(switchLight);
-          gui.changeCrossing(crossPos);
-          gui.changeCrossLight(crossLights);
+          if(crossExists){
+               gui.changeCrossing(crossPos);
+               gui.changeCrossLight(crossLights);
+          }
           //gui.zeroSpeedSent(zeroSpeedSent);
           gui.updateMain(mainLine);
 

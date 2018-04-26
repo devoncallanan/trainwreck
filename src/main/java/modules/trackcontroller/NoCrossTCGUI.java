@@ -264,29 +264,6 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
         private void switchLightOffButtonActionPerformed(java.awt.event.ActionEvent evt) {
             tc.setSwitchLight(false);
         }
-
-        private void crossingUpButtonActionPerformed(java.awt.event.ActionEvent evt) {
-            tc.setCross(false);
-        }
-
-        private void crossingDownButtonActionPerformed(java.awt.event.ActionEvent evt) {
-            tc.setCross(true);
-        }
-
-        private void crossingLightOnButtonActionPerformed(java.awt.event.ActionEvent evt) {
-            tc.setCrossLight(true);
-        }
-
-        private void crossingLightOffButtonActionPerformed(java.awt.event.ActionEvent evt) {
-            tc.setCrossLight(false);
-        }
-        public void zeroSpeedSent(boolean z){
-             if(z)
-              zeroSpeedLable.setText("Zero Speed Sent!");
-             else
-              zeroSpeedLable.setText("");
-        }
-
         private void importPLCButtonActionPerformed(java.awt.event.ActionEvent evt) {
             JFileChooser chooser = new JFileChooser();
             chooser.showOpenDialog(null);
@@ -308,20 +285,6 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
               switchLightStatus.setText("Switch Light Status: Red");
         }
 
-        public void changeCrossing(boolean s){
-             if(s)
-              crossingStatus.setText("Crossing Status: Down");
-             else
-              crossingStatus.setText("Crossing Status: Up");
-        }
-
-        public void changeCrossLight(boolean s){
-             if(s)
-              crossingLightStatus.setText("Crossing Light Status: On");
-             else
-              crossingLightStatus.setText("Crossing Light Status: Off");
-
-        }
         public void updateMain(boolean[] a){
              StringBuilder info = new StringBuilder();
     		 for (int j = 0; j < a.length; j++){
