@@ -295,10 +295,9 @@ public class TrackmodelGUI extends javax.swing.JFrame {
             else {
                 jToggleButton1.setText("Break Block");                
             }
-            jList1.updateUI();
+            jList3.updateUI();
             jTextArea1.setText(greenline.getBlock(greenSelected).extendedInfo());
         }			
-		}
     }//GEN-LAST:event_jToggleButton1MouseClicked
 
     private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
@@ -387,7 +386,7 @@ public class TrackmodelGUI extends javax.swing.JFrame {
                     jToggleButton1.setText("Break Block");
                     jToggleButton1.setSelected(false);
                 }
-                jTextArea1.setText(greenline.getBlock(redSelected).extendedInfo());
+                jTextArea1.setText(greenline.getBlock(greenSelected).extendedInfo());
             }
         }
     }
