@@ -345,7 +345,9 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
         }
 
     // Variables declaration - do not modify
-    private javax.swing.ButtonGroup AutManGroup;
+    private javax.swing.ButtonGroup autManGroup;
+    private javax.swing.ButtonGroup switchGroup;
+    private javax.swing.ButtonGroup switchLightGroup;
     private javax.swing.JRadioButton automaticButton;
     private javax.swing.JLabel id;
     private javax.swing.JButton importPLCButton;
