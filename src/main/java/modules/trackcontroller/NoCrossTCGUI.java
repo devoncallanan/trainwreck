@@ -73,7 +73,7 @@ public class NoCrossTCGUI extends javax.swing.JFrame {
 			id.setText("ID: RED "+i);
 		else{
 			int temp = i%7;
-			i = 7 +temp;
+			i = 1 + temp;
 			id.setText("ID: GREEN "+i);
 		}
 
