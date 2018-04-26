@@ -46,9 +46,9 @@ public class MessageQueue {
 		return messages.get(address);
 	}
 
-	public void addTrain() {
+	public void addTrain(int line) { // 1 = RED, 2 = GREEN
 		messages.add(new Stack<Message>());
 		messages.add(new Stack<Message>());
-		this.send(new Message(MDest.CTC, 0, MType.NEWTRAIN), MDest.TcMd);
+		this.send(new Message(MDest.CTC, line, MType.NEWTRAIN), MDest.TcMd);
 	}
 }

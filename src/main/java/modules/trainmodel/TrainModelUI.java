@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
  */
 public class TrainModelUI extends javax.swing.JFrame {
 
-    private int failures;
+    private int failures = 4;
     private double trainMass = 40.9;
 
 
