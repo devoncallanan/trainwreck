@@ -108,7 +108,7 @@ public class TrainController {
 	
 	public void run() {
 		
-		mymail = messages.receive(MDest.TrCtl);
+		mymail = messages.receive(MDest.TrCtl + trainID*2);
 		
 		while(!mymail.isEmpty()) {
 			currentM = mymail.pop();
