@@ -146,7 +146,7 @@ public class TrainController {
 					velocity.setSpeedLimit(currentM.dataD(), mode);
 					break;
 				case 15:	//ZEROSPEED
-					//System.out.println("ZEROSPEED");
+					setFailure(5);
 					setEmergency(true);
 					break;
 				case 17:	//FAILURE
@@ -238,7 +238,7 @@ public class TrainController {
 		}
 		
 		//Stopped, checking to open or close doors
-		if (!station.equals(" ") && velocity.feedback() == 0) {
+		if (!station.equals(" ") && velocity.feedback() <= 0 && failure == 4) {
 			if (doorSide == -1) {
 				operateDoors(3);	//Open doors on the right side
 			} else if (doorSide == 1) {
@@ -323,7 +323,7 @@ public class TrainController {
 	
 	//Operate doors
 	public void operateDoors(int opDoors) {
-		if(velocity.feedback() == 0) {
+		if((!mode && velocity.feedback() <= 0) || mode) {
 			switch(opDoors) {
 				case 0:	//close left doors
 					leftDoors = false; 
@@ -390,7 +390,7 @@ public class TrainController {
 		this.pcs.firePropertyChange("failure", -1, failure);
 		if (failure == 4) 
 			if(emergency) setEmergency(false);
-		if (failure == 0 || failure == 2 || failure == 3) 
+		if (failure == 0 || failure == 2 || failure == 3 || failure == 5) 
 			if(!emergency) setEmergency(true);
 	}
 	

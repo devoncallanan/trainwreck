@@ -1017,21 +1017,25 @@ public class TrainControllerUI extends javax.swing.JFrame {
 
 	private void leftDoorsPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
         // TODO add your handling code here:
-        if ((int)evt.getNewValue() == 0) {
-			leftDoors.setText("Closed");
-		} else {
-			leftDoors.setText("Open");
+		if(evt.getPropertyName().equals("doors")) {
+			if ((int)evt.getNewValue() == 0) {
+				leftDoors.setText("Closed");
+			} else {
+				leftDoors.setText("Open");
+			}
 		}
+        
     }
 	
 	private void rightDoorsPropertyChange(java.beans.PropertyChangeEvent evt) {                                         
         // TODO add your handling code here:
-		if ((int)evt.getNewValue() == 2) {
-			rightDoors.setText("Closed");
-		} else {
-			rightDoors.setText("Open");
-		}
-        
+		if(evt.getPropertyName().equals("doors")) {
+			if ((int)evt.getNewValue() == 2) {
+				rightDoors.setText("Closed");
+			} else {
+				rightDoors.setText("Open");
+			}
+        }
     }
 
     private void closeLeftActionPerformed(java.awt.event.ActionEvent evt) {                                          
@@ -1103,6 +1107,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
 				failureLabel.setText("Engine failure.");
 			} else if ((int)evt.getNewValue() == 0) {
 				failureLabel.setText("Emergency brake set.");
+			} else if ((int)evt.getNewValue() == 5) {
+				failureLabel.setText("Zero Speed.");
 			}
 		}
 		
