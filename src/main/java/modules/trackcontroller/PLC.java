@@ -133,7 +133,7 @@ public class PLC {
 			  error = true;
 		 }
 		 if(!(lights == lights1 == lights2)){
-			  System.out.println("PLC ERROR IN LIGHTS);
+			  System.out.println("PLC ERROR IN LIGHTS");
 			  error = true;
 		 }
 		 if(oneWay!=null && !(oneWay == oneWay1 == oneWay2)){

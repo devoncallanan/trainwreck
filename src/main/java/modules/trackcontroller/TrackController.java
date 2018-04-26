@@ -94,11 +94,11 @@ public class TrackController {
                     logic();
                checkLights();
           }
-          if(crossExists)
-               checkCross();
 		   for(int i=0; i<3; i++){ 	//redundancy for vital nature
+			  if(crossExists)
+				   checkCross();
 				checkContinue();
-		   }
+			}
           setGUI();
 		  System.out.println("zerospeed = " +zeroSpeedSent);
           mSend();
@@ -129,7 +129,7 @@ public class TrackController {
           lights1 = plcCode.getLights();
           lights2 = plcCode.getLights();
 		  if(!(lights == lights1 == lights2))
-			  System.out.println("PLC ERROR IN LIGHTS);
+			  System.out.println("PLC ERROR IN LIGHTS");
           oneWay = plcCode.getOneWay();
           oneWay1 = plcCode.getOneWay();
           oneWay1 = plcCode.getOneWay();
