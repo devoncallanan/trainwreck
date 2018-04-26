@@ -50,7 +50,7 @@ public class PLC {
             System.out.println("IO Exception!");
         }
 		
-		BufferedReader file1 = null;
+		/*BufferedReader file1 = null;
         try {
             file1 = new BufferedReader (new FileReader(f));
         } catch (FileNotFoundException ex) {
@@ -140,7 +140,7 @@ public class PLC {
 		 if(oneWay!=null && !(oneWay == oneWay1 == oneWay2)){
 			  System.out.println("PLC ERROR IN ONEWAY");
 			  error = true;
-		 }
+		 }*/
      }
      public Boolean getSwitchBias(){
 		 if(!error)
