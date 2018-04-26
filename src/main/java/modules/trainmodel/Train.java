@@ -87,9 +87,9 @@ public class Train {
     	
     	// Step 5: Calculate the final speed by adding the old speed with the acceleration x the time elapsed
           //  	System.out.println("Current Acc " + trainAcceleration);
-		System.out.println("trainAcc: " + trainAcceleration + "\tcurrent: " + currentSpeed);
+		//System.out.println("trainAcc: " + trainAcceleration + "\tcurrent: " + currentSpeed);
     	velocityFeedback = currentSpeed + (trainAcceleration*deltaT);
-		System.out.println("currentSpeed2: " + velocityFeedback);
+		//System.out.println("currentSpeed2: " + velocityFeedback);
     	velocityFeedback = velocityFeedback * MS_TO_KMH; //converts to km/h
         
     	// no negative speed
