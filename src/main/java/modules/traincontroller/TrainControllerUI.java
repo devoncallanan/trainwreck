@@ -1099,6 +1099,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
 				failureLabel.setText("Signal failure.");
 			} else if ((int)evt.getNewValue() == 3) {
 				failureLabel.setText("Engine failure.");
+			} else if ((int)evt.getNewValue() == 0) {
+				failureLabel.setText("Emergency brake set.");
 			}
 		}
 		
@@ -1106,7 +1108,8 @@ public class TrainControllerUI extends javax.swing.JFrame {
 
     private void advertisementPropertyChange(java.beans.PropertyChangeEvent evt) {                                             
         // TODO add your handling code here:
-		advertisement.setText(String.valueOf(evt.getNewValue()));
+		if(evt.getPropertyName().equals("ad"))
+			advertisement.setText(String.valueOf(evt.getNewValue()));
     }                                            
 
 

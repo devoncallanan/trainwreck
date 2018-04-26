@@ -25,7 +25,7 @@ public class TrainModel {
                }
                else if(m.type() == MType.SPEED){
                     speeds.add(m.dataD());
-                    System.out.println("TrMod: "+m.dataD());
+                    //System.out.println("TrMod: "+m.dataD());
                }
           }
      }
@@ -33,7 +33,7 @@ public class TrainModel {
           for(int i=0; i<speeds.size(); i++){
                m = new Message(MDest.TrMd, speeds.get(i), MType.SPEED);
                mq.send(m, MDest.TrCtl);
-               System.out.println("TrMod SEND");
+               //System.out.println("TrMod SEND");
           }
      }
 }

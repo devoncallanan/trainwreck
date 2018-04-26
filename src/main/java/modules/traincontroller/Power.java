@@ -82,4 +82,20 @@ public class Power {
 		powerCmd = 0;
 		previousPowerCmd = 0;
 	}
+	
+	public double getUk() {
+		return uk;
+	}
+	
+	public double getPreviousUk() {
+		return previousUk;
+	}
+	
+	public double getPreviousPowerCmd() {
+		return previousPowerCmd;
+	}
+	
+	public double getPowerCmd() {
+		return powerCmd;
+	}
 }

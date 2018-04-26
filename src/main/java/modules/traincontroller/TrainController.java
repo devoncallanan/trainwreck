@@ -108,7 +108,7 @@ public class TrainController {
 	
 	public void run() {
 		
-		mymail = messages.receive(MDest.TrCtl);
+		mymail = messages.receive(MDest.TrCtl + trainID*2);
 		
 		while(!mymail.isEmpty()) {
 			currentM = mymail.pop();
@@ -143,6 +143,7 @@ public class TrainController {
 					velocity.setSpeedLimit(currentM.dataD(), mode);
 					break;
 				case 15:	//ZEROSPEED
+					//System.out.println("ZEROSPEED");
 					setEmergency(true);
 					break;
 				case 17:	//FAILURE
@@ -167,11 +168,11 @@ public class TrainController {
 			messages.send(new Message(MDest.TrCtl, ad1, 0, MType.ADVERTISEMENT), MDest.TrMd);
 			this.pcs.firePropertyChange("ad", -1 , ad1);
 		}
-		if (ad == 360000) {
+		if (ad == 3600) {
 			messages.send(new Message(MDest.TrCtl, ad2, 0, MType.ADVERTISEMENT), MDest.TrMd);
 			this.pcs.firePropertyChange("ad", -1 , ad2);
 		}
-		if (ad == 720000) {
+		if (ad == 7200) {
 			messages.send(new Message(MDest.TrCtl, ad3, 0, MType.ADVERTISEMENT), MDest.TrMd);
 			this.pcs.firePropertyChange("ad", -1 , ad3);
 			ad = 0;
