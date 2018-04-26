@@ -17,7 +17,7 @@ public class TrackController {
      Boolean recSwitch = null, switchPos = true, oneWay = null;
      boolean mainDir = false, sideDir = true, msplitDir = true, mainZero = true, sideZero = true, msplitZero = true, mode = true, crossExists = false;
      boolean mainCross, sideCross, msplitCross, mainOcc, sideOcc, msplitOcc, switchBias = true, crossPos = false, prevMainOcc, prevMsplitOcc, prevSideOcc, prevMainOcc2, prevMsplitOcc2, prevSideOcc2;
-     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false, zeroSpeedSent = false, switchBias1, sitchBias2, loop1, loop2, priority1, priority2, lights1, lights2, oneWay1, oneWay2;
+     boolean crossLights = false, switchLight = true, loop = false, lights = true, priority = true, onSwitch = false, zeroSpeedSent = false, switchBias1, switchBias2, loop1, loop2, priority1, priority2, lights1, lights2, oneWay1, oneWay2;
 
      public TrackController(MessageQueue y, boolean[] n, boolean[] r, boolean[] s, int z, PLC p){
           id = z;
