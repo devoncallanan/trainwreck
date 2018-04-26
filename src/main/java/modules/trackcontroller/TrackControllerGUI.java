@@ -7,11 +7,10 @@ import javax.swing.JFileChooser;
 public class TrackControllerGUI extends javax.swing.JFrame {
 
     boolean [] mainLine, msplit, side;
-    boolean cross;
     TrackController tc;
     PLC plc;
     int i;
-    public TrackControllerGUI(TrackController t, boolean[] n, boolean[] r, boolean[] s, int z, boolean c, PLC p) {
+    public TrackControllerGUI(TrackController t, boolean[] n, boolean[] r, boolean[] s, int z, PLC p) {
         plc = p;
         tc = t;
         cross = c;
@@ -223,7 +222,7 @@ public class TrackControllerGUI extends javax.swing.JFrame {
                         .addComponent(id)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(crossingLightOnButton)
                                 .addGap(18, 18, 18)

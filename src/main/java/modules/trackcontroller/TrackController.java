@@ -50,8 +50,14 @@ public class TrackController {
                     crossExists = true;
                }
           }
-          gui = new TrackControllerGUI(this, n, r, s, z + 1, crossExists, p);
-          gui.setVisible(true);
+		  if(crossExists){
+			  gui = new TrackControllerGUI(this, n, r, s, z + 1, p)
+			  gui.setVisible(true);
+		  }
+		  else{
+			  gui = new NoCrossTCGUI(this, n, r, s, z+1, p);
+                 gui.setVisible(true);
+		  }
           checkZero();
      }
      public void run(){
