@@ -82,7 +82,7 @@ public static double MS_TO_KMH = 3600.0/10000.0;
     }
     
     public String extendedInfo() {
-        String s = new String("Section: " + section + "\t\tBlock Number: " + number + "\nStation: " + station + "\t\tGrade: " + grade + "\nLength: " + length*3.28084 + "\t Speed Limit: " + limit*0.621371 + "\nOccupied: " + occupied + "\tWays of travel: " + ways);
+        String s = new String("Section: " + section + "\t\tBlock Number: " + number + "\nStation: " + station + "\t\tGrade: " + grade + "\nLength: " + length*3.28084 + "\t Speed Limit: " + limit*0.621371 + "\nOccupied: " + occupied + "\tWays of travel: " + ways + "\nBeacon: " + beacon);
         return s;
     }
 }

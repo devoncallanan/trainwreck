@@ -108,7 +108,7 @@ public class TrainModelUI extends javax.swing.JFrame {
         TrainInfoDisplay1.setColumns(20);
         TrainInfoDisplay1.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
         TrainInfoDisplay1.setRows(5);
-        TrainInfoDisplay1.setText("Train 1 Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: 40.9T - 56.7T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Power: 120kW\nMax Speed: 70km/h\n");
+        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: 40.9T - 56.7T\nCrew Members: 2\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Power: 120kW\nMax Speed: 70km/h\n");
         jScrollPane4.setViewportView(TrainInfoDisplay1);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -390,15 +390,16 @@ public class TrainModelUI extends javax.swing.JFrame {
 
     void update(int trainID,double power,double currentSpeed,double grade,int brakes,double speedLimit,int passengers,int lights,double auth,int temp,int doors,String advertisement) {
         trainMass = 40.9 + (.06803885*(passengers+2)); //add passenger weight as well as the required 2 crew members weight to train in tons
-        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: " + trainMass + "T\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
+        TrainInfoDisplay1.setText("Train Information\n------------------------\nAmount of cars: 2\nNumber of doors: 16\nTrain Length: 32.2m per car\nTrain Width: 2.65m\nTrain Height: 3.42m\nTrain Mass: " + trainMass + "T\nCrew Members: 2\nMax Capacity: 222 Passengers\nMax Acceleration: 0.5m/s^2\nMax Deceleration: 2.72 m/s^2\nMax Speed:70km/h\nMax Power 120kW\n");
         adText.setText(advertisement);
-        this.velocityLabel.setText(new DecimalFormat("#.##").format(currentSpeed));
+	currentSpeed = currentSpeed * .621371; //converts to mph for output
+        this.velocityLabel.setText(new DecimalFormat("#.##").format(currentSpeed)+"MPH");
         this.passengersLabel.setText(Integer.toString(passengers));
-        this.gradeLabel.setText(Double.toString(grade));
-        this.powerLabel.setText(Double.toString(power));
-        this.speedLimitLabel.setText(Double.toString(speedLimit));
-        this.authLabel.setText(Double.toString(auth));
-        this.tempLabel.setText(Integer.toString(temp));
+        this.gradeLabel.setText(new DecimalFormat("#.##").format(grade));
+        this.powerLabel.setText(new DecimalFormat("#.##").format(power)+"kW");
+        this.speedLimitLabel.setText(new DecimalFormat("#.##").format(speedLimit)+"MPH");
+        this.authLabel.setText(new DecimalFormat("#.##").format(auth));
+        this.tempLabel.setText(Integer.toString(temp)+"F");
         this.idLabel.setText(Integer.toString(trainID));
 
         switch (doors) {

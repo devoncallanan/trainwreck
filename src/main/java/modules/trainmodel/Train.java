@@ -33,7 +33,7 @@ public class Train {
 	}
 	
 	public double calculateVelocity(double power,double currentSpeed,double grade,int brakes,double speedLimit,double passengers){
-		// Step 1: input power and convert the power to a force based on the starting velocity
+		//input power and convert the power to a force based on the starting velocity
     	totalMass = trainMass + 150*passengers; //add passenger weight to train
     	totalMass = totalMass * .454; //convert train mass to kg
     	//System.out.println(totalMass);
@@ -47,11 +47,11 @@ public class Train {
     	    //	System.out.println(force);
 
     	
-    	// Step 2: Calculate the slope
+    	// Calculate the slope
     	double slope = Math.atan2(grade,100);
     	double angle = Math.toDegrees(slope);
     	
-    	// Step 3: Calculate the forces acting on the train using the coefficient of friction
+    	// Calculate the forces acting on the train using the coefficient of friction
     	// and the train's weight
     	double normalForce = (totalMass/numWheels) * grav * Math.sin((angle*Math.PI)/180);	// divide by 12 for the number of wheels
     	double downwardForce = (totalMass/numWheels) * grav * Math.cos((angle*Math.PI)/180);	// divide by 12 for the number of wheels
@@ -65,7 +65,7 @@ public class Train {
     	    //	System.out.println("totalForce" + totalForce);
     	
     	
-    	// Step 4: Calculate acceleration using the F = ma
+    	//Calculate acceleration using the F = ma
     	double trainAcceleration = totalForce/totalMass;
     	
     	// check to make sure this acceleration does not exceed max.
